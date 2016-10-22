@@ -5,7 +5,7 @@ VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QingFeng.Common", "QingFeng.Common\QingFeng.Common.csproj", "{3032EEDA-09F9-4376-B176-B574E5E30FCA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QingFeng.HomeArea", "QingFeng.HomeArea\QingFeng.HomeArea.csproj", "{783BA449-9BFB-465E-82A2-BA3EF137B6D3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QingFeng.WebArea", "QingFeng.HomeArea\QingFeng.WebArea.csproj", "{783BA449-9BFB-465E-82A2-BA3EF137B6D3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QingFeng.Models", "QingFeng.Models\QingFeng.Models.csproj", "{C28EEF05-FE52-40EB-8637-BA8CE0A9A0BD}"
 EndProject
