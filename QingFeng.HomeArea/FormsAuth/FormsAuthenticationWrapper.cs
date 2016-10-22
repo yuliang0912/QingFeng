@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Web;
-using QingFeng.Common.Extensions;
+using QingFeng.Common;
 using QingFeng.Common.Utilities;
 
 namespace QingFeng.WebArea.FormsAuth

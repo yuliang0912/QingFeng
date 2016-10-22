@@ -1,4 +1,6 @@
-﻿using QingFeng.Common.Utilities;
+﻿using System.Linq;
+using QingFeng.Common;
+using QingFeng.Common.Utilities;
 
 namespace QingFeng.WebArea.FormsAuth
 {
