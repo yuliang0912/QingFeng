@@ -63,10 +63,10 @@ namespace QingFeng.Common.Dapper
             var expandoObject = new ExpandoObject() as IDictionary<string, object>;
             wherePropertyInfos.ForEach(p => expandoObject.Add(p.Name, p.GetValue(conditionObj, null)));
             parameters.AddDynamicParams(expandoObject);
-
+            
             return connection.Execute(sql, parameters, transaction, commandTimeout);
         }
-
+        
 
         /// <summary>Delete data from table with a specified condition.
         /// </summary>
