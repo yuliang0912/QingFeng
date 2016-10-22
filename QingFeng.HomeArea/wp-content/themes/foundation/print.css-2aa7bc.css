@@ -1,0 +1,15 @@
+/* Print Styles */
+
+@media print {
+    #header,
+    #fl_menu,
+    .assets_box, 
+    .comments,
+    .wonderplugin-engine,
+    #wonderpluginlightbox_options {
+        display: none;
+    }
+    footer .row {
+        display: none;
+    }
+}

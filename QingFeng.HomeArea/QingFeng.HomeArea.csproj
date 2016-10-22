@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
+  <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{783BA449-9BFB-465E-82A2-BA3EF137B6D3}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>QingFeng.WebArea</RootNamespace>
+    <AssemblyName>QingFeng.WebArea</AssemblyName>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <UseIISExpress>true</UseIISExpress>
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+    <UseGlobalApplicationHostFile />
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System.Web.Razor">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Webpages">
+      <HintPath>..\packages\Microsoft.AspNet.Webpages.3.2.3\lib\net45\System.Web.Webpages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Webpages.Deployment">
+      <HintPath>..\packages\Microsoft.AspNet.Webpages.3.2.3\lib\net45\System.Web.Webpages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Webpages.Razor">
+      <HintPath>..\packages\Microsoft.AspNet.Webpages.3.2.3\lib\net45\System.Web.Webpages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Helpers">
+      <HintPath>..\packages\Microsoft.AspNet.Webpages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\css\fi000002.css-2aa7bc.css" />
+    <Content Include="Global.asax" />
+    <Content Include="Web.config" />
+    <Content Include="wp-content\cache\minify\000000\fi000001.css-2aa7bc.css" />
+    <Content Include="wp-content\cache\minify\000000\fi000002.css-2aa7bc.css" />
+    <Content Include="wp-content\cache\minify\000000\M9BPyy_NS0ksyczP008uLtZPzi9K1c_LL8pNzMmsSgUA.css-2aa7bc.css" />
+    <Content Include="wp-content\cache\minify\000000\M9QvTUotyk3NK9VPLC5OLSnWTy4u1k_LzytJLE8tzs9NhfN1oQJ6uZl5AA.css-2aa7bc.css" />
+    <Content Include="wp-content\plugins\responsive-lightbox\assets\swipebox\img\icons.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\responsive-lightbox\assets\swipebox\img\loader.gif-2aa7bc.gif" />
+    <Content Include="wp-content\plugins\sitepress-multilingual-cms\res\css\language-selector.css-v=3.2.2&amp;2aa7bc.css" />
+    <Content Include="wp-content\plugins\sitepress-multilingual-cms\res\img\nav-arrow-down.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\dark_rounded\btnNext.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\dark_rounded\btnPrevious.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\dark_rounded\contentPattern.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\dark_rounded\loader.gif-2aa7bc.gif" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\dark_rounded\sprite.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\dark_square\btnNext.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\dark_square\btnPrevious.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\dark_square\loader.gif-2aa7bc.gif" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\dark_square\sprite.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\default\default_thumb.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\default\loader.gif-2aa7bc.gif" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\default\sprite.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\default\sprite_next.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\default\sprite_prev.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\default\sprite_x.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\default\sprite_y.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\facebook\btnNext.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\facebook\btnPrevious.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\facebook\contentPatternBottom.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\facebook\contentPatternLeft.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\facebook\contentPatternRight.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\facebook\contentPatternTop.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\facebook\default_thumbnail.gif-2aa7bc.gif" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\facebook\loader.gif-2aa7bc.gif" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\facebook\sprite.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\light_rounded\btnNext.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\light_rounded\btnPrevious.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\light_rounded\loader.gif-2aa7bc.gif" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\light_rounded\sprite.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\light_square\btnNext.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\light_square\btnPrevious.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wp-video-lightbox\images\prettyPhoto\light_square\sprite.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wpmbytplayer\images\raster%402x.png" />
+    <Content Include="wp-content\plugins\wpmbytplayer\images\raster%402x.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wpmbytplayer\images\raster.png" />
+    <Content Include="wp-content\plugins\wpmbytplayer\images\raster.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wpmbytplayer\images\raster_dot%402x.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wpmbytplayer\images\raster_dot.png-2aa7bc.png" />
+    <Content Include="wp-content\plugins\wpml-cms-nav\res\img\cms-nav-dark-s.gif-2aa7bc.gif" />
+    <Content Include="wp-content\themes\foundation\fonts\MyriadPro-Regular_gdi.svg" />
+    <Content Include="wp-content\themes\foundation\fonts\slick.svg" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Book_gdi.svg" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Medium_gdi.svg" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Semibold_gdi.svg" />
+    <Content Include="wp-content\themes\foundation\images\ajax-loader.gif-2aa7bc.gif" />
+    <Content Include="wp-content\themes\foundation\images\arrow-down.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\bg-left.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\bg-right.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\btn-link.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\call-icon.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\facebook-w.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\facebook.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\file.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\in-w.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\in.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\left-slide.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\logo2.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\right-slide.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\search-icon.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\twitter-w.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\images\twitter.png-2aa7bc.png" />
+    <Content Include="wp-content\themes\foundation\print.css-2aa7bc.css" />
+    <Content Include="wp-content\uploads\2015\03\customervideos_105x22_clintonsavings_logo.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\03\leupold-video-small.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\03\leupold-video-small2.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\03\news-icon.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\03\woodforest-video-small.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\03\woodforest-video-small2.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\07\412x292_0002_products_enterprise_cloud-disaster-recovery_1.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\07\412x292_0003_products_enterprise_aws_1.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\07\412x292_0004_products_enterprise_hyperv_1.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\07\412x292_0005_products_enterprise_vsphere_1.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\07\412x292_0008_home_replication-tab_1.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\07\featured_logos_190x73__0000_sgs.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\07\featured_logos_190x73__0001_woodforest.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\07\featured_logos_190x73__0003_junglejims.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\07\featured_logos_190x73__0006_fujitsu.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\08\412x292_0006_home_hybrid-cloud-tab_1.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\08\412x292_0007_home_migration-tab_1.png-2aa7bc.png" />
+    <Content Include="wp-content\uploads\2015\08\Zerto-Logo_RGB1.png-2aa7bc.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Global.asax.cs">
+      <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Views\web.config" />
+    <Content Include="packages.config" />
+    <Content Include="Config\AppSettings.config" />
+    <Content Include="Config\ConnectionStrings.config" />
+    <Content Include="Views\Shard\_Layout.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Shard\_Healder.cshtml" />
+    <Content Include="Views\Home\Index1.cshtml" />
+    <None Include="Web.Debug.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <None Include="Web.Release.config">
+      <DependentUpon>Web.config</DependentUpon>
+    </None>
+    <Content Include="wp-content\cache\minify\000000\fi000003.js-2aa7bc" />
+    <Content Include="wp-content\cache\minify\000000\M9bPKixNLarUMYYydHMz04sSS1L1cjPzdAz1ywt0yzJTUvN1czLTM0qS8iv0s4qhKvUKilJLSioDMvJL8gE.js-2aa7bc" />
+    <Content Include="wp-content\cache\minify\000000\M9BPyy_NS0ksyczP088q1i_IKU3PzCvWzyosTS2q1MvNrMgsKS3QMUBTlp6Tn5SYAwA.js-2aa7bc" />
+    <Content Include="wp-content\cache\minify\000000\M9BPyy_NS0ksyczP088qRuLp5Samp-bkJOYBAA.js-2aa7bc" />
+    <Content Include="wp-content\cache\minify\000000\M9QvSi0uyM8rzixL1c3JTM8oScqv0M8q1k8rys8rAQA.js-2aa7bc" />
+    <Content Include="wp-content\cache\minify\000000\M9QvTUotyk3NK9VPLC5OLSnWzyqGC-nlZubpmOiXF-im5ialpoC4AA.js-2aa7bc" />
+    <Content Include="wp-content\cache\minify\000000\VczLDYQwEATRhNaMiIEUNgE-LXYs8Bi3wZD9cgAhrqWnqqVEt-kAc5OOv9zZLp7yLp9a0PJwva0hD1YCkrQkMuWrMxpN_QSeKoHRAnXDc7sgi0Zcd7-sSEd1p2rW8Ac.js-2aa7bc" />
+    <Content Include="wp-content\plugins\sitepress-multilingual-cms\res\js\sitepress.js-2aa7bc" />
+    <Content Include="wp-content\plugins\ubermenu\assets\css\fontawesome\fonts\fontawesome-webfont.eot-" />
+    <Content Include="wp-content\plugins\ubermenu\assets\css\fontawesome\fonts\fontawesome-webfont.eot-v=4.3.0&amp;2aa7bc" />
+    <Content Include="wp-content\plugins\ubermenu\assets\css\fontawesome\fonts\fontawesome-webfont.svg-v=4.3.0" />
+    <Content Include="wp-content\plugins\ubermenu\assets\css\fontawesome\fonts\fontawesome-webfont.ttf-v=4.3.0&amp;2aa7bc" />
+    <Content Include="wp-content\plugins\ubermenu\assets\css\fontawesome\fonts\fontawesome-webfont.woff-v=4.3.0&amp;2aa7bc" />
+    <Content Include="wp-content\plugins\ubermenu\assets\css\fontawesome\fonts\fontawesome-webfont.woff2-v=4.3.0" />
+    <Content Include="wp-content\themes\foundation\fonts\fontawesome-webfont.eot-" />
+    <Content Include="wp-content\themes\foundation\fonts\fontawesome-webfont.eot-v=4.3.0&amp;2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\fontawesome-webfont.svg-v=4.3.0" />
+    <Content Include="wp-content\themes\foundation\fonts\fontawesome-webfont.ttf-v=4.3.0&amp;2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\fontawesome-webfont.woff-v=4.3.0&amp;2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\fontawesome-webfont.woff2-v=4.3.0" />
+    <Content Include="wp-content\themes\foundation\fonts\MyriadPro-Regular_gdi.eot-" />
+    <Content Include="wp-content\themes\foundation\fonts\MyriadPro-Regular_gdi.eot-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\MyriadPro-Regular_gdi.otf-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\MyriadPro-Regular_gdi.ttf-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\MyriadPro-Regular_gdi.woff-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\slick.eot-" />
+    <Content Include="wp-content\themes\foundation\fonts\slick.eot-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\slick.ttf-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\slick.woff-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\whitney-book-italic-1361514900.eot-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\whitney-book-italic-1361514900.svg-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\whitney-book-italic-1361514900.ttf-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\whitney-book-italic-1361514900.woff-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Book_gdi.eot-" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Book_gdi.eot-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Book_gdi.otf-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Book_gdi.ttf-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Book_gdi.woff-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Medium_gdi.eot-" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Medium_gdi.eot-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Medium_gdi.otf-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Medium_gdi.ttf-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Medium_gdi.woff-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Semibold_gdi.eot-" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Semibold_gdi.eot-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Semibold_gdi.otf-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Semibold_gdi.ttf-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\fonts\Whitney-Semibold_gdi.woff-2aa7bc" />
+    <Content Include="wp-content\themes\foundation\js\plugins\html5shiv.js-2aa7bc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\kindeditor\" />
+    <Folder Include="Models\" />
+    <Folder Include="Views\Admin\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\QingFeng.Business\QingFeng.Business.csproj">
+      <Project>{d8906a58-c9da-4cf6-ac7f-0adf00b3ed56}</Project>
+      <Name>QingFeng.Business</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\QingFeng.Models\QingFeng.Models.csproj">
+      <Project>{c28eef05-fe52-40eb-8637-ba8ce0a9a0bd}</Project>
+      <Name>QingFeng.Models</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <UseIIS>False</UseIIS>
+          <AutoAssignPort>True</AutoAssignPort>
+          <DevelopmentServerPort>51099</DevelopmentServerPort>
+          <DevelopmentServerVPath>/</DevelopmentServerVPath>
+          <IISUrl>http://localhost:51099/</IISUrl>
+          <NTLMAuthentication>False</NTLMAuthentication>
+          <UseCustomServer>True</UseCustomServer>
+          <CustomServerUrl>http://www.qingfeng.com</CustomServerUrl>
+          <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>此项目引用这台计算机上缺少的 NuGet 程序包。使用 NuGet 程序包还原可下载这些程序包。有关详细信息，请参阅 http://go.microsoft.com/fwlink/?LinkID=322105。缺少的文件是 {0}。</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
