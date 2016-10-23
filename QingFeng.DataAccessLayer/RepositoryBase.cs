@@ -113,5 +113,13 @@ namespace QingFeng.DataAccessLayer
                 return connection.Delete(condition, _tableName) > 0;
             }
         }
+
+        public int Count(object condition)
+        {
+            using (var connection = GetReadConnection)
+            {
+                return connection.GetCount(condition, _tableName);
+            }
+        }
     }
 }

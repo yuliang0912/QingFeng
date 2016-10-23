@@ -1,9 +1,11 @@
 ﻿using System;
+using QingFeng.Common.Dapper;
 
 namespace QingFeng.Models
 {
     public class StoreInfo
     {
+        [IgnoreField]
         public int StroeId { get; set; }
 
         public string StoreName { get; set; }

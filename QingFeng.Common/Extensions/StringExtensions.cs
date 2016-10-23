@@ -21,7 +21,7 @@ namespace QingFeng.Common.Extensions
             return str.Substring(0, length);
         }
 
-        public static string GetrandomString()
+        public static string GetRandomString()
         {
             return Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
         }

@@ -1,9 +1,11 @@
 ﻿using QingFeng.Common;
+using QingFeng.Common.Dapper;
 
 namespace QingFeng.Models
 {
     public class SkuItem
     {
+        [IgnoreField]
         public int SkuId { get; set; }
 
         public string SkuName { get; set; }

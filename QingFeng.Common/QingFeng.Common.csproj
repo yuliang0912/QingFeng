@@ -53,6 +53,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AgentEnums.cs" />
     <Compile Include="Dapper\IgnoreFieldAttribute.cs" />
     <Compile Include="Dapper\SqlMapperExtensions.cs" />
     <Compile Include="Extensions\DataContractExtensions.cs" />

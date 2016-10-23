@@ -40,10 +40,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MenuService\MenuService.cs" />
+    <Compile Include="ProductService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserService.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\QingFeng.Common\QingFeng.Common.csproj">
+      <Project>{3032eeda-09f9-4376-b176-b574e5e30fca}</Project>
+      <Name>QingFeng.Common</Name>
+    </ProjectReference>
     <ProjectReference Include="..\QingFeng.DataAccessLayer\QingFeng.DataAccessLayer.csproj">
       <Project>{6f0c89e0-58bb-4470-9d9b-b43abe7c9bb5}</Project>
       <Name>QingFeng.DataAccessLayer</Name>

@@ -1,4 +1,5 @@
 ﻿using System;
+using QingFeng.Common.Dapper;
 
 namespace QingFeng.Models
 {
@@ -7,6 +8,7 @@ namespace QingFeng.Models
     /// </summary>
     public class Product
     {
+        [IgnoreField]
         public int ProductId { get; set; }
 
         public string ProductName { get; set; }
