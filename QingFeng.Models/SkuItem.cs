@@ -2,7 +2,7 @@
 
 namespace QingFeng.Models
 {
-    public class SkuItems
+    public class SkuItem
     {
         public int SkuId { get; set; }
 
