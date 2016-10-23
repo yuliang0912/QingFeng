@@ -41,8 +41,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ProductBase.cs" />
-    <Compile Include="ProductInfo.cs" />
+    <Compile Include="Product.cs" />
+    <Compile Include="productSkus.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SkuItems.cs" />
     <Compile Include="StoreInfo.cs" />
     <Compile Include="UserInfo.cs" />
   </ItemGroup>
