@@ -4,7 +4,7 @@ namespace QingFeng.DataAccessLayer.Repository
 {
     public class ProductRepository : RepositoryBase<Product>
     {
-        public ProductRepository() : base("qingfeng", "product")
+        public ProductRepository() : base("product")
         {
         }
     }

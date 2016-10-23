@@ -13,7 +13,7 @@ namespace QingFeng.DataAccessLayer
         private readonly string _writeConnectionString;
 
 
-        protected RepositoryBase(string configurationKey, string tableName)
+        protected RepositoryBase(string tableName, string configurationKey = "qingfeng")
         {
             _tableName = tableName;
             _readConnectionString = ConfigHelper.GetConnectionString(configurationKey + "_read");

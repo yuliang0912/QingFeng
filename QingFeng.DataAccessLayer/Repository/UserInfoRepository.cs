@@ -7,9 +7,9 @@ using QingFeng.Models;
 
 namespace QingFeng.DataAccessLayer.Repository
 {
-    public class SkuItemRepository : RepositoryBase<SkuItem>
+    public class UserInfoRepository : RepositoryBase<UserInfo>
     {
-        public SkuItemRepository() : base("skuItems")
+        public UserInfoRepository() : base("userInfo")
         {
         }
     }
