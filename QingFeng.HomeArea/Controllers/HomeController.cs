@@ -1,5 +1,4 @@
 ﻿using System.Web.Mvc;
-using QingFeng.Business.MenuService;
 
 namespace QingFeng.WebArea.Controllers
 {
@@ -11,9 +10,8 @@ namespace QingFeng.WebArea.Controllers
             return View();
         }
 
-        public ActionResult Index1()
+        public ActionResult Register()
         {
-            var model = new MenuService().Get();
             return View();
         }
     }

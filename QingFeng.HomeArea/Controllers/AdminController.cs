@@ -5,7 +5,7 @@ namespace QingFeng.WebArea.Controllers
     public class AdminController : Controller
     {
         // GET: Admin
-        public ActionResult Index()
+        public ActionResult Login()
         {
             return View();
         }
