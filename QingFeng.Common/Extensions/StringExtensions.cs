@@ -25,5 +25,21 @@ namespace QingFeng.Common.Extensions
         {
             return Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
         }
+
+        public static string FillZeroNumber(int number, int totalLength)
+        {
+            var numLength = number.ToString().Length;
+            if (numLength >= totalLength)
+            {
+                return number.ToString();
+            }
+            var tempString = string.Empty;
+            while (totalLength - numLength == 0)
+            {
+                tempString += "0";
+                totalLength--;
+            }
+            return string.Concat(tempString, number);
+        }
     }
 }

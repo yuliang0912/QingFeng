@@ -79,11 +79,11 @@ namespace QingFeng.DataAccessLayer
         /// </summary>
         /// <param name="model"></param>
         /// <returns></returns>
-        public virtual bool Insert(object model)
+        public virtual int Insert(object model, bool isAutoIncrement = false)
         {
             using (var connection = GetWriteConnection)
             {
-                return connection.Insert(model, _tableName) > 0;
+                return connection.Insert(model, _tableName, isSelectLastInsertId: isAutoIncrement);
             }
         }
 

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using QingFeng.Common.Dapper;
+using QingFeng.Common;
 
 namespace QingFeng.Models
 {
@@ -25,6 +26,10 @@ namespace QingFeng.Models
         public string Intro { get; set; }
 
         public DateTime CreateDate { get; set; }
+
+        public AgentEnums.Category CategoryId { get; set; }
+
+        public int OrderId { get; set; }
 
         public int Status { get; set; }
     }

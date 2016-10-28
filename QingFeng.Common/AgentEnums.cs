@@ -15,5 +15,17 @@
             Administrator = 1,
             StoreUser = 2
         }
+
+        public enum Category
+        {
+            /// <summary>
+            /// 男士
+            /// </summary>
+            Male = 1,
+            /// <summary>
+            /// 女士
+            /// </summary>
+            Female = 2
+        }
     }
 }

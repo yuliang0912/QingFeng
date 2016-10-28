@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
+using QingFeng.Common.Extensions;
 
 namespace QingFeng.Business
 {
@@ -12,14 +13,60 @@ namespace QingFeng.Business
     {
         private readonly ProductRepository _productRepository = new ProductRepository();
         private readonly ProductBaseRepository _productBaseRepository = new ProductBaseRepository();
-        private readonly ProductSkuRepository _productSkuRepository = new ProductSkuRepository();
         private readonly SkuItemRepository _skuItemRepository = new SkuItemRepository();
 
-        public bool AddSkuItem(SkuItem model)
+
+
+        public int CreateProduct(int baseId, List<KeyValuePair<int, string>> colorSku)
         {
-            return _skuItemRepository.Insert(model);
+            var productService = new ProductService();
+            var baseInfo = _productBaseRepository.Get(new { baseId });
+
+            if (baseInfo == null)
+            {
+                return 0;
+            }
+
+            var productList = _productRepository.GetList(new { baseId }).ToList();
+
+            var addCount = 0;
+            foreach (var sku in colorSku)
+            {
+                if (!productList.Exists(t => t.ColorId == sku.Key))
+                {
+                    var product = new Product()
+                    {
+                        ProductName = baseInfo.BaseName + " " + sku.Value,
+                        BaseId = baseInfo.BaseId,
+                        BaseName = baseInfo.BaseName,
+                        OriginalPrice = baseInfo.OriginalPrice,
+                        ActualPrice = baseInfo.ActualPrice,
+                        ProductNo = baseInfo.BaseNo + StringExtensions.FillZeroNumber(sku.Key, 3)
+                    };
+
+                    if (_productRepository.Insert(product, true) > 0)
+                    {
+                        addCount++;
+                    }
+                    System.Threading.Thread.Sleep(50);
+                }
+            }
+            return addCount;
         }
 
+        public bool CreateBaseProduct(ProductBase model)
+        {
+            return _productBaseRepository.Insert(model) > 0;
+        }
 
+        public bool UpdateProductInfo(object model, object condition)
+        {
+            return _productRepository.Update(model, condition);
+        }
+
+        public bool UpdateBaseProductInfo(object model, object condition)
+        {
+            return _productBaseRepository.Update(model, condition);
+        }
     }
 }

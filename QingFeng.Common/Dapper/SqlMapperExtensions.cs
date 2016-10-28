@@ -22,14 +22,20 @@ namespace QingFeng.Common.Dapper
         /// <param name="transaction"></param>
         /// <param name="commandTimeout"></param>
         /// <returns></returns>
-        public static long Insert(this IDbConnection connection, dynamic data, string table,
-            IDbTransaction transaction = null, int? commandTimeout = null)
+        public static int Insert(this IDbConnection connection, dynamic data, string table,
+            IDbTransaction transaction = null, int? commandTimeout = null, bool isSelectLastInsertId = false)
         {
             var obj = data as object;
             var properties = GetProperties(obj);
             var columns = string.Join(",", properties);
             var values = string.Join(",", properties.Select(p => "@" + p));
-            var sql = $"insert into {table} ({columns}) values ({values})";
+            var sql = $"insert into {table} ({columns}) values ({values});";
+
+            if (isSelectLastInsertId)
+            {
+                sql += "SELECT LAST_INSERT_ID()";
+                return connection.ExecuteScalar<int>(sql, obj, transaction, commandTimeout);
+            }
 
             return connection.Execute(sql, obj, transaction, commandTimeout);
         }
