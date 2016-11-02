@@ -10,7 +10,7 @@ namespace QingFeng.Models
 
         public string StoreName { get; set; }
 
-        public int UserId { get; set; }
+        public int MasterUserId { get; set; }
 
         public string HomeUrl { get; set; }
 
