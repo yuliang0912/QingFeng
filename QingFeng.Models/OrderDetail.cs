@@ -13,10 +13,7 @@ namespace QingFeng.Models
         /// </summary>		
         public string FlowId { get; set; }
 
-        /// <summary>
-        /// 订单ID
-        /// </summary>		
-        public string OrderId { get; set; }
+        public string OrderNo { get; set; }
 
 
         public int BaseId { get; set; }

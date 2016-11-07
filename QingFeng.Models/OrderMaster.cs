@@ -11,8 +11,6 @@ namespace QingFeng.Models
             this.OrderDetails = Enumerable.Empty<OrderDetail>();
         }
 
-        public int OrderId { get; set; }
-
         //taobao
         public string OrderNo { get; set; }
 

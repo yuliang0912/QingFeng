@@ -4,13 +4,17 @@ using QingFeng.WebArea.FormsAuth;
 using StoreSaas.AdminArea.Code;
 using StoreSaas.Common.ApiCore;
 using StoreSaas.Common.ApiCore.Result;
-using System;
 using System.Web.Mvc;
 
 namespace QingFeng.WebArea.Fillter
 {
     public class AdminAuthorize : FilterAttribute, IAuthorizationFilter, IActionFilter
     {
+        Common.AgentEnums.UserRole allowRole;
+        public AdminAuthorize(Common.AgentEnums.UserRole _allowRole)
+        {
+            allowRole = _allowRole;
+        }
         protected UserInfo currentUser;
         public void OnAuthorization(AuthorizationContext filterContext)
         {
@@ -18,9 +22,11 @@ namespace QingFeng.WebArea.Fillter
 
             currentUser = string.IsNullOrEmpty(userId) ? null : new UserService().GetUserInfo(new { userId });
 
-            if (currentUser != null) return;
-
-            if (filterContext.HttpContext.Request.IsAjaxRequest())
+            if (currentUser != null && currentUser.UserRole == allowRole)
+            {
+                return;
+            }
+            else if (filterContext.HttpContext.Request.IsAjaxRequest())
             {
                 filterContext.Result = new CustomJsonResult()
                 {
@@ -35,12 +41,18 @@ namespace QingFeng.WebArea.Fillter
 
         public void OnActionExecuted(ActionExecutedContext filterContext)
         {
-            throw new NotImplementedException();
+            if (currentUser != null)
+            {
+                filterContext.Controller.ViewBag.User = currentUser;
+            }
         }
 
         public void OnActionExecuting(ActionExecutingContext filterContext)
         {
-            throw new NotImplementedException();
+            if (filterContext.ActionParameters.ContainsKey("user"))
+            {
+                filterContext.ActionParameters["user"] = currentUser;
+            }
         }
     }
 }

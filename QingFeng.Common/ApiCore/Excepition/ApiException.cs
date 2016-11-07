@@ -10,10 +10,10 @@ namespace StoreSaas.Common.ApiCore.Excepition
     {
         public ApiException(RetEum ret, int errCode, string message, HttpStatusCode status = HttpStatusCode.OK)
         {
-            this.Ret = ret;
-            this.ErrCode = errCode;
-            this.Message = message;
-            this.HttpStatus = status;
+            Ret = ret;
+            ErrCode = errCode;
+            Message = message;
+            HttpStatus = status;
         }
 
         /// <summary>
