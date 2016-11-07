@@ -21,5 +21,10 @@ namespace QingFeng.Business
         {
             return _storeRepository.Update(model, condition);
         }
+
+        public StoreInfo GetStoreInfo(object condition)
+        {
+            return _storeRepository.Get(condition);
+        }
     }
 }

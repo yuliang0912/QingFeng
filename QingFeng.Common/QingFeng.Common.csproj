@@ -34,6 +34,10 @@
       <HintPath>..\packages\Dapper.1.42\lib\net45\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="log4net, Version=1.2.15.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.2.0.5\lib\net45-full\log4net.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -41,6 +45,14 @@
     <Reference Include="System" />
     <Reference Include="System.configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Net.Http.Formatting">
+      <HintPath>..\packages\libs\System.Net.Http.Formatting.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Http">
+      <HintPath>..\packages\libs\System.Web.Http.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
@@ -54,6 +66,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AgentEnums.cs" />
+    <Compile Include="ApiCore\Excepition\ApiException.cs" />
+    <Compile Include="ApiCore\Filter\ApiExceptionAttribute.cs" />
+    <Compile Include="ApiCore\Formatter\CustomJsonFormatter.cs" />
+    <Compile Include="ApiCore\Result\ApiPageList.cs" />
+    <Compile Include="ApiCore\Result\ApiResult.cs" />
+    <Compile Include="ApiCore\RetEum.cs" />
     <Compile Include="Dapper\IgnoreFieldAttribute.cs" />
     <Compile Include="Dapper\SqlMapperExtensions.cs" />
     <Compile Include="Extensions\DataContractExtensions.cs" />
@@ -68,6 +86,7 @@
     <Compile Include="Utilities\DecryptHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

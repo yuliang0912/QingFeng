@@ -62,6 +62,18 @@ namespace QingFeng.Business
 
             return user;
         }
+
+        public UserInfo GetUserInfo(object condition)
+        {
+            var userInfo = _userInfoRepository.Get(condition);
+
+            if (userInfo != null)
+            {
+                userInfo.StoreInfo = new StoreService().GetStoreInfo(new { masterUserId = userInfo.UserId });
+            }
+
+            return userInfo;
+        }
     }
 }
 

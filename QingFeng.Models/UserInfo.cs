@@ -24,5 +24,8 @@ namespace QingFeng.Models
         public DateTime CreateDate { get; set; }
 
         public int Status { get; set; }
+
+        [IgnoreField]
+        public StoreInfo StoreInfo { get; set; }
     }
 }

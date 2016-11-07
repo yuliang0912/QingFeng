@@ -13,7 +13,7 @@ namespace QingFeng.WebArea.FormsAuth
         {
         }
 
-        public string UserKeyId => GetAuthenticatedUserKeyId();
+        public string UserId => GetAuthenticatedUserKeyId();
 
         private static string GetAuthenticatedUserKeyId()
         {
