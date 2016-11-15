@@ -14,12 +14,12 @@ namespace QingFeng.Business
 
         public int CreateProductStock(int productId, List<KeyValuePair<int, string>> sizeSku)
         {
-            var product = _productRepository.Get(new { productId });
+            var product = _productRepository.Get(new {productId});
             if (product == null)
             {
                 return 0;
             }
-            var productStockList = _productStockRepository.GetList(new { productId }).ToList();
+            var productStockList = _productStockRepository.GetList(new {productId}).ToList();
             var addCount = 0;
             foreach (var sku in sizeSku)
             {
@@ -50,6 +50,12 @@ namespace QingFeng.Business
         public IEnumerable<ProductStock> GetList(object condition)
         {
             return _productStockRepository.GetList(condition);
+        }
+
+
+        public bool SetProductStock(int productId, List<KeyValuePair<int, int>> sizeSku)
+        {
+            return false;
         }
     }
 }

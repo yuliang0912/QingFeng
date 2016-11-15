@@ -6,11 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using Newtonsoft.Json;
-using StoreSaas.Common.ApiCore.Excepition;
-using StoreSaas.Common.ApiCore.Result;
-using QingFeng.Common;
+using QingFeng.Common.ApiCore.Excepition;
+using QingFeng.Common.ApiCore.Result;
 
-namespace StoreSaas.Common.ApiCore.Formatter
+namespace QingFeng.Common.ApiCore.Formatter
 {
     /// <summary>
     /// 自定义

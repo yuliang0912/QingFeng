@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using QingFeng.Common.Dapper;
 using QingFeng.Common;
 
@@ -10,6 +8,11 @@ namespace QingFeng.Models
 {
     public class ProductBase
     {
+        public ProductBase()
+        {
+            SubProduct = Enumerable.Empty<Product>();
+        }
+
         [IgnoreField]
         public int BaseId { get; set; }
 
@@ -32,5 +35,7 @@ namespace QingFeng.Models
         public int OrderId { get; set; }
 
         public int Status { get; set; }
+
+        public IEnumerable<Product> SubProduct { get; set; }
     }
 }

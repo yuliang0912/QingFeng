@@ -1,5 +1,5 @@
 ﻿
-namespace StoreSaas.Common.ApiCore
+namespace QingFeng.Common.ApiCore
 {
     public enum RetEum
     {
@@ -7,30 +7,36 @@ namespace StoreSaas.Common.ApiCore
         /// 未定义错误
         /// </summary>
         UndefinedError = -2,
+
         /// <summary>
         /// HTTP请求错误
         /// </summary>
         HttpError = -1,
+
         /// <summary>
         /// 正常返回
         /// </summary>
         Success = 0,
+
         /// <summary>
         /// 鉴权失败
         /// </summary>
         AuthenticationFailure = 1,
+
         /// <summary>
         /// 服务器内部错误
         /// </summary>
         ServerError = 2,
+
         /// <summary>
         /// 应用程序错误
         /// </summary>
         ApplicationError = 3,
+
         /// <summary>
         /// 频率受限
         /// </summary>
-        FrequencyLimit = 4,
+        FrequencyLimit = 4
     }
 
     public enum ClientIdEum
@@ -38,7 +44,7 @@ namespace StoreSaas.Common.ApiCore
         /// <summary>
         /// 苹果端
         /// </summary>
-        IOS = 1001,
+        Ios = 1001,
         /// <summary>
         /// 安卓端
         /// </summary>

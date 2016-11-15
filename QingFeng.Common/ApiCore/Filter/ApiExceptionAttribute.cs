@@ -1,9 +1,9 @@
 ﻿using System.Net;
 using System.Net.Http;
 using System.Web.Http.Filters;
-using StoreSaas.Common.ApiCore.Excepition;
+using QingFeng.Common.ApiCore.Excepition;
 
-namespace StoreSaas.Common.ApiCore.Filter
+namespace QingFeng.Common.ApiCore.Filter
 {
     public class ApiExceptionAttribute : ExceptionFilterAttribute
     {

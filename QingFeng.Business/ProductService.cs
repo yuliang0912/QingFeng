@@ -16,18 +16,16 @@ namespace QingFeng.Business
         private readonly SkuItemRepository _skuItemRepository = new SkuItemRepository();
 
 
-
         public int CreateProduct(int baseId, List<KeyValuePair<int, string>> colorSku)
         {
-            var productService = new ProductService();
-            var baseInfo = _productBaseRepository.Get(new { baseId });
+            var baseInfo = _productBaseRepository.Get(new {baseId});
 
             if (baseInfo == null)
             {
                 return 0;
             }
 
-            var productList = _productRepository.GetList(new { baseId }).ToList();
+            var productList = _productRepository.GetList(new {baseId}).ToList();
 
             var addCount = 0;
             foreach (var sku in colorSku)
@@ -56,6 +54,7 @@ namespace QingFeng.Business
 
         public bool CreateBaseProduct(ProductBase model)
         {
+            model.CreateDate = DateTime.Now;
             return _productBaseRepository.Insert(model) > 0;
         }
 
@@ -67,6 +66,21 @@ namespace QingFeng.Business
         public bool UpdateBaseProductInfo(object model, object condition)
         {
             return _productBaseRepository.Update(model, condition);
+        }
+
+        public ProductBase GetProductBase(int baseId)
+        {
+            return _productBaseRepository.Get(new {baseId});
+        }
+
+        public Product GetProduct(int productId)
+        {
+            return _productRepository.Get(new {productId});
+        }
+
+        public IEnumerable<ProductBase> SearchProduct(string keyWords, int page, int pageSize)
+        {
+            return null;
         }
     }
 }

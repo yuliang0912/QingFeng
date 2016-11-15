@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
 
-namespace StoreSaas.Common.ApiCore.Result
+namespace QingFeng.Common.ApiCore.Result
 {
     [JsonObject(MemberSerialization.OptIn)]
     public class ApiPageList<T>

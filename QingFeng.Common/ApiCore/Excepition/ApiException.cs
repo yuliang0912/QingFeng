@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Net;
 
-namespace StoreSaas.Common.ApiCore.Excepition
+namespace QingFeng.Common.ApiCore.Excepition
 {
     /// <summary>
     /// API异常基类
