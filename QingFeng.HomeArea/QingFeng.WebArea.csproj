@@ -452,6 +452,7 @@
     <Content Include="Content\validation.html" />
     <Content Include="Content\webim.html" />
     <Content Include="Content\widgets.html" />
+    <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\bootstrap.js" />
@@ -469,6 +470,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Fillter\AdminAuthorize.cs" />
     <Compile Include="FormsAuth\FormsAuthenticationService.cs" />
     <Compile Include="FormsAuth\FormsAuthenticationWrapper.cs" />
@@ -522,6 +524,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
+    <Folder Include="Views\Product\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QingFeng.Business\QingFeng.Business.csproj">
