@@ -24,7 +24,8 @@ namespace QingFeng.WebArea.Fillter
 
             CurrentUser = string.IsNullOrEmpty(userId) ? null : new UserService().GetUserInfo(new { userId });
 
-            if (CurrentUser != null && CurrentUser.UserRole == _allowRole)
+            if (CurrentUser != null &&
+                (CurrentUser.UserRole == _allowRole || _allowRole == Common.AgentEnums.UserRole.AllUser))
             {
                 return;
             }
