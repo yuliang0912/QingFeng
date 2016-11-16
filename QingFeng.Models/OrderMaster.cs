@@ -11,6 +11,8 @@ namespace QingFeng.Models
             this.OrderDetails = Enumerable.Empty<OrderDetail>();
         }
 
+        public int OrderId { get; set; }
+
         //taobao
         public string OrderNo { get; set; }
 
@@ -25,6 +27,29 @@ namespace QingFeng.Models
 
         public int UserId { get; set; }
 
+        /// <summary>
+        /// 联系人
+        /// </summary>
+        public string ContactName { get; set; }
+
+        /// <summary>
+        /// 联系人电话
+        /// </summary>
+        public string ContactPhone { get; set; }
+
+        /// <summary>
+        /// 邮政编码
+        /// </summary>
+        public string PostCode { get; set; }
+
+        /// <summary>
+        /// 收货地址
+        /// </summary>
+        public string Address { get; set; }
+
+        /// <summary>
+        /// 订单状态
+        /// </summary>
         public int OrderStatus { get; set; }
 
         /// <summary>

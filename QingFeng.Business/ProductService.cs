@@ -18,14 +18,14 @@ namespace QingFeng.Business
 
         public int CreateProduct(int baseId, List<KeyValuePair<int, string>> colorSku)
         {
-            var baseInfo = _productBaseRepository.Get(new {baseId});
+            var baseInfo = _productBaseRepository.Get(new { baseId });
 
             if (baseInfo == null)
             {
                 return 0;
             }
 
-            var productList = _productRepository.GetList(new {baseId}).ToList();
+            var productList = _productRepository.GetList(new { baseId }).ToList();
 
             var addCount = 0;
             foreach (var sku in colorSku)
@@ -70,17 +70,19 @@ namespace QingFeng.Business
 
         public ProductBase GetProductBase(int baseId)
         {
-            return _productBaseRepository.Get(new {baseId});
+            return _productBaseRepository.Get(new { baseId });
         }
 
         public Product GetProduct(int productId)
         {
-            return _productRepository.Get(new {productId});
+            return _productRepository.Get(new { productId });
         }
 
-        public IEnumerable<ProductBase> SearchProduct(string keyWords, int page, int pageSize)
+        public IEnumerable<ProductBase> SearchProduct(string keyWords, int page, int pageSize, out int totalItem)
         {
-            return null;
+            var list = _productBaseRepository.SearchProductBase(new { keyWords }, page, pageSize, out totalItem);
+
+            return list;
         }
     }
 }

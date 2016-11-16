@@ -23,7 +23,7 @@ namespace QingFeng.Common.Dapper
         /// <param name="commandTimeout"></param>
         /// <returns></returns>
         public static int Insert(this IDbConnection connection, dynamic data, string table,
-            IDbTransaction transaction = null, int? commandTimeout = null, bool isSelectLastInsertId = false)
+            IDbTransaction transaction = null, int? commandTimeout = null, bool isReturnIncrementId = false)
         {
             var obj = data as object;
             var properties = GetProperties(obj);
@@ -31,7 +31,7 @@ namespace QingFeng.Common.Dapper
             var values = string.Join(",", properties.Select(p => "@" + p));
             var sql = $"insert into {table} ({columns}) values ({values});";
 
-            if (isSelectLastInsertId)
+            if (isReturnIncrementId)
             {
                 sql += "SELECT LAST_INSERT_ID()";
                 return connection.ExecuteScalar<int>(sql, obj, transaction, commandTimeout);

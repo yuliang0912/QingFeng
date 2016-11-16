@@ -7,7 +7,9 @@ namespace QingFeng.DataAccessLayer.Repository
 {
     public class OrderMasterRepository : RepositoryBase<OrderMaster>
     {
-        public OrderMasterRepository() : base("orderMaster") { }
+        const string TableName = "orderMaster";
+
+        public OrderMasterRepository() : base(TableName) { }
 
 
         public bool CreateOrder(OrderMaster orderMaster, List<OrderDetail> orderDetails)
@@ -32,6 +34,23 @@ namespace QingFeng.DataAccessLayer.Repository
                 }
             }
             return true;
+        }
+
+        public IEnumerable<OrderMaster> SearchOrder(dynamic condition, int page, int pageSize, out int totalItem)
+        {
+            var additional = string.IsNullOrWhiteSpace(condition.keyWords)
+              ? string.Empty
+              : "AND (orderId LIKE @keyWords OR orderNo LIKE @keyWords OR contactName LIKE @keyWords OR contactPhone LIKE @keyWords)";
+
+            Func<object, string> buildWhereSql =
+                (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional, "keyWords");
+
+            var conditionObj = condition as object;
+            using (var connection = GetReadConnection)
+            {
+                return connection.QueryPaged<OrderMaster>(conditionObj, TableName, "CreateDate DESC", page, pageSize,
+                    out totalItem, buildWhereSql);
+            }
         }
     }
 }
