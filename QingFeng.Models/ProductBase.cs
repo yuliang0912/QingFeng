@@ -10,7 +10,7 @@ namespace QingFeng.Models
     {
         public ProductBase()
         {
-            SubProduct = Enumerable.Empty<Product>();
+            SubProduct = new List<Product>();
         }
 
         [IgnoreField]

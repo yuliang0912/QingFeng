@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using QingFeng.Common.Dapper;
 
 namespace QingFeng.Models
@@ -8,6 +10,12 @@ namespace QingFeng.Models
     /// </summary>
     public class Product
     {
+
+        public Product()
+        {
+            ProductStocks = new List<ProductStock>();
+        }
+
         [IgnoreField]
         public int ProductId { get; set; }
 
@@ -40,5 +48,7 @@ namespace QingFeng.Models
         public DateTime CreateDate { get; set; }
 
         public int Status { get; set; }
+
+        public IEnumerable<ProductStock> ProductStocks { get; set; }
     }
 }
