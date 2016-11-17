@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="OrderDetail.cs" />
+    <Compile Include="OrderLogs.cs" />
     <Compile Include="OrderMaster.cs" />
     <Compile Include="ProductBase.cs" />
     <Compile Include="Product.cs" />

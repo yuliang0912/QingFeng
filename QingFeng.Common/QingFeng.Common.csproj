@@ -76,6 +76,7 @@
     <Compile Include="Dapper\SqlMapperExtensions.cs" />
     <Compile Include="Extensions\DataContractExtensions.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
+    <Compile Include="Extensions\GuidConvert.cs" />
     <Compile Include="Extensions\RecursionExtensions.cs" />
     <Compile Include="Extensions\StringExtensions.cs" />
     <Compile Include="JSONHelper.cs" />
