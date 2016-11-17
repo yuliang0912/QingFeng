@@ -1,6 +1,8 @@
-﻿using QingFeng.DataAccessLayer.Repository;
+﻿using System;
+using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 
 namespace QingFeng.Business
@@ -13,12 +15,33 @@ namespace QingFeng.Business
 
         public bool CreateOrder(OrderMaster orderMaster, List<OrderDetail> orderDetails)
         {
+            int orderId = 0;
+
+            orderMaster.OrderId = orderId;
+            orderMaster.CreateDate = DateTime.Now;
+            orderDetails.ForEach(t => t.OrderId = orderId);
+
             return _orderMaster.CreateOrder(orderMaster, orderDetails);
         }
 
         public bool UpdateOrder(object model, object condition)
         {
             return _orderMaster.Update(model, condition);
+        }
+
+        public OrderMaster Get(object conditon)
+        {
+            var model = _orderMaster.Get(conditon);
+            if (null != model)
+            {
+                model.OrderDetails = _orderDetail.GetList(new {model.OrderNo});
+            }
+            return model;
+        }
+
+        public bool IsExists(string orderNo)
+        {
+            return _orderMaster.Count(new {orderNo}) > 0;
         }
 
         public IEnumerable<OrderMaster> SearchOrderList(object condition, int page, int pageSize, out int totalItem)

@@ -73,9 +73,19 @@ namespace QingFeng.Business
             return _productBaseRepository.Get(new { baseId });
         }
 
+        public ProductBase GetProductBase(string baseNo)
+        {
+            return _productBaseRepository.Get(new {baseNo});
+        }
+
         public Product GetProduct(int productId)
         {
             return _productRepository.Get(new { productId });
+        }
+
+        public IEnumerable<Product> GetProductByBaseId(int baseId)
+        {
+            return _productRepository.GetList(new {baseId});
         }
 
         public IEnumerable<ProductBase> SearchProduct(string keyWords, int page, int pageSize, out int totalItem)

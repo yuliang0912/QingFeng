@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using QingFeng.Common;
 
 namespace QingFeng.Models
 {
@@ -8,14 +9,17 @@ namespace QingFeng.Models
     {
         public OrderMaster()
         {
-            this.OrderDetails = Enumerable.Empty<OrderDetail>();
+            OrderDetails = new List<OrderDetail>();
         }
 
         public int OrderId { get; set; }
 
-        //taobao
+        //淘宝的订单编号
         public string OrderNo { get; set; }
 
+        /// <summary>
+        /// 订单金额
+        /// </summary>
         public decimal OrderAmount { get; set; }
 
         /// <summary>
@@ -23,8 +27,19 @@ namespace QingFeng.Models
         /// </summary>		
         public decimal OrderFavorable { get; set; }
 
+        /// <summary>
+        /// 子商品个数
+        /// </summary>
+        public int OrderDetailCount { get; set; }
+
+        /// <summary>
+        /// 店铺ID
+        /// </summary>
         public int StoreId { get; set; }
 
+        /// <summary>
+        /// 店铺所有人
+        /// </summary>
         public int UserId { get; set; }
 
         /// <summary>
@@ -43,6 +58,11 @@ namespace QingFeng.Models
         public string PostCode { get; set; }
 
         /// <summary>
+        /// 地址区域码
+        /// </summary>
+        public int AreaCode { get; set; }
+
+        /// <summary>
         /// 收货地址
         /// </summary>
         public string Address { get; set; }
@@ -50,7 +70,7 @@ namespace QingFeng.Models
         /// <summary>
         /// 订单状态
         /// </summary>
-        public int OrderStatus { get; set; }
+        public AgentEnums.MasterOrderStatus OrderStatus { get; set; }
 
         /// <summary>
         /// 支付方式
@@ -72,12 +92,18 @@ namespace QingFeng.Models
         /// </summary>		
         public DateTime PayDate { get; set; }
 
+        /// <summary>
+        /// 备注
+        /// </summary>
         public string Remark { get; set; }
 
         public DateTime CreateDate { get; set; }
 
         public DateTime UpdateDate { get; set; }
 
+        /// <summary>
+        /// 子订单详情
+        /// </summary>
         public IEnumerable<OrderDetail> OrderDetails { get; set; }
     }
 }

@@ -23,20 +23,18 @@ namespace QingFeng.Business
             var addCount = 0;
             foreach (var sku in sizeSku)
             {
-                if (!productStockList.Exists(t => t.SkuId == sku.Key))
+                if (productStockList.Exists(t => t.SkuId == sku.Key)) continue;
+                var productStock = new ProductStock()
                 {
-                    var productStock = new ProductStock()
-                    {
-                        BaseId = product.BaseId,
-                        ProductId = product.ProductId,
-                        SkuId = sku.Key,
-                        SkuName = sku.Value,
-                        UpdateDate = DateTime.Now
-                    };
-                    if (_productStockRepository.Insert(productStock) > 0)
-                    {
-                        addCount++;
-                    }
+                    BaseId = product.BaseId,
+                    ProductId = product.ProductId,
+                    SkuId = sku.Key,
+                    SkuName = sku.Value,
+                    UpdateDate = DateTime.Now
+                };
+                if (_productStockRepository.Insert(productStock) > 0)
+                {
+                    addCount++;
                 }
             }
             return addCount;

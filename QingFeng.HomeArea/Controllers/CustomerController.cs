@@ -1,9 +1,10 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using System.Web.Mvc;
-using StoreSaas.Common.ApiCore.Result;
 using QingFeng.Common;
+using QingFeng.Common.ApiCore.Result;
 
-namespace StoreSaas.AdminArea.Code
+namespace QingFeng.WebArea.Controllers
 {
     public class CustomerController : Controller
     {
@@ -25,7 +26,7 @@ namespace StoreSaas.AdminArea.Code
         {
             var response = context.HttpContext.Response;
 
-            response.ContentType = !string.IsNullOrEmpty(ContentType) ? ContentType : "application/json";
+            response.ContentType = !String.IsNullOrEmpty(ContentType) ? ContentType : "application/json";
 
             if (ContentEncoding != null)
             {
