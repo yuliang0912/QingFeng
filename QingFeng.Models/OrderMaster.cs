@@ -12,7 +12,7 @@ namespace QingFeng.Models
             OrderDetails = new List<OrderDetail>();
         }
 
-        public int OrderId { get; set; }
+        public long OrderId { get; set; }
 
         //淘宝的订单编号
         public string OrderNo { get; set; }

@@ -27,15 +27,15 @@ namespace QingFeng.Common.Extensions
         }
 
         /// <summary>  
-        /// 生成22位唯一的数字 并发可用  
+        /// 生成21位唯一的数字 并发可用  
         /// </summary>  
         /// <returns></returns>
-        public static string ToUniqueId()
+        public static long ToUniqueId()
         {
             System.Threading.Thread.Sleep(1); //保证yyyyMMddHHmmssffff唯一  
             Random d = new Random(BitConverter.ToInt32(Guid.NewGuid().ToByteArray(), 0));
-            string strUnique = DateTime.Now.ToString("yyyyMMddHHmmssffff") + d.Next(1000, 9999);
-            return strUnique;
+            string strUnique = DateTime.Now.ToString("yyyyMMddHHmmssffff") + d.Next(100, 999);
+            return long.Parse(strUnique);
         }
 
         /// <summary>

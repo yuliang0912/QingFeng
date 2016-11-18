@@ -12,7 +12,7 @@ namespace QingFeng.DataAccessLayer.Repository
         const string TableName = "orderDetail";
         public OrderDetailRepository() : base(TableName) { }
 
-        public IEnumerable<OrderDetail> GetBatchOrderDetails(params int[] orderId)
+        public IEnumerable<OrderDetail> GetBatchOrderDetails(params long[] orderId)
         {
             if (orderId == null || !orderId.Any())
             {

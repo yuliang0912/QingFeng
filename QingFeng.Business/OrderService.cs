@@ -2,8 +2,8 @@
 using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
+using QingFeng.Common.Extensions;
 
 namespace QingFeng.Business
 {
@@ -15,7 +15,7 @@ namespace QingFeng.Business
 
         public bool CreateOrder(OrderMaster orderMaster, List<OrderDetail> orderDetails)
         {
-            int orderId = 0;
+            var orderId = GuidConvert.ToUniqueId();
 
             orderMaster.OrderId = orderId;
             orderMaster.CreateDate = DateTime.Now;
