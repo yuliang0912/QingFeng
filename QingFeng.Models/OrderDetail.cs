@@ -11,7 +11,7 @@ namespace QingFeng.Models
         /// <summary>
         /// 流水号
         /// </summary>		
-        public string FlowId { get; set; }
+        public int FlowId { get; set; }
 
         public long OrderId { get; set; }
 

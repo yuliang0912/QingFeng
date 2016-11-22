@@ -1,0 +1,112 @@
+CREATE TABLE `userinfo` (
+  `userId` int(11) NOT NULL AUTO_INCREMENT,
+  `userName` varchar(32) NOT NULL,
+  `nickName` varchar(32) NOT NULL,
+  `userRole` int(11) NOT NULL,
+  `avatar` varchar(128) NOT NULL,
+  `passWord` varchar(128) NOT NULL,
+  `salt` varchar(64) NOT NULL,
+  `status` int(11) NOT NULL,
+  `createDate` datetime NOT NULL,
+  `updateDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`userId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10007 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `storeinfo` (
+  `storeId` int(11) NOT NULL AUTO_INCREMENT,
+  `storeName` varchar(64) NOT NULL,
+  `masterUserId` int(11) NOT NULL,
+  `homeUrl` varchar(128) NOT NULL DEFAULT '',
+  `status` int(11) NOT NULL,
+  `createDate` datetime NOT NULL,
+  `updateDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`storeId`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `productstock` (
+  `stockId` int(11) NOT NULL AUTO_INCREMENT,
+  `baseId` int(11) NOT NULL,
+  `productId` int(11) NOT NULL,
+  `skuId` int(11) NOT NULL,
+  `skuName` varchar(32) NOT NULL,
+  `stockNum` int(11) NOT NULL,
+  `updateDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`stockId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `productbase` (
+  `baseId` int(11) NOT NULL AUTO_INCREMENT,
+  `baseName` varchar(120) NOT NULL,
+  `originalPrice` decimal(10,2) NOT NULL,
+  `actualPrice` decimal(10,2) NOT NULL,
+  `baseNo` varchar(32) NOT NULL,
+  `imgList` varchar(600) NOT NULL,
+  `intro` varchar(600) NOT NULL,
+  `categoryId` int(11) NOT NULL,
+  `status` int(11) NOT NULL,
+  `createUserId` int(11) NOT NULL,
+  `createDate` datetime NOT NULL,
+  `updateDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`baseId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `product` (
+  `productId` int(11) NOT NULL AUTO_INCREMENT,
+  `productName` varchar(150) NOT NULL,
+  `baseId` int(11) NOT NULL,
+  `baseName` varchar(120) NOT NULL,
+  `productNo` varchar(40) NOT NULL,
+  `originalPrice` decimal(10,0) NOT NULL,
+  `actualPrice` decimal(10,0) NOT NULL,
+  `colorId` int(11) NOT NULL,
+  `stockNum` int(11) NOT NULL COMMENT '×Ü¿â´æ',
+  `salesVolume` int(11) NOT NULL,
+  `imgList` varchar(500) NOT NULL,
+  `status` int(11) NOT NULL,
+  `createDate` datetime NOT NULL,
+  `updateDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`productId`)
+) ENGINE=InnoDB AUTO_INCREMENT=10000 DEFAULT CHARSET=utf8;
+
+CREATE TABLE `orderMaster` (
+  `orderId` bigint(20) NOT NULL,
+  `orderNo` varchar(30) NOT NULL,
+  `orderAmount` decimal(10,2) NOT NULL,
+  `orderFavorable` decimal(10,2) NOT NULL,
+  `orderDetailCount` int(11) NOT NULL,
+  `storeId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `contactName` varchar(30) NOT NULL,
+  `contactPhone` varchar(30) NOT NULL,
+  `postCode` int(6) NOT NULL,
+  `areaCode` varchar(20) NOT NULL,
+  `address` varchar(100) NOT NULL,
+  `orderStatus` int(11) NOT NULL,
+  `payType` int(11) NOT NULL,
+  `payFee` decimal(10,2) NOT NULL,
+  `payStatus` int(11) NOT NULL,
+  `payDate` datetime NOT NULL,
+  `remark` varchar(500) NOT NULL,
+  `createDate` datetime NOT NULL,
+  `updateDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`orderId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `orderDetail` (
+  `flowId` int(11) NOT NULL,
+  `orderId` bigint(20) NOT NULL,
+  `orderNo` varchar(30) NOT NULL,
+  `baseId` int(11) NOT NULL,
+  `productId` int(11) NOT NULL,
+  `productName` varchar(120) NOT NULL,
+  `imgUrl` varchar(128) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `amount` decimal(10,2) NOT NULL,
+  `remark` varchar(120) NOT NULL,
+  `orderSatus` int(11) NOT NULL,
+  `updateDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`flowId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

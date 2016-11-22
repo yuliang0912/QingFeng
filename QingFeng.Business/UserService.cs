@@ -23,20 +23,26 @@ namespace QingFeng.Business
         //注册用户
         public int RegisterUser(UserInfo model)
         {
-            if (_userInfoRepository.Count(new {model.UserName}) > 0)
+            if (_userInfoRepository.Count(new { model.UserName }) > 0)
             {
                 return 2;
             }
 
+            if (model.StoreInfo == null)
+            {
+                return 3;
+            }
+
             model.UserRole = AgentEnums.UserRole.StoreUser;
             model.Salt = StringExtensions.GetRandomString();
-            model.PassWord = string.Concat(model.UserName, PassWordSplitString, model.PassWord).Hmacsha1(model.Salt);
+            model.PassWord = string.Concat(model.UserName, PassWordSplitString, model.UserRole.GetHashCode(), model.PassWord).Hmacsha1(model.Salt);
             model.CreateDate = DateTime.Now;
 
             using (var trans = new TransactionScope())
             {
                 var userId = _userInfoRepository.Insert(model, true);
                 model.StoreInfo.MasterUserId = userId;
+                model.StoreInfo.CreateDate = model.CreateDate;
                 var storeIsSuccess = _storeRepository.Insert(model.StoreInfo) > 0;
                 trans.Complete();
 
@@ -49,7 +55,7 @@ namespace QingFeng.Business
         {
             if (!string.IsNullOrWhiteSpace(newPwd))
             {
-                model.PassWord = string.Concat(model.UserName, PassWordSplitString, newPwd).Hmacsha1(model.Salt);
+                model.PassWord = string.Concat(model.UserName, PassWordSplitString, model.UserRole.GetHashCode(), newPwd).Hmacsha1(model.Salt);
             }
 
             //var obj = DataContractExtensions.SimpleModel(model, false, "UserId");
@@ -59,7 +65,7 @@ namespace QingFeng.Business
 
         public UserInfo Login(string userName, string passWord, out bool isPass)
         {
-            var user = _userInfoRepository.Get(new {userName});
+            var user = _userInfoRepository.Get(new { userName });
 
             if (user == null)
             {
@@ -68,8 +74,7 @@ namespace QingFeng.Business
             }
 
             isPass =
-                string.Concat(user.UserName, PassWordSplitString, passWord).Hmacsha1(user.Salt).Equals(user.PassWord);
-
+                string.Concat(user.UserName, PassWordSplitString, user.UserRole.GetHashCode(), passWord).Hmacsha1(user.Salt).Equals(user.PassWord);
             return user;
         }
 

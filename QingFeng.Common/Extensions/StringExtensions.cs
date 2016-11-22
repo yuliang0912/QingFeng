@@ -23,7 +23,7 @@ namespace QingFeng.Common.Extensions
 
         public static string GetRandomString()
         {
-            return Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
+            return Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N");
         }
 
         public static string FillZeroNumber(int number, int totalLength)

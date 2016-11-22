@@ -6,7 +6,7 @@ namespace QingFeng.Models
     public class StoreInfo
     {
         [IgnoreField]
-        public int StroeId { get; set; }
+        public int StoreId { get; set; }
 
         public string StoreName { get; set; }
 

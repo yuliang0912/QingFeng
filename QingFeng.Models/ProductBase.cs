@@ -32,8 +32,6 @@ namespace QingFeng.Models
 
         public AgentEnums.Category CategoryId { get; set; }
 
-        public int OrderId { get; set; }
-
         public int Status { get; set; }
 
         public IEnumerable<Product> SubProduct { get; set; }

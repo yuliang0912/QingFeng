@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QingFeng.Common", "QingFeng.Common\QingFeng.Common.csproj", "{3032EEDA-09F9-4376-B176-B574E5E30FCA}"
 EndProject
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QingFeng.DataAccessLayer", "QingFeng.DataAccessLayer\QingFeng.DataAccessLayer.csproj", "{6F0C89E0-58BB-4470-9D9B-B43ABE7C9BB5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QingFeng.Business", "QingFeng.Business\QingFeng.Business.csproj", "{D8906A58-C9DA-4CF6-AC7F-0ADF00B3ED56}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QingFeng.TestConsole", "QingFeng.TestConsole\QingFeng.TestConsole.csproj", "{F8036C12-6D08-43F0-8177-C2A008724AEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{D8906A58-C9DA-4CF6-AC7F-0ADF00B3ED56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8906A58-C9DA-4CF6-AC7F-0ADF00B3ED56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8906A58-C9DA-4CF6-AC7F-0ADF00B3ED56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8036C12-6D08-43F0-8177-C2A008724AEB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8036C12-6D08-43F0-8177-C2A008724AEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8036C12-6D08-43F0-8177-C2A008724AEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8036C12-6D08-43F0-8177-C2A008724AEB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

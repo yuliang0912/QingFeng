@@ -83,7 +83,7 @@ namespace QingFeng.DataAccessLayer
         {
             using (var connection = GetWriteConnection)
             {
-                return connection.Insert(model, _tableName, isSelectLastInsertId: isAutoIncrement);
+                return connection.Insert(model, _tableName, isReturnIncrementId: isAutoIncrement);
             }
         }
 

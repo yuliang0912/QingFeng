@@ -34,7 +34,7 @@ namespace QingFeng.Models
         public int ColorId { get; set; }
 
         /// <summary>
-        /// 库存
+        /// 库存(所有尺码的)
         /// </summary>
         public int StockNum { get; set; }
 
