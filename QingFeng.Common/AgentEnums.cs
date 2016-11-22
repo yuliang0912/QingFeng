@@ -65,5 +65,11 @@ namespace QingFeng.Common
             /// </summary>
             Completed = 6
         }
+
+        public enum OrderDetailStatus
+        {
+            WaitDeliverGoods = 1,
+            HasDeliverGoods = 2
+        }
     }
 }

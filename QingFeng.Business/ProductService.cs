@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
 using QingFeng.Common.Extensions;
+using System.Dynamic;
 
 namespace QingFeng.Business
 {
@@ -75,7 +76,7 @@ namespace QingFeng.Business
 
         public ProductBase GetProductBase(string baseNo)
         {
-            return _productBaseRepository.Get(new {baseNo});
+            return _productBaseRepository.Get(new { baseNo });
         }
 
         public Product GetProduct(int productId)
@@ -85,12 +86,36 @@ namespace QingFeng.Business
 
         public IEnumerable<Product> GetProductByBaseId(int baseId)
         {
-            return _productRepository.GetList(new {baseId});
+            return _productRepository.GetList(new { baseId });
         }
 
-        public IEnumerable<ProductBase> SearchProduct(string keyWords, int page, int pageSize, out int totalItem)
+        public IEnumerable<ProductBase> SearchProduct(string keyWords, int categoryId, int page, int pageSize, out int totalItem)
         {
-            var list = _productBaseRepository.SearchProductBase(new { keyWords }, page, pageSize, out totalItem);
+            dynamic condition = new ExpandoObject();
+
+            condition.keyWords = keyWords;
+
+            if (categoryId > 0)
+            {
+                condition.categoryId = categoryId;
+            }
+
+            var list = _productBaseRepository.SearchProductBase(condition as object, page, pageSize, out totalItem);
+
+            if (list.Any())
+            {
+                var productDict = _productRepository.GetProductListByBaseIds(list.Select(t => t.BaseId).ToArray())
+                    .GroupBy(c => c.BaseId)
+                    .ToDictionary(c => c.Key, c => c);
+
+                list.ToList().ForEach(t =>
+                {
+                    if (productDict.ContainsKey(t.BaseId))
+                    {
+                        t.SubProduct = productDict[t.BaseId];
+                    }
+                });
+            }
 
             return list;
         }

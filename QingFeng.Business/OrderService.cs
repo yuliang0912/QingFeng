@@ -4,6 +4,7 @@ using QingFeng.Models;
 using System.Collections.Generic;
 using System.Linq;
 using QingFeng.Common.Extensions;
+using QingFeng.Common;
 
 namespace QingFeng.Business
 {
@@ -17,9 +18,14 @@ namespace QingFeng.Business
         {
             var orderId = GuidConvert.ToUniqueId();
 
+            orderMaster.OrderStatus = AgentEnums.MasterOrderStatus.WaitPay;
             orderMaster.OrderId = orderId;
             orderMaster.CreateDate = DateTime.Now;
-            orderDetails.ForEach(t => t.OrderId = orderId);
+            orderDetails.ForEach(t =>
+            {
+                t.OrderId = orderId;
+                t.OrderSatus = AgentEnums.OrderDetailStatus.WaitDeliverGoods;
+            });
 
             return _orderMaster.CreateOrder(orderMaster, orderDetails);
         }
