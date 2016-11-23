@@ -11,6 +11,8 @@ namespace QingFeng.Models
         //订单号
         public long OrderId { get; set; }
 
+        public string FlowIds { get; set; }
+
         //物流公司ID
         public int CompanyId { get; set; }
 

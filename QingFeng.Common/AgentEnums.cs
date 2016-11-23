@@ -61,15 +61,32 @@ namespace QingFeng.Common
             WaitDeliverGoods = 5,
 
             /// <summary>
+            /// 进行中
+            /// </summary>
+            Doing = 6,
+
+            /// <summary>
             /// 已完成
             /// </summary>
-            Completed = 6
+            Completed = 7
         }
 
         public enum OrderDetailStatus
         {
+            /// <summary>
+            /// 待发货
+            /// </summary>
             WaitDeliverGoods = 1,
-            HasDeliverGoods = 2
+
+            /// <summary>
+            /// 已发货
+            /// </summary>
+            HasDeliverGoods = 2,
+
+            /// <summary>
+            /// 已取消
+            /// </summary>
+            Canceled = 3,
         }
     }
 }

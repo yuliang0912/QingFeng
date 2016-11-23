@@ -109,6 +109,7 @@ namespace QingFeng.WebArea.Controllers
         }
 
         //搜索产品库
+        [AdminAuthorize(AgentEnums.UserRole.AllUser)]
         public JsonResult SearchProduct(int categoryId, string keyWords, int page, int pageSize)
         {
             int totalItem;

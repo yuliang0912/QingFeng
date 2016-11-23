@@ -19,6 +19,7 @@ namespace QingFeng.Common
             {
                 Settings = new JsonSerializerSettings();
                 Settings.Converters.Add(new BigintConverter());
+                Settings.Converters.Add(new BooleanConverter());
                 Settings.Converters.Add(new IsoDateTimeConverter() {DateTimeFormat = "yyyy-MM-dd HH:mm:ss"});
                 Settings.ContractResolver = new CamelCasePropertyNamesContractResolver();
             }
@@ -138,6 +139,49 @@ namespace QingFeng.Common
             else if (value is long || value is ulong)
             {
                 writer.WriteValue(value.ToString());
+            }
+            else
+            {
+                throw new Exception("Expected Bigint value");
+            }
+        }
+    }
+    #endregion
+
+    #region Bool值自动转换int
+    public class BooleanConverter : JsonConverter
+    {
+        public override bool CanConvert(Type objectType)
+        {
+            return objectType == typeof(System.Boolean) || objectType == typeof(bool?);
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            if (reader.TokenType == JsonToken.Null)
+            {
+                return 0;
+            }
+            else
+            {
+                var convertible = reader.Value as IConvertible;
+                if (convertible == null || string.IsNullOrWhiteSpace(convertible.ToString()))
+                {
+                    return 0;
+                }
+                return convertible.ToBoolean(CultureInfo.InvariantCulture);
+            }
+        }
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            if (value == null)
+            {
+                writer.WriteValue(0);
+            }
+            else if (value is Boolean)
+            {
+                writer.WriteValue(Convert.ToBoolean(value) ? 1 : 0);
             }
             else
             {

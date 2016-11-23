@@ -3,6 +3,7 @@ using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
 using System.Collections.Generic;
 using System.Linq;
+using System.Transactions;
 using QingFeng.Common.Extensions;
 using QingFeng.Common;
 
@@ -10,8 +11,10 @@ namespace QingFeng.Business
 {
     public class OrderService
     {
+        private readonly LogisticsRepository _logistics = new LogisticsRepository();
         private readonly OrderMasterRepository _orderMaster = new OrderMasterRepository();
         private readonly OrderDetailRepository _orderDetail = new OrderDetailRepository();
+        
 
 
         public bool CreateOrder(OrderMaster orderMaster, List<OrderDetail> orderDetails)
@@ -35,6 +38,33 @@ namespace QingFeng.Business
             });
 
             return _orderMaster.CreateOrder(orderMaster, orderDetails);
+        }
+
+        /// <summary>
+        /// 发货
+        /// </summary>
+        /// <param name="orderInfo"></param>
+        /// <param name="flowIds"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public bool SendDeliverGoods(OrderMaster orderInfo, List<int> flowIds, LogisticsInfo model)
+        {
+            if (model == null || flowIds == null || !flowIds.Any())
+            {
+                return false;
+            }
+
+            model.CreateDate = DateTime.Now;
+            model.FlowIds = string.Join(",", flowIds);
+
+            using (var trans = new TransactionScope())
+            {
+                _orderDetail.BatchUpdateOrderStatus(orderInfo.OrderId, flowIds,
+                    AgentEnums.OrderDetailStatus.HasDeliverGoods);
+                _logistics.Insert(model);
+                trans.Complete();
+            }
+            return true;
         }
 
         public bool UpdateOrder(object model, object condition)
