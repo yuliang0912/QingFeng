@@ -19,14 +19,14 @@ namespace QingFeng.Business
 
         public int CreateProduct(int baseId, List<KeyValuePair<int, string>> colorSku)
         {
-            var baseInfo = _productBaseRepository.Get(new { baseId });
+            var baseInfo = _productBaseRepository.Get(new {baseId});
 
             if (baseInfo == null)
             {
                 return 0;
             }
 
-            var productList = _productRepository.GetList(new { baseId }).ToList();
+            var productList = _productRepository.GetList(new {baseId}).ToList();
 
             var addCount = 0;
             foreach (var sku in colorSku)
@@ -71,53 +71,60 @@ namespace QingFeng.Business
 
         public ProductBase GetProductBase(int baseId)
         {
-            return _productBaseRepository.Get(new { baseId });
+            return _productBaseRepository.Get(new {baseId});
         }
 
         public ProductBase GetProductBase(string baseNo)
         {
-            return _productBaseRepository.Get(new { baseNo });
+            return _productBaseRepository.Get(new {baseNo});
         }
 
         public Product GetProduct(int productId)
         {
-            return _productRepository.Get(new { productId });
+            return _productRepository.Get(new {productId});
         }
 
         public IEnumerable<Product> GetProductByBaseId(int baseId)
         {
-            return _productRepository.GetList(new { baseId });
+            return _productRepository.GetList(new {baseId});
         }
 
-        public IEnumerable<ProductBase> SearchProduct(string keyWords, int categoryId, int page, int pageSize, out int totalItem)
+        public IEnumerable<ProductBase> SearchBaseProduct(string keyWords, int categoryId, int page, int pageSize,
+            out int totalItem)
         {
             dynamic condition = new ExpandoObject();
 
-            condition.keyWords = keyWords;
+            condition.keyWords = keyWords.FormatSqlLikeString();
 
             if (categoryId > 0)
             {
                 condition.categoryId = categoryId;
             }
 
-            var list = _productBaseRepository.SearchProductBase(condition as object, page, pageSize, out totalItem);
+            var list = _productBaseRepository.SearchProductBase((object) condition, page, pageSize, out totalItem);
 
-            if (list.Any())
+            if (!list.Any()) return list;
+
+            var productDict = _productRepository.GetProductListByBaseIds(list.Select(t => t.BaseId).ToArray())
+                .GroupBy(c => c.BaseId)
+                .ToDictionary(c => c.Key, c => c);
+
+            list.ToList().ForEach(t =>
             {
-                var productDict = _productRepository.GetProductListByBaseIds(list.Select(t => t.BaseId).ToArray())
-                    .GroupBy(c => c.BaseId)
-                    .ToDictionary(c => c.Key, c => c);
-
-                list.ToList().ForEach(t =>
+                if (productDict.ContainsKey(t.BaseId))
                 {
-                    if (productDict.ContainsKey(t.BaseId))
-                    {
-                        t.SubProduct = productDict[t.BaseId];
-                    }
-                });
-            }
+                    t.SubProduct = productDict[t.BaseId];
+                }
+            });
 
             return list;
+        }
+
+
+        public IEnumerable<Product> SearchProduct(string keyWords)
+        {
+            int totalItem;
+            return _productRepository.SearchProduct(keyWords, 1, 150, out totalItem);
         }
     }
 }

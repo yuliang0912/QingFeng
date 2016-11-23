@@ -38,7 +38,11 @@ namespace QingFeng.DataAccessLayer.Repository
             var count = 0;
             using (var connection = GetReadConnection)
             {
-                count += sizeSku.Sum(item => connection.Update(new {stockNum = item.Value}, new {productId, skuId = item.Key}, TableName));
+                count +=
+                    sizeSku.Sum(
+                        item =>
+                            connection.Update(new {stockNum = item.Value}, new {productId, skuId = item.Key},
+                                TableName));
             }
             return count > 0;
         }

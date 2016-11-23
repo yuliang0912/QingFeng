@@ -16,11 +16,18 @@ namespace QingFeng.Business
 
         public bool CreateOrder(OrderMaster orderMaster, List<OrderDetail> orderDetails)
         {
+            if (orderMaster == null || orderDetails == null || !orderDetails.Any())
+            {
+                return false;
+            }
+
             var orderId = GuidConvert.ToUniqueId();
 
             orderMaster.OrderStatus = AgentEnums.MasterOrderStatus.WaitPay;
             orderMaster.OrderId = orderId;
             orderMaster.CreateDate = DateTime.Now;
+            orderMaster.PayStatus = 1;
+            orderMaster.PayDate = new DateTime(1970, 1, 1);
             orderDetails.ForEach(t =>
             {
                 t.OrderId = orderId;
@@ -50,24 +57,27 @@ namespace QingFeng.Business
             return _orderMaster.Count(new {orderNo}) > 0;
         }
 
-        public IEnumerable<OrderMaster> SearchOrderList(object condition, int page, int pageSize, out int totalItem)
+        public IEnumerable<OrderMaster> SearchOrderList(int storeId, int orderStatus, DateTime beginDate,
+            DateTime endDate,
+            string keyWords, int page,
+            int pageSize, out int totalItem)
         {
-            var list = _orderMaster.SearchOrder(condition, page, pageSize, out totalItem).ToList();
+            var list =
+                _orderMaster.SearchOrder(storeId, orderStatus, beginDate, endDate, keyWords, page, pageSize,
+                    out totalItem).ToList();
 
-            if (!list.Any())
+            if (list.Any()) return list;
+            var orderDetails = _orderDetail.GetBatchOrderDetails(list.Select(t => t.OrderId).ToArray())
+                .GroupBy(t => t.OrderId)
+                .ToDictionary(c => c.Key, c => c);
+
+            list.ForEach(t =>
             {
-                var orderDetails = _orderDetail.GetBatchOrderDetails(list.Select(t => t.OrderId).ToArray())
-                    .GroupBy(t => t.OrderId)
-                    .ToDictionary(c => c.Key, c => c);
-
-                list.ForEach(t =>
+                if (orderDetails.ContainsKey(t.OrderId))
                 {
-                    if (orderDetails.ContainsKey(t.OrderId))
-                    {
-                        t.OrderDetails = orderDetails[t.OrderId];
-                    }
-                });
-            }
+                    t.OrderDetails = orderDetails[t.OrderId];
+                }
+            });
 
             return list;
         }

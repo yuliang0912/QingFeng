@@ -41,5 +41,10 @@ namespace QingFeng.Common.Extensions
             }
             return string.Concat(tempString, number);
         }
+
+        public static string FormatSqlLikeString(this string str, int type = 0)
+        {
+            return string.IsNullOrWhiteSpace(str) ? str : $"{(type == 0 || type == 1 ? "%" : string.Empty)}{str}{(type == 0 || type == 2 ? "%" : string.Empty)}";
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using QingFeng.Common.Dapper;
+using QingFeng.Common.Extensions;
 using QingFeng.Models;
 
 namespace QingFeng.DataAccessLayer.Repository
@@ -29,6 +30,28 @@ namespace QingFeng.DataAccessLayer.Repository
             using (var connection = GetReadConnection)
             {
                 return connection.QueryList<Product>(null, TableName, buildWhereSql);
+            }
+        }
+
+        public IEnumerable<Product> SearchProduct(string keyWords, int page, int pageSize,
+            out int totalItem)
+        {
+            totalItem = 0;
+            if (string.IsNullOrWhiteSpace(keyWords))
+            {
+                return new List<Product>();
+            }
+
+            var additional = "AND productNo LIKE @keyWords AND status = 0";
+
+            Func<object, string> buildWhereSql =
+                (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional, "keyWords");
+
+            using (var connection = GetReadConnection)
+            {
+                return connection.QueryPaged<Product>(new {keyWords = keyWords.FormatSqlLikeString()}, TableName,
+                    "CreateDate DESC",
+                    page, pageSize, out totalItem, buildWhereSql);
             }
         }
     }

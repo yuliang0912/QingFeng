@@ -26,7 +26,7 @@ namespace QingFeng.WebArea.Controllers
         {
             if (model == null)
             {
-                return Json(new ApiResult<int>(2) { Ret = RetEum.ApplicationError, Message = "数据接收失败" });
+                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "数据接收失败"});
             }
 
             var result = _productService.CreateBaseProduct(model);
@@ -47,11 +47,11 @@ namespace QingFeng.WebArea.Controllers
 
             if (null == baseProduct)
             {
-                return Json(new ApiResult<int>(2) { Ret = RetEum.ApplicationError, Message = "未找到商品" });
+                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "未找到商品"});
             }
             if (colorSku == null || colorSku.Count < 1)
             {
-                return Json(new ApiResult<int>(3) { Ret = RetEum.ApplicationError, Message = "颜色SKU必须指定一个" });
+                return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "颜色SKU必须指定一个"});
             }
             var result = _productService.CreateProduct(baseId, colorSku);
 
@@ -75,7 +75,7 @@ namespace QingFeng.WebArea.Controllers
 
             model.SubProduct = _productService.GetProductByBaseId(model.BaseId);
 
-            var productStockList = _productStockService.GetList(new { model.BaseId });
+            var productStockList = _productStockService.GetList(new {model.BaseId});
 
             var productStocks = productStockList
                 .GroupBy(t => t.ProductId)
@@ -108,11 +108,20 @@ namespace QingFeng.WebArea.Controllers
             return Json(jsonData);
         }
 
-        public JsonResult SearchProduct(int categoryId, string keyWords,int page,int pageSize)
+        //搜索产品库
+        public JsonResult SearchProduct(int categoryId, string keyWords, int page, int pageSize)
         {
-            var totalItem = 0;
-            _productService.SearchProduct(keyWords, categoryId, page, pageSize, out totalItem);
-            return null;
+            int totalItem;
+
+            var list = _productService.SearchBaseProduct(keyWords, categoryId, page, pageSize, out totalItem);
+
+            return Json(new ApiPageList<ProductBase>()
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalItem,
+                PageList = list
+            });
         }
     }
 }
