@@ -110,3 +110,16 @@ CREATE TABLE `orderDetail` (
   `updateDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`flowId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `logistics` (
+  `Id` int(11) NOT NULL AUTO_INCREMENT,
+  `orderId` bigint(20) NOT NULL,
+  `companyId` int(11) NOT NULL,
+  `companyName` varchar(20) NOT NULL,
+  `oddNumber` varchar(30) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `status` int(11) NOT NULL,
+  `createDate` datetime NOT NULL,
+  `updateDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`Id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
