@@ -5,6 +5,7 @@ using QingFeng.Common.ApiCore;
 using QingFeng.Common.ApiCore.Result;
 using QingFeng.Models;
 using QingFeng.WebArea.Fillter;
+using QingFeng.WebArea.FormsAuth;
 
 namespace QingFeng.WebArea.Controllers
 {
@@ -22,10 +23,15 @@ namespace QingFeng.WebArea.Controllers
             return View();
         }
 
-
-        public ActionResult Register()
+        public JsonResult LoginCheck(string loginName, string passWord)
         {
-            return View();
+            bool isPass;
+            var userInfo = _userService.Login(loginName, passWord, out isPass);
+            if (isPass)
+            {
+                FormsAuthenticationWrapper.Instance.SetAuthCookie(userInfo.UserId.ToString(), false);
+            }
+            return Json(isPass);
         }
 
         public JsonResult GetUserList(int page = 1, int pageSize = 10)
