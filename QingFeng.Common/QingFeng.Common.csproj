@@ -73,7 +73,6 @@
     <Compile Include="ApiCore\Result\ApiResult.cs" />
     <Compile Include="ApiCore\RetEum.cs" />
     <Compile Include="Dapper\IgnoreFieldAttribute.cs" />
-    <Compile Include="Dapper\SqlAssemble.cs" />
     <Compile Include="Dapper\SqlMapperExtensions.cs" />
     <Compile Include="Extensions\DataContractExtensions.cs" />
     <Compile Include="Extensions\DateTimeExtensions.cs" />
