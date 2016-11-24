@@ -97,7 +97,7 @@ namespace QingFeng.WebArea.Controllers
                 productName = x.ProductName,
                 productNo = x.ProductNo,
                 Category = model.CategoryId.ToString(),
-                skuList = productStockList.GroupBy(t => t.SkuId).Select(m => new
+                skuList = productStockList.Where(t => t.StockNum > 0).GroupBy(t => t.SkuId).Select(m => new
                 {
                     skuId = m.Key,
                     skuName = m.First().SkuName

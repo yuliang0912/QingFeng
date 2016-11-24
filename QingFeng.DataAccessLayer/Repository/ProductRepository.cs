@@ -15,6 +15,24 @@ namespace QingFeng.DataAccessLayer.Repository
         {
         }
 
+        public IEnumerable<Product> GetProductListByIds(params int[] productId)
+        {
+            if (productId == null || !productId.Any())
+            {
+                return new List<Product>();
+            }
+
+            var additional = $"AND productId IN ({string.Join(",", productId)})";
+
+            Func<object, string> buildWhereSql =
+                (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional);
+
+            using (var connection = GetReadConnection)
+            {
+                return connection.QueryList<Product>(null, TableName, buildWhereSql);
+            }
+        }
+
         public IEnumerable<Product> GetProductListByBaseIds(params int[] baseId)
         {
             if (baseId == null || !baseId.Any())
@@ -22,7 +40,7 @@ namespace QingFeng.DataAccessLayer.Repository
                 return new List<Product>();
             }
 
-            var additional = $"AND baseId IN ('{string.Join("','", baseId)}') AND status = 0";
+            var additional = $"AND baseId IN ({string.Join(",", baseId)}) AND status = 0";
 
             Func<object, string> buildWhereSql =
                 (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional);

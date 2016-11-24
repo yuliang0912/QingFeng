@@ -12,9 +12,9 @@ namespace QingFeng.TestConsole
 {
     public static class UserUnitTest
     {
-        private static UserService _userService = new UserService();
+        private static readonly UserService UserService = new UserService();
 
-        public static void registerTest()
+        public static void RegisterTest()
         {
             var model = new UserInfo()
             {
@@ -30,20 +30,20 @@ namespace QingFeng.TestConsole
                 }
             };
 
-            var result = _userService.RegisterUser(model);
+            var result = UserService.RegisterUser(model);
             Console.WriteLine("注册用户测试结果:{0}", result);
         }
 
-        public static void loginTest()
+        public static void LoginTest()
         {
-            var isPass = false;
-            _userService.Login("admin", "123456", out isPass);
+            bool isPass;
+            UserService.Login("admin", "123456", out isPass);
             Console.WriteLine("登录测试结果:{0}", isPass);
         }
 
         public static void GetUserInfoTest()
         {
-            var model = _userService.GetUserInfo(new { userName = "admin" });
+            var model = UserService.GetUserInfo(new { userName = "admin" });
             Console.WriteLine("查询用户信息结果:{0}", JsonHelper.Encode(model));
         }
     }

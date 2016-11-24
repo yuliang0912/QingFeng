@@ -215,13 +215,12 @@ namespace QingFeng.Common.Dapper
             {
                 return properties.ToList();
             }
-
             properties =
                 obj.GetType()
                     .GetProperties(BindingFlags.GetProperty | BindingFlags.Instance | BindingFlags.Public)
-                    .Where(t => !t.GetCustomAttributes(true).Any(x => x is IgnoreFieldAttribute))
+                    .Where(t =>  !t.GetCustomAttributes(true).Any(x => x is IgnoreFieldAttribute))
                     .ToList();
-
+            
             ParamCache[obj.GetType()] = properties;
             return properties;
         }

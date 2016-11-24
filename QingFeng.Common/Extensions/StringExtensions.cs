@@ -34,10 +34,9 @@ namespace QingFeng.Common.Extensions
                 return number.ToString();
             }
             var tempString = string.Empty;
-            while (totalLength - numLength == 0)
+            while (totalLength-- > numLength)
             {
                 tempString += "0";
-                totalLength--;
             }
             return string.Concat(tempString, number);
         }

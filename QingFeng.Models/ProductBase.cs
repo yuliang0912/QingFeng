@@ -32,8 +32,12 @@ namespace QingFeng.Models
 
         public AgentEnums.Category CategoryId { get; set; }
 
+
+        public int CreateUserId { get; set; }
+
         public int Status { get; set; }
 
+        [IgnoreField]
         public IEnumerable<Product> SubProduct { get; set; }
     }
 }

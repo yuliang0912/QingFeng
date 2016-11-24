@@ -37,7 +37,6 @@ namespace QingFeng.WebArea.Controllers
 
             order.UserId = user.UserId;
             order.StoreId = user.StoreInfo.StoreId;
-            order.OrderDetailCount = order.OrderDetails.Count();
 
             var result = _orderService.CreateOrder(order, order.OrderDetails.ToList());
 

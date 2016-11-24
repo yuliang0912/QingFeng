@@ -3,6 +3,7 @@ using QingFeng.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Transactions;
 
 namespace QingFeng.Business
 {
@@ -10,7 +11,6 @@ namespace QingFeng.Business
     {
         private readonly ProductRepository _productRepository = new ProductRepository();
         private readonly ProductStockRepository _productStockRepository = new ProductStockRepository();
-
 
         public int CreateProductStock(int productId, List<KeyValuePair<int, string>> sizeSku)
         {
@@ -21,21 +21,25 @@ namespace QingFeng.Business
             }
             var productStockList = _productStockRepository.GetList(new {productId}).ToList();
             var addCount = 0;
-            foreach (var sku in sizeSku)
+            using (var trans = new TransactionScope())
             {
-                if (productStockList.Exists(t => t.SkuId == sku.Key)) continue;
-                var productStock = new ProductStock()
+                foreach (var sku in sizeSku.OrderBy(t => t.Key))
                 {
-                    BaseId = product.BaseId,
-                    ProductId = product.ProductId,
-                    SkuId = sku.Key,
-                    SkuName = sku.Value,
-                    UpdateDate = DateTime.Now
-                };
-                if (_productStockRepository.Insert(productStock) > 0)
-                {
-                    addCount++;
+                    if (productStockList.Exists(t => t.SkuId == sku.Key)) continue;
+                    var productStock = new ProductStock()
+                    {
+                        BaseId = product.BaseId,
+                        ProductId = product.ProductId,
+                        SkuId = sku.Key,
+                        SkuName = sku.Value,
+                        UpdateDate = DateTime.Now
+                    };
+                    if (_productStockRepository.Insert(productStock) > 0)
+                    {
+                        addCount++;
+                    }
                 }
+                trans.Complete();
             }
             return addCount;
         }
@@ -49,7 +53,6 @@ namespace QingFeng.Business
         {
             return _productStockRepository.GetList(condition);
         }
-
 
         public bool SetProductStock(int productId, List<KeyValuePair<int, int>> sizeSku)
         {

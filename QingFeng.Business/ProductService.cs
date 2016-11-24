@@ -29,18 +29,21 @@ namespace QingFeng.Business
             var productList = _productRepository.GetList(new {baseId}).ToList();
 
             var addCount = 0;
-            foreach (var sku in colorSku)
+            foreach (var sku in colorSku.OrderBy(t => t.Key))
             {
                 if (!productList.Exists(t => t.ColorId == sku.Key))
                 {
                     var product = new Product()
                     {
-                        ProductName = baseInfo.BaseName + " " + sku.Value,
                         BaseId = baseInfo.BaseId,
                         BaseName = baseInfo.BaseName,
                         OriginalPrice = baseInfo.OriginalPrice,
                         ActualPrice = baseInfo.ActualPrice,
-                        ProductNo = baseInfo.BaseNo + StringExtensions.FillZeroNumber(sku.Key, 3)
+                        ImgList = baseInfo.ImgList,
+                        ColorId = sku.Key,
+                        ProductName = baseInfo.BaseName + "-" + sku.Value,
+                        ProductNo = baseInfo.BaseNo + "-" + StringExtensions.FillZeroNumber(sku.Key, 3),
+                        CreateDate = DateTime.Now
                     };
 
                     if (_productRepository.Insert(product, true) > 0)
@@ -49,12 +52,18 @@ namespace QingFeng.Business
                     }
                     System.Threading.Thread.Sleep(50);
                 }
+                else
+                {
+                    _productRepository.Update(new {status = 0}, new {baseId, colorId = sku.Key});
+                }
             }
             return addCount;
         }
 
         public bool CreateBaseProduct(ProductBase model)
         {
+            model.Intro = (model.Intro ?? string.Empty).CutString(600);
+            model.ImgList = model.ImgList ?? string.Empty;
             model.CreateDate = DateTime.Now;
             return _productBaseRepository.Insert(model) > 0;
         }

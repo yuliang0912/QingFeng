@@ -14,8 +14,6 @@ namespace QingFeng.Models
 
         public AgentEnums.SkuType SkuType { get; set; }
 
-        public int OrderId { get; set; }
-
         public int Status { get; set; }
     }
 }

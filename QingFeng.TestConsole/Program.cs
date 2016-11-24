@@ -5,6 +5,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QingFeng.Common.Extensions;
 
 namespace QingFeng.TestConsole
 {
@@ -17,6 +18,13 @@ namespace QingFeng.TestConsole
             //UserUnitTest.registerTest();
             //UserUnitTest.loginTest();
             //UserUnitTest.GetUserInfoTest();
+            //ProductUnitTest.CreateBaseProductTest();
+            //ProductUnitTest.CreateProductTest();
+            //ProductUnitTest.SearchProductTest();
+            ProductUnitTest.SearchProductStockTest();
+            //OrderUnitTest.CreateOrder();
+            //ProductUnitTest.CreateProductStockTest();
+
             #endregion
 
             Console.ReadKey();

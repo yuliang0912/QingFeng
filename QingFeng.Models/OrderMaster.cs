@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using QingFeng.Common;
+using QingFeng.Common.Dapper;
 
 namespace QingFeng.Models
 {
@@ -99,11 +100,10 @@ namespace QingFeng.Models
 
         public DateTime CreateDate { get; set; }
 
-        public DateTime UpdateDate { get; set; }
-
         /// <summary>
         /// 子订单详情
         /// </summary>
+        [IgnoreField]
         public IEnumerable<OrderDetail> OrderDetails { get; set; }
     }
 }

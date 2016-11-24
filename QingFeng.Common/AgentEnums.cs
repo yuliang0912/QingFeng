@@ -25,12 +25,12 @@ namespace QingFeng.Common
             /// <summary>
             /// 男士
             /// </summary>
-            Male = 1,
+            男鞋 = 1,
 
             /// <summary>
             /// 女士
             /// </summary>
-            Female = 2
+            女鞋 = 2
         }
 
         public enum MasterOrderStatus

@@ -34,7 +34,7 @@ namespace QingFeng.Common.Extensions
         {
             System.Threading.Thread.Sleep(1); //保证yyyyMMddHHmmssffff唯一  
             Random d = new Random(BitConverter.ToInt32(Guid.NewGuid().ToByteArray(), 0));
-            string strUnique = DateTime.Now.ToString("yyyyMMddHHmmssffff") + d.Next(100, 999);
+            string strUnique = DateTime.Now.ToString("yyMMddHHmmssffff") + d.Next(100, 999);
             return long.Parse(strUnique);
         }
 
