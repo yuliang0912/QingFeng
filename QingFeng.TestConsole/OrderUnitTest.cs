@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using QingFeng.Business;
+using QingFeng.Common;
+using QingFeng.Common.ApiCore.Result;
 using QingFeng.Models;
 
 namespace QingFeng.TestConsole
@@ -18,7 +20,7 @@ namespace QingFeng.TestConsole
             var user = UserService.GetUserInfo(new {userName = "admin"});
             var order = new OrderMaster
             {
-                OrderNo = "45123513893618",
+                OrderNo = "515182254518",
                 UserId = user.UserId,
                 StoreId = user.StoreInfo.StoreId,
                 ContactName = "余亮",
@@ -43,9 +45,29 @@ namespace QingFeng.TestConsole
                 },
             };
 
-            var result = OrderService.CreateOrder(order, order.OrderDetails.ToList());
+            var result = OrderService.CreateOrder(user, order, order.OrderDetails.ToList());
 
             Console.WriteLine("创建订单测试结果:{0}", result);
+        }
+
+
+        public static void SearchOrderListTest()
+        {
+            int totalItem, storeId = 5, orderStatus = 3;
+            var keyWords = "18923803594";
+
+            var list = OrderService.SearchOrderList(storeId, orderStatus, DateTime.MinValue, DateTime.Now, keyWords, 1, 10,
+                out totalItem);
+
+            var result = new ApiPageList<OrderMaster>()
+            {
+                Page = 1,
+                PageSize = 10,
+                TotalCount = totalItem,
+                PageList = list
+            };
+            Console.WriteLine("搜索订单测试结果:");
+            Console.WriteLine(JsonHelper.Encode(result));
         }
     }
 }

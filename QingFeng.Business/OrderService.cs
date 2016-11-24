@@ -16,9 +16,10 @@ namespace QingFeng.Business
         private readonly OrderMasterRepository _orderMaster = new OrderMasterRepository();
         private readonly OrderDetailRepository _orderDetail = new OrderDetailRepository();
         private readonly SkuItemRepository _skuItemRepository = new SkuItemRepository();
+        private readonly OrderLogsRepository _orderLogs = new OrderLogsRepository();
 
 
-        public bool CreateOrder(OrderMaster orderMaster, List<OrderDetail> orderDetails)
+        public bool CreateOrder(UserInfo user, OrderMaster orderMaster, List<OrderDetail> orderDetails)
         {
             if (orderMaster == null || orderDetails == null || !orderDetails.Any())
             {
@@ -70,7 +71,22 @@ namespace QingFeng.Business
             orderMaster.OrderDetailCount = orderDetails.Count;
             orderMaster.OrderAmount = orderDetails.Sum(t => t.Amount);
 
-            return _orderMaster.CreateOrder(orderMaster, orderDetails);
+            var result = _orderMaster.CreateOrder(orderMaster, orderDetails);
+
+            if (result)
+            {
+                _orderLogs.Insert(new OrderLogs()
+                {
+                    UserId = user.UserId,
+                    OrderId = orderId,
+                    UserName = user.UserName,
+                    Title = "添加订单",
+                    Content = string.Join(",", orderDetails.Select(t => $"{t.ProductName}-{t.SkuName}*{t.Quantity}")),
+                    CreateDate = DateTime.Now
+                });
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -141,7 +157,7 @@ namespace QingFeng.Business
                 _orderMaster.SearchOrder(storeId, orderStatus, beginDate, endDate, keyWords, page, pageSize,
                     out totalItem).ToList();
 
-            if (list.Any()) return list;
+            if (!list.Any()) return list;
             var orderDetails = _orderDetail.GetBatchOrderDetails(list.Select(t => t.OrderId).ToArray())
                 .GroupBy(t => t.OrderId)
                 .ToDictionary(c => c.Key, c => c);

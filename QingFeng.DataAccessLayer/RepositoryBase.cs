@@ -78,12 +78,13 @@ namespace QingFeng.DataAccessLayer
         /// 新增数据
         /// </summary>
         /// <param name="model"></param>
+        /// <param name="isReturnIncrementId"></param>
         /// <returns></returns>
-        public virtual int Insert(object model, bool isAutoIncrement = false)
+        public virtual int Insert(object model, bool isReturnIncrementId = false)
         {
             using (var connection = GetWriteConnection)
             {
-                return connection.Insert(model, _tableName, isReturnIncrementId: isAutoIncrement);
+                return connection.Insert(model, _tableName, isReturnIncrementId: isReturnIncrementId);
             }
         }
 

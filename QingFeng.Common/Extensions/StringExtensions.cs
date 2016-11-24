@@ -43,7 +43,9 @@ namespace QingFeng.Common.Extensions
 
         public static string FormatSqlLikeString(this string str, int type = 0)
         {
-            return string.IsNullOrWhiteSpace(str) ? str : $"{(type == 0 || type == 1 ? "%" : string.Empty)}{str}{(type == 0 || type == 2 ? "%" : string.Empty)}";
+            return string.IsNullOrWhiteSpace(str)
+                ? str
+                : $"{(type == 0 || type == 1 ? "%" : string.Empty)}{str.Trim()}{(type == 0 || type == 2 ? "%" : string.Empty)}";
         }
     }
 }

@@ -21,8 +21,9 @@ namespace QingFeng.TestConsole
             //ProductUnitTest.CreateBaseProductTest();
             //ProductUnitTest.CreateProductTest();
             //ProductUnitTest.SearchProductTest();
-            ProductUnitTest.SearchProductStockTest();
+            //ProductUnitTest.SearchProductStockTest();
             //OrderUnitTest.CreateOrder();
+            OrderUnitTest.SearchOrderListTest();
             //ProductUnitTest.CreateProductStockTest();
 
             #endregion

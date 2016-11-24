@@ -38,7 +38,7 @@ namespace QingFeng.WebArea.Controllers
             order.UserId = user.UserId;
             order.StoreId = user.StoreInfo.StoreId;
 
-            var result = _orderService.CreateOrder(order, order.OrderDetails.ToList());
+            var result = _orderService.CreateOrder(user, order, order.OrderDetails.ToList());
 
             return Json(new ApiResult<bool>(result) {Message = result ? "操作成功" : "操作失败"});
         }

@@ -69,7 +69,7 @@ namespace QingFeng.DataAccessLayer.Repository
             };
 
             Func<object, string> buildWhereSql =
-                (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional, "keyWords");
+                (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional, "keyWords", "beginDate", "endDate");
 
             using (var connection = GetReadConnection)
             {
