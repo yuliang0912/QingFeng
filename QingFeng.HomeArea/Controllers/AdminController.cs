@@ -11,7 +11,7 @@ using QingFeng.WebArea.Fillter;
 namespace QingFeng.WebArea.Controllers
 {
     [AdminAuthorize(AgentEnums.UserRole.Administrator)]
-    public class AdminController : Controller
+    public class AdminController : CustomerController
     {
         private readonly OrderService _orderService = new OrderService();
         private readonly ProductService _productService = new ProductService();

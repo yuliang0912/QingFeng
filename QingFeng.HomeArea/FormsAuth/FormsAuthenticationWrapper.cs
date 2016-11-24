@@ -14,7 +14,7 @@ namespace QingFeng.WebArea.FormsAuth
         {
         }
 
-        private const string CurrDomain = "admin.qingfeng.com";
+        private const string CurrDomain = "www.qingfeng.com";
 
         public void SetAuthCookie(string userKeyId, bool createPersistentCookie)
         {

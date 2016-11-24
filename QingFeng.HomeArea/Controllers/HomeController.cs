@@ -9,10 +9,11 @@ using QingFeng.WebArea.FormsAuth;
 
 namespace QingFeng.WebArea.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : CustomerController
     {
         private readonly UserService _userService = new UserService();
         // GET: Home
+        [AdminAuthorize(AgentEnums.UserRole.AllUser)]
         public ActionResult Index()
         {
             return View();
@@ -31,7 +32,7 @@ namespace QingFeng.WebArea.Controllers
             {
                 FormsAuthenticationWrapper.Instance.SetAuthCookie(userInfo.UserId.ToString(), false);
             }
-            return Json(isPass);
+            return Json(isPass, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetUserList(int page = 1, int pageSize = 10)
