@@ -95,6 +95,23 @@
   <ItemGroup>
     <Content Include="Content\404.html" />
     <Content Include="Content\500.html" />
+    <Content Include="Content\agent\css\ace.min.css" />
+    <Content Include="Content\agent\css\bootstrap-datetimepicker.min.css" />
+    <Content Include="Content\agent\css\bootstrap.min.css" />
+    <Content Include="Content\agent\css\font-awesome-ie7.min.css" />
+    <Content Include="Content\agent\css\font-awesome.min.css" />
+    <Content Include="Content\agent\css\layer.css" />
+    <Content Include="Content\agent\img\user.jpg" />
+    <Content Include="Content\agent\js\ace-elements.min.js" />
+    <Content Include="Content\agent\js\ace-extra.min.js" />
+    <Content Include="Content\agent\js\ace.min.js" />
+    <Content Include="Content\agent\js\bootstrap-datetimepicker.min.js" />
+    <Content Include="Content\agent\js\bootstrap.min.js" />
+    <Content Include="Content\agent\js\jquery.form.js" />
+    <Content Include="Content\agent\js\jquery.min.js" />
+    <Content Include="Content\agent\js\jquery.ztree.all-3.5.min.js" />
+    <Content Include="Content\agent\js\layer.js" />
+    <Content Include="Content\agent\js\postcode.js" />
     <Content Include="Content\agile_board.html" />
     <Content Include="Content\article.html" />
     <Content Include="Content\badges_labels.html" />
@@ -514,6 +531,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Shared\_LayoutAgent.cshtml" />
+    <Content Include="Views\Agent\OrderList.cshtml" />
+    <Content Include="Views\Agent\AddOrder.cshtml" />
+    <Content Include="Views\Agent\Products.cshtml" />
+    <Content Include="Views\Agent\ProductStocks.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -522,7 +544,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Models\" />
     <Folder Include="Views\Product\" />
   </ItemGroup>
   <ItemGroup>

@@ -23,6 +23,26 @@ namespace QingFeng.WebArea.Controllers
             return View();
         }
 
+        public ActionResult OrderList()
+        {
+            return View();
+        }
+
+        public ActionResult AddOrder()
+        {
+            return View();
+        }
+
+        public ActionResult Products()
+        {
+            return View();
+        }
+
+        public ActionResult ProductStocks()
+        {
+            return View();
+        }
+
         [HttpPost]
         public JsonResult CreateOrder(UserInfo user, OrderMaster order)
         {
@@ -45,8 +65,8 @@ namespace QingFeng.WebArea.Controllers
 
 
         public JsonResult GetOrderList(UserInfo user, int orderStatus, string beginDateStr, string endDateStr,
-            string keyWords, int page,
-            int pageSize)
+            string keyWords, int page = 1,
+            int pageSize = 20)
         {
             DateTime beginDate, endDate;
 

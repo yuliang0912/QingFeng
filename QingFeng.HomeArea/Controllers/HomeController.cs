@@ -14,7 +14,7 @@ namespace QingFeng.WebArea.Controllers
         private readonly UserService _userService = new UserService();
         // GET: Home
         [AdminAuthorize(AgentEnums.UserRole.AllUser)]
-        public ActionResult Index()
+        public ActionResult Index(UserInfo user)
         {
             return View();
         }
@@ -32,7 +32,7 @@ namespace QingFeng.WebArea.Controllers
             {
                 FormsAuthenticationWrapper.Instance.SetAuthCookie(userInfo.UserId.ToString(), false);
             }
-            return Json(isPass, JsonRequestBehavior.AllowGet);
+            return Json(new {isPass, userRole = userInfo?.UserRole}, JsonRequestBehavior.AllowGet);
         }
 
         public JsonResult GetUserList(int page = 1, int pageSize = 10)
@@ -49,24 +49,6 @@ namespace QingFeng.WebArea.Controllers
             });
         }
 
-        [AdminAuthorize(AgentEnums.UserRole.Administrator)]
-        public ActionResult AddStoreUser(UserInfo userInfo)
-        {
-            if (string.IsNullOrWhiteSpace(userInfo.UserName) || string.IsNullOrWhiteSpace(userInfo.PassWord))
-            {
-                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "用户名和密码不能为空"});
-            }
-
-            if (_userService.Count(new {userName = userInfo.UserName}) > 0)
-            {
-                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "用户名已经存在"});
-            }
-
-            var result = _userService.RegisterUser(userInfo);
-
-            return Json(new ApiResult<int>(result));
-        }
-
 
         [AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public ActionResult UpdateUserStatus(UserInfo user, int userId, int status)
@@ -79,6 +61,18 @@ namespace QingFeng.WebArea.Controllers
             var result = _userService.UpdateUserInfo(new UserInfo() {UserId = userId, Status = status});
 
             return Json(new ApiResult<bool>(result));
+        }
+
+
+        [AdminAuthorize(AgentEnums.UserRole.AllUser), HttpGet]
+        public ActionResult UpdatePassWord(UserInfo user, string oldPwd, string newPwd)
+        {
+            if (string.IsNullOrWhiteSpace(oldPwd) || string.IsNullOrWhiteSpace(newPwd))
+            {
+                return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "密码不能为空"});
+            }
+
+            return Json(_userService.UpdatePassWord(user, oldPwd, newPwd));
         }
     }
 }
