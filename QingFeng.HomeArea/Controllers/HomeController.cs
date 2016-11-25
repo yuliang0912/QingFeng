@@ -62,5 +62,17 @@ namespace QingFeng.WebArea.Controllers
 
             return Json(new ApiResult<bool>(result));
         }
+
+
+        [AdminAuthorize(AgentEnums.UserRole.AllUser), HttpGet]
+        public ActionResult UpdatePassWord(UserInfo user, string oldPwd, string newPwd)
+        {
+            if (string.IsNullOrWhiteSpace(oldPwd) || string.IsNullOrWhiteSpace(newPwd))
+            {
+                return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "密码不能为空"});
+            }
+
+            return Json(_userService.UpdatePassWord(user, oldPwd, newPwd));
+        }
     }
 }

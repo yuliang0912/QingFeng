@@ -51,13 +51,23 @@ namespace QingFeng.Business
         }
 
 
-        public bool UpdateUserInfo(UserInfo model, string newPwd = "")
+        public int UpdatePassWord(UserInfo user, string oldPwd, string newPwd)
         {
-            if (!string.IsNullOrWhiteSpace(newPwd))
+            if (!string.Concat(user.UserName, PassWordSplitString, user.UserRole.GetHashCode(), oldPwd)
+                .Hmacsha1(user.Salt).Equals(user.PassWord))
             {
-                model.PassWord = string.Concat(model.UserName, PassWordSplitString, model.UserRole.GetHashCode(), newPwd).Hmacsha1(model.Salt);
+                return 2;
             }
 
+            var newPassWord =
+                string.Concat(user.UserName, PassWordSplitString, user.UserRole.GetHashCode(), newPwd)
+                    .Hmacsha1(user.Salt);
+
+            return _userInfoRepository.Update(new {passWord = newPassWord}, new {user.UserId}) ? 1 : 0;
+        }
+
+        public bool UpdateUserInfo(UserInfo model)
+        {
             //var obj = DataContractExtensions.SimpleModel(model, false, "UserId");
 
             return _userInfoRepository.Update(model, new {model.UserId});
