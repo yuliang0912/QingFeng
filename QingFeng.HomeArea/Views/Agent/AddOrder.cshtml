@@ -1,0 +1,398 @@
+﻿
+@{
+    ViewBag.Title = "AddOrder";
+    Layout = "~/Views/Shared/_LayoutAgent.cshtml";
+}
+
+<style type="text/css">
+    .panel {
+        width: 99%;
+        margin: 10px auto;
+    }
+
+    td {
+        vertical-align: middle !important;
+    }
+
+    th {
+        text-align: center !important;
+    }
+
+    .td_title {
+        width: 100px;
+        text-align: center;
+    }
+
+    .td_input {
+        width: 200px;
+    }
+
+    .td-left {
+        width: 350px;
+    }
+</style>
+<div class="page-header">
+    <h1 class="form-inline">
+        添加订单
+        <a href="http://agent.findshoes.cn/order" class="btn btn-info btn-sm pull-right back-to-list"> <i class="icon-circle-arrow-left"></i> 返回列表</a>
+    </h1>
+</div>
+<form class="form-inline" role="form" id="order-form" method="post" action="http://agent.findshoes.cn/order/add">
+    <div class="panel panel-info">
+        <!-- Default panel contents -->
+        <div class="panel-heading">订单基本信息</div>
+
+        <table class="table">
+            <tr>
+                <td class="td_title">订单编号：</td>
+                <td width="300"><input type="text" name="orderNo" class="td_input" /></td>
+                <td class="td_title">联系人：</td>
+                <td><input type="text" name="contactName" class="td_input" /></td>
+            </tr>
+            <tr>
+                <td class="td_title">联系电话：</td>
+                <td><input type="text" name="contactPhone" class="td_input" /></td>
+                <td class="td_title">邮编：</td>
+                <td><input type="text" name="postCode" id="postCode" class="td_input" /></td>
+            </tr>
+            <tr>
+                <td class="td_title">收货地址：</td>
+                <td colspan="3">
+                    <select id="province" name="province">
+                        <option value="0">请选择省份</option>
+                        <option value="3722">澳门特别行政区</option>
+                        <option value="3700">香港特别行政区</option>
+                        <option value="3622">台湾省</option>
+                        <option value="3493">新疆维吾尔自治区</option>
+                        <option value="3460">宁夏回族自治区</option>
+                        <option value="3400">青海省</option>
+                        <option value="3286">甘肃省</option>
+                        <option value="3158">陕西省</option>
+                        <option value="3070">西藏自治区</option>
+                        <option value="2908">云南省</option>
+                        <option value="2800">贵州省</option>
+                        <option value="2574">四川省</option>
+                        <option value="2531">重庆市</option>
+                        <option value="2504">海南省</option>
+                        <option value="2366">广西壮族自治区</option>
+                        <option value="2199">广东省</option>
+                        <option value="2048">湖南省</option>
+                        <option value="1914">湖北省</option>
+                        <option value="1717">河南省</option>
+                        <option value="1537">山东省</option>
+                        <option value="1411">江西省</option>
+                        <option value="1307">福建省</option>
+                        <option value="1166">安徽省</option>
+                        <option value="1053">浙江省</option>
+                        <option value="914">江苏省</option>
+                        <option value="891">上海</option>
+                        <option value="732">黑龙江省</option>
+                        <option value="649">吉林省</option>
+                        <option value="514">辽宁省</option>
+                        <option value="388">内蒙古自治区</option>
+                        <option value="245">山西省</option>
+                        <option value="46">河北省</option>
+                        <option value="24">天津市</option>
+                        <option value="2">北京</option>
+                    </select>
+                    <select id="city" name="city">
+                        <option value="0">请选择城市</option>
+                    </select>
+                    <input type="text" name="address" style="width:500px;" id="address" /> <br />
+                    <span id="show_address"></span>
+                    <input type="hidden" name="full_address" id="full_address" value="">
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="panel panel-success">
+        <!-- Default panel contents -->
+        <div class="panel-heading" style="padding:7px 15px;">
+            搜索商品
+            <div class="input-group">
+                <input type="text" class="form-control input-sm" value="" name="keywork" id="keyword" placeholder="请输入要搜索的货号">
+                <span class="input-group-btn">
+                    <button class="btn btn-default btn-sm" type="button" id="search-goods">搜索</button>
+                </span>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="exampleInputEmail2">搜索结果：</label>
+                <select name="search_result" id="search_result" class="form-control" multiple="multiple" style="width:500px; height:150px;"></select>
+            </div>
+            <div class="input-group">
+                <button class="btn btn-success" type="button" id="add-to-order">添加到订单</button>
+            </div>
+        </div>
+
+        <!-- /.row -->
+    </div>
+    <div class="panel panel-info">
+        <!-- Default panel contents -->
+        <div class="panel-heading">订单商品</div>
+        <!-- Table -->
+        <table class="table table-bordered" id="table-order-goods">
+            <thead>
+                <tr>
+                    <th width="180">商品名称</th>
+                    <th width="70">商品分类</th>
+                    <th width="70">商品品牌</th>
+                    <th width="150">商品货号</th>
+                    <th width="150">商品颜色</th>
+                    <th width="150">市场价</th>
+                    <th width='150'>采购价</th>
+                    <th>填写区</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="note">
+                    <td colspan="8">
+                        <div class="col-lg-10">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">备注：</label>
+                                <textarea name="note" rows="3" cols="50" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="width:300px; margin:5px auto;">
+        <input type="hidden" name="action" value="dosubmit" />
+        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="submit" class="btn btn-primary" id="order-save">保存</button>
+    </div>
+</form>
+<script src="~/Content/agent/js/postcode.js"></script>
+<script>
+    $(function () {
+        $('#province').change(function () {
+            var province_id = $(this).val();
+            $('#district').remove();
+            if (province_id <= 0) {
+                $('#city').html('<option value="0">市</option>');
+                $('#show_address').html('');
+            }
+            else {
+                if (typeof _regions[province_id] == 'object') {
+                    var html = '<option value="0">请选择</option>';
+                    for (key in _regions[province_id]['children']) {
+                        html += '<option value="' + key + '">' + _regions[province_id]['children'][key].name + '</option>';
+                    }
+                    $('#city').html(html);
+                    get_full_address();
+                }
+            }
+        });
+
+        $('#city').change(function () {
+            var province_id = $('#province').val();
+            var city_id = $(this).val();
+            $('#district').remove();
+            if (province_id > 0) {
+                if (typeof _regions[province_id]['children'][city_id]['children'] == 'object') {
+                    var html = '<select id="district" name="district"><option value="0">请选择</option>';
+                    for (key in _regions[province_id]['children'][city_id]['children']) {
+                        html += '<option value="' + key + '" data-zipcode="' + _regions[province_id]['children'][city_id]['children'][key].zipcode + '">' + _regions[province_id]['children'][city_id]['children'][key].name + '</option>';
+                    }
+
+                    html += '</select>';
+                    $('#city').after(html);
+                    get_full_address();
+                    $('#district').off('change').on('change', function () {
+                        if ($(this).val() > 0) {
+                            get_full_address();
+                        }
+                    });
+                }
+            }
+        });
+
+        function get_full_address() {
+            var full_address = '';
+            if ($('#province').val() > 0) {
+                full_address += $('#province').find('option:selected').text() + ' ';
+            }
+
+            if ($('#city').val() > 0) {
+                full_address += $('#city').find('option:selected').text() + ' ';
+            }
+
+
+            if ($('#district') && $('#district').val() > 0) {
+                full_address += $('#district').find('option:selected').text() + ' ';
+
+                if ($('#postCode').val() == '') {
+                    $('#postCode').val($('#district').find('option:selected').attr('data-zipcode'));
+                }
+            }
+
+            var address = $('#address').val();
+            if (address != '') {
+                full_address += address;
+            }
+
+            $('#show_address').html(full_address);
+            $('#full_address').val(full_address);
+
+        }
+
+        $('#address').keyup(function () {
+            get_full_address();
+        });
+
+        $('#search-goods').click(function () {
+
+            var keyword = $('#keyword').val().replace(/(^\s+)|(\s+$)/g, "");
+
+            if (keyword == '') {
+                alert('请输入要搜索的商品货号');
+                return false;
+            }
+
+            $('#search_result').html('');
+            $.ajax({
+                type: "POST",
+                url: "http://agent.findshoes.cn/order/goods",
+                dataType: 'json',
+                data: "keyword=" + keyword,
+                success: function (data) {
+                    if (data.error == 0) {
+                        var html = '';
+                        data = data.data;
+                        for (key in data) {
+                            _goods[key] = data[key];
+                            html += '<option value="' + key + '">' + data[key].brand_name + '-' + data[key].goods_name + '-' + data[key].goods_sn + '-' + data[key].gender_name + '-' + data[key].color + '</option>';
+                        }
+                        $('#search_result').html(html);
+                    }
+                    else {
+                        alert(data.msg);
+                    }
+                },
+                error: function () { alert('搜索失败'); }
+            });
+            return false;
+        });
+
+        $('#add-to-order').click(function () {
+            var selected_option = $('#search_result option:selected');
+            if (selected_option.length <= 0) {
+                return false;
+            }
+
+            selected_option.each(function (index, elem) {
+                var spu_id = $(elem).val();
+                //var warehouse = new Array();
+
+                if (typeof _warehouse_list[spu_id] != 'undefined') {
+                    make_order_goods_item(spu_id, _warehouse_list[spu_id]);
+                }
+                else {
+                    $.ajax({
+                        type: "POST",
+                        url: "http://agent.findshoes.cn/order/get_sku_by_spu",
+                        dataType: 'json',
+                        data: "spu=" + spu_id,
+                        success: function (data) {
+                            if (data.error == 0) {
+                                _warehouse_list[spu_id] = data.data;
+                                make_order_goods_item(spu_id, data.data);
+                            }
+                            else {
+                                alert('获取尺码表失败');
+                            }
+                        }
+                    });
+                }
+
+            });
+
+            $('#table-order-goods').delegate('.remove-btn', 'click', function () {
+                $(this).parent('td').parent('tr').remove();
+            });
+        });
+
+        function make_order_goods_item(spu_id, warehouse) {
+            //alert(typeof warehouse); alert(warehouse.length);
+            if (typeof warehouse == 'object') {
+                _warehouse = '';
+                for (key in warehouse) {
+                    _warehouse += '<option value="' + key + '">' + warehouse[key].warehouse_name + '</option>';
+                }
+                var html = '<tr>';
+                html += '<td align="center">' + _goods[spu_id].goods_name + '</td>';
+                html += '<td align="center">' + _goods[spu_id].category_name + '</td>';
+                html += '<td align="center">' + _goods[spu_id].brand_name + '</td>';
+                html += '<td align="center">' + _goods[spu_id].goods_sn + '</td>';
+                html += '<td align="center">' + _goods[spu_id].color + '</td>';
+                html += '<td align="center">&yen' + _goods[spu_id].price + '</td>';
+
+                html += '<td align="center">&yen' + _goods[spu_id].user_fee + '</td>';
+                html += '<td><select name="warehouse_id[]" class="warehouse-id"  data-spu-id="' + spu_id + '"><option value="0">请选择仓库</option>' + _warehouse + '</select>';
+                html += '<select name="sku_ids[]" class="sku-id" data-spu-id="' + spu_id + '"><option value="0">请选择尺码</option></select>';
+                html += '<input type="text" name="size_note[]" value="" class="size-note" style="width:30px;" />';
+                html += '卖出金额：<input type="text" name="pay_fee[]" value="" style="width:50px;" />';
+                html += '&nbsp&nbsp<button type="button" class="btn btn-warning btn-xs remove-btn">移除</button>';
+                html += '</td></tr>';
+
+                $('#search_result option:selected').prop('selected', false);
+                $('#note').before(html);
+
+                $('#table-order-goods').delegate('.warehouse-id', 'change', function () {
+                    var spu_id = $(this).attr('data-spu-id');
+                    var warehouse_id = $(this).val();
+                    var html = '<option value="0">请选择尺码</option>';
+                    if (typeof _warehouse_list[spu_id][warehouse_id]['skus']) {
+                        var sku = _warehouse_list[spu_id][warehouse_id]['skus'];
+                        for (key in sku) {
+                            html += '<option value="' + key + '">' + sku[key].name + '</option>';
+                        }
+                    }
+                    $(this).next('select.sku-id').html(html);
+                });
+            }
+        }
+
+        $("#order-form").ajaxForm({
+            beforeSubmit: function (formData, jqForm, options) {
+                get_full_address();
+                var l = formData.length;
+                for (var i = 0; i < l; i++) {
+                    if ((formData[i].name != 'size_note[]' && formData[i].name != 'search_result') && !formData[i].value) {
+                        alert('订单所有信息都不能为空的哦，亲');
+                        return false;
+                    }
+                }
+
+                $('#order-save').attr('disabled', 'disabled');
+                return true;
+            },
+            success: function (response, status) {
+                alert(response.msg);
+                if (response.error == 0) {
+                    var url = $('#page-content').attr('data-back-url');
+                    if (!url) {
+                        url = "http://agent.findshoes.cn/order/index";
+                    }
+
+                    $.getPageContent({ url: url });
+                    return false;
+                }
+                else {
+                    $('#order-save').attr('disabled', false);
+                }
+            },
+            dataType: 'json',
+            //resetForm : true,
+            timeout: 10000,
+            error: function () {
+                $('#order-save').attr('disabled', false);
+                alert('发送请求失败');
+            }
+        });
+        return false;
+    });
+</script>

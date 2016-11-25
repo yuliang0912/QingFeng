@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using QingFeng.Business;
@@ -13,6 +14,7 @@ namespace QingFeng.WebArea.Controllers
     [AdminAuthorize(AgentEnums.UserRole.Administrator)]
     public class AdminController : CustomerController
     {
+        private readonly UserService _userService = new UserService();
         private readonly OrderService _orderService = new OrderService();
         private readonly ProductService _productService = new ProductService();
         private readonly ProductStockService _productStockService = new ProductStockService();
@@ -22,6 +24,24 @@ namespace QingFeng.WebArea.Controllers
         {
             return View();
         }
+
+        public ActionResult AddStoreUser(UserInfo userInfo)
+        {
+            if (string.IsNullOrWhiteSpace(userInfo.UserName) || string.IsNullOrWhiteSpace(userInfo.PassWord))
+            {
+                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "用户名和密码不能为空"});
+            }
+
+            if (_userService.Count(new {userName = userInfo.UserName}) > 0)
+            {
+                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "用户名已经存在"});
+            }
+
+            var result = _userService.RegisterUser(userInfo);
+
+            return Json(new ApiResult<int>(result));
+        }
+
 
         [HttpPost]
         public JsonResult SendDeliverGoods(long orderId, List<int> flowIds, LogisticsInfo model)
@@ -62,6 +82,37 @@ namespace QingFeng.WebArea.Controllers
             var result = _orderService.SendDeliverGoods(orderInfo, flowIds, model);
 
             return Json(result);
+        }
+
+
+        public JsonResult GetOrderList(int orderStatus, string beginDateStr, string endDateStr,
+            string keyWords, int page = 1,
+            int pageSize = 20)
+        {
+            DateTime beginDate, endDate;
+
+            if (!DateTime.TryParse(beginDateStr, out beginDate))
+            {
+                beginDate = DateTime.MinValue;
+            }
+            if (!DateTime.TryParse(endDateStr, out endDate))
+            {
+                endDate = DateTime.Now;
+            }
+            endDate = endDate.AddDays(1).AddSeconds(-1);
+
+            int totalItem;
+            var list = _orderService.SearchOrderList(0, orderStatus, beginDate, endDate, keyWords,
+                page,
+                pageSize, out totalItem);
+
+            return Json(new ApiPageList<OrderMaster>()
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalItem,
+                PageList = list
+            });
         }
     }
 }
