@@ -111,6 +111,7 @@
     <Content Include="Content\agent\js\jquery.min.js" />
     <Content Include="Content\agent\js\jquery.ztree.all-3.5.min.js" />
     <Content Include="Content\agent\js\layer.js" />
+    <Content Include="Content\agent\js\postcode.js" />
     <Content Include="Content\agile_board.html" />
     <Content Include="Content\article.html" />
     <Content Include="Content\badges_labels.html" />
@@ -533,6 +534,8 @@
     <Content Include="Views\Shared\_LayoutAgent.cshtml" />
     <Content Include="Views\Agent\OrderList.cshtml" />
     <Content Include="Views\Agent\AddOrder.cshtml" />
+    <Content Include="Views\Agent\Products.cshtml" />
+    <Content Include="Views\Agent\ProductStocks.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

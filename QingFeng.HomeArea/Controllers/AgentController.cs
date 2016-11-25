@@ -33,6 +33,16 @@ namespace QingFeng.WebArea.Controllers
             return View();
         }
 
+        public ActionResult Products()
+        {
+            return View();
+        }
+
+        public ActionResult ProductStocks()
+        {
+            return View();
+        }
+
         [HttpPost]
         public JsonResult CreateOrder(UserInfo user, OrderMaster order)
         {
