@@ -14,6 +14,16 @@ namespace QingFeng.WebArea
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
             );
+
+            routes.MapRoute(
+              name: "orderList",
+              url: "confirmed", //待发货
+              defaults: new { controller = "Agent", action = "OrderList", id = UrlParameter.Optional },
+              constraints: new RouteValueDictionary
+              {
+                   {"page", @"^\d{1,}$"}
+              }
+           );
         }
     }
 }

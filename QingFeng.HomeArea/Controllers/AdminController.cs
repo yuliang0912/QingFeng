@@ -53,9 +53,9 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "数据接收失败"});
             }
 
-            if (orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.AlreadyPay &&
-                orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.WaitDeliverGoods &&
-                orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.Doing)
+            if (orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.已支付 &&
+                orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.待发货 &&
+                orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.进行中)
             {
                 return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "订单状态错误"});
             }
@@ -67,14 +67,14 @@ namespace QingFeng.WebArea.Controllers
 
             if (
                 orderInfo.OrderDetails.Where(t => flowIds.Contains(t.FlowId))
-                    .Any(t => t.OrderSatus == AgentEnums.OrderDetailStatus.HasDeliverGoods))
+                    .Any(t => t.OrderSatus == AgentEnums.OrderDetailStatus.已发货))
             {
                 return Json(new ApiResult<int>(5) {Ret = RetEum.ApplicationError, Message = "存在重复发货情况"});
             }
 
             if (
                 orderInfo.OrderDetails.Where(t => flowIds.Contains(t.FlowId))
-                    .Any(t => t.OrderSatus == AgentEnums.OrderDetailStatus.Canceled))
+                    .Any(t => t.OrderSatus == AgentEnums.OrderDetailStatus.已取消))
             {
                 return Json(new ApiResult<int>(6) {Ret = RetEum.ApplicationError, Message = "已取消的商品,不能发货"});
             }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using QingFeng.Common.Dapper;
 using static QingFeng.Common.AgentEnums;
 
 namespace QingFeng.Models
@@ -63,5 +64,8 @@ namespace QingFeng.Models
         /// 商品状态
         /// </summary>		
         public OrderDetailStatus OrderSatus { get; set; }
+
+        [IgnoreField]
+        public IEnumerable<LogisticsInfo> Logistics { get; set; }
     }
 }

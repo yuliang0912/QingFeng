@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using QingFeng.Business;
 using QingFeng.Common;
 using QingFeng.Common.ApiCore.Result;
+using QingFeng.Common.Extensions;
 using QingFeng.Models;
 
 namespace QingFeng.TestConsole
@@ -20,30 +21,35 @@ namespace QingFeng.TestConsole
             var user = UserService.GetUserInfo(new {userName = "admin"});
             var order = new OrderMaster
             {
-                OrderNo = "515182254518",
+                OrderNo = "FN" + GuidConvert.ToString16(),
                 UserId = user.UserId,
                 StoreId = user.StoreInfo.StoreId,
                 ContactName = "余亮",
                 ContactPhone = "18923803593",
-                Address = "民治大道",
-                PostCode = "518000",
+                Address = "民治大道" + new Random().Next(1, 9) + "栋",
+                PostCode = "518" + new Random().Next(101, 999),
                 AreaCode = 4403,
                 OrderDetails = new List<OrderDetail>()
                 {
                     new OrderDetail()
                     {
-                        ProductId = 7,
-                        Quantity = 2,
-                        SkuId = 5 //码数
+                        ProductId = 10000,
+                        Quantity = new Random().Next(1, 9),
+                        SkuId = new Random().Next(4, 9) //码数
                     },
                     new OrderDetail()
                     {
-                        ProductId = 10,
-                        Quantity = 1,
-                        SkuId = 6
+                        ProductId = 10001,
+                        Quantity = new Random().Next(1, 9),
+                        SkuId = new Random().Next(4, 9)
                     }
                 },
             };
+
+            if (new Random().Next(0, 3) == 0)
+            {
+                order.OrderDetails = order.OrderDetails.Skip(1).ToList();
+            }
 
             var result = OrderService.CreateOrder(user, order, order.OrderDetails.ToList());
 
@@ -53,8 +59,8 @@ namespace QingFeng.TestConsole
 
         public static void SearchOrderListTest()
         {
-            int totalItem, storeId = 5, orderStatus = 3;
-            var keyWords = "18923803594";
+            int totalItem, storeId = 6, orderStatus = 3;
+            var keyWords = "";
 
             var list = OrderService.SearchOrderList(storeId, orderStatus, DateTime.MinValue, DateTime.Now, keyWords, 1, 10,
                 out totalItem);

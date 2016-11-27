@@ -57,13 +57,13 @@ namespace QingFeng.Business
                 t.OrderId = orderId;
                 t.OrderNo = orderMaster.OrderNo;
                 t.Remark = (t.Remark ?? string.Empty).CutString(120);
-                t.OrderSatus = AgentEnums.OrderDetailStatus.WaitDeliverGoods;
+                t.OrderSatus = AgentEnums.OrderDetailStatus.待发货;
                 t.Amount = t.Price*t.Quantity;
                 t.SkuName = skuList[t.SkuId];
             });
 
             orderMaster.Remark = (orderMaster.Remark ?? string.Empty).CutString(500);
-            orderMaster.OrderStatus = AgentEnums.MasterOrderStatus.WaitPay;
+            orderMaster.OrderStatus = AgentEnums.MasterOrderStatus.待支付;
             orderMaster.OrderId = orderId;
             orderMaster.CreateDate = DateTime.Now;
             orderMaster.PayStatus = 1;
@@ -73,18 +73,18 @@ namespace QingFeng.Business
 
             var result = _orderMaster.CreateOrder(orderMaster, orderDetails);
 
-            if (result)
-            {
-                _orderLogs.Insert(new OrderLogs()
-                {
-                    UserId = user.UserId,
-                    OrderId = orderId,
-                    UserName = user.UserName,
-                    Title = "添加订单",
-                    Content = string.Join(",", orderDetails.Select(t => $"{t.ProductName}-{t.SkuName}*{t.Quantity}")),
-                    CreateDate = DateTime.Now
-                });
-            }
+            //if (result)
+            //{
+            //    _orderLogs.Insert(new OrderLogs()
+            //    {
+            //        UserId = user.UserId,
+            //        OrderId = orderId,
+            //        UserName = user.UserName,
+            //        Title = "添加订单",
+            //        Content = string.Join(",", orderDetails.Select(t => $"{t.ProductName}-{t.SkuName}*{t.Quantity}")),
+            //        CreateDate = DateTime.Now
+            //    });
+            //}
 
             return result;
         }
@@ -109,18 +109,18 @@ namespace QingFeng.Business
             using (var trans = new TransactionScope())
             {
                 _orderDetail.BatchUpdateOrderStatus(orderInfo.OrderId, flowIds,
-                    AgentEnums.OrderDetailStatus.HasDeliverGoods);
+                    AgentEnums.OrderDetailStatus.已发货);
                 _logistics.Insert(model); //物流
                 var waitDeliverGoodsCount =
                     _orderDetail.Count(
-                        new {orderInfo.OrderId, orderStatus = AgentEnums.OrderDetailStatus.WaitDeliverGoods});
+                        new {orderInfo.OrderId, orderStatus = AgentEnums.OrderDetailStatus.待发货});
                 _orderMaster.Update(
                     new
                     {
                         orderStatus =
                         waitDeliverGoodsCount == 0
-                            ? AgentEnums.MasterOrderStatus.Completed
-                            : AgentEnums.MasterOrderStatus.Doing
+                            ? AgentEnums.MasterOrderStatus.已支付
+                            : AgentEnums.MasterOrderStatus.进行中
                     }, new {orderInfo.OrderId});
 
                 trans.Complete();

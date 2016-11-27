@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using QingFeng.Common.Dapper;
 using QingFeng.Models;
 
@@ -11,6 +12,24 @@ namespace QingFeng.DataAccessLayer.Repository
 
         public ProductBaseRepository() : base(TableName)
         {
+        }
+
+        public IEnumerable<ProductBase> GetListByIds(params int[] baseId)
+        {
+            if (baseId == null || !baseId.Any())
+            {
+                return new List<ProductBase>();
+            }
+
+            var additional = $"AND baseId IN ({string.Join(",", baseId)})";
+
+            Func<object, string> buildWhereSql =
+                (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional);
+
+            using (var connection = GetReadConnection)
+            {
+                return connection.QueryList<ProductBase>(null, TableName, buildWhereSql);
+            }
         }
 
         public IEnumerable<ProductBase> SearchProductBase(dynamic condition, int page, int pageSize,

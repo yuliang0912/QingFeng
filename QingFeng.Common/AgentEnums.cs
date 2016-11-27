@@ -38,37 +38,37 @@ namespace QingFeng.Common
             /// <summary>
             /// 已取消
             /// </summary>
-            Canceled = 1,
+            已取消 = 1,
 
             /// <summary>
             /// 异常
             /// </summary>
-            Exception = 2,
+            异常 = 2,
 
             /// <summary>
             /// 待支付
             /// </summary>
-            WaitPay = 3,
+            待支付 = 3,
 
             /// <summary>
             /// 已支付
             /// </summary>
-            AlreadyPay = 4,
+            已支付 = 4,
 
             /// <summary>
             /// 待发货
             /// </summary>
-            WaitDeliverGoods = 5,
+            待发货 = 5,
 
             /// <summary>
             /// 进行中
             /// </summary>
-            Doing = 6,
+            进行中 = 6,
 
             /// <summary>
             /// 已完成
             /// </summary>
-            Completed = 7
+            已完成 = 7
         }
 
         public enum OrderDetailStatus
@@ -76,17 +76,17 @@ namespace QingFeng.Common
             /// <summary>
             /// 待发货
             /// </summary>
-            WaitDeliverGoods = 1,
+            待发货 = 1,
 
             /// <summary>
             /// 已发货
             /// </summary>
-            HasDeliverGoods = 2,
+            已发货 = 2,
 
             /// <summary>
             /// 已取消
             /// </summary>
-            Canceled = 3,
+            已取消 = 3,
         }
     }
 }

@@ -16,6 +16,7 @@ namespace QingFeng.WebArea.Controllers
 
         private readonly OrderService _orderService = new OrderService();
         private readonly ProductService _productService = new ProductService();
+        private readonly LogisticsService _logisticsService = new LogisticsService();
         private readonly ProductStockService _productStockService = new ProductStockService();
         // GET: Agent
         public ActionResult Index()
@@ -23,9 +24,43 @@ namespace QingFeng.WebArea.Controllers
             return View();
         }
 
-        public ActionResult OrderList()
+        public ActionResult OrderList(UserInfo user, int orderStatus = 0, string beginDateStr = "",
+            string endDateStr = "",
+            string keyWords = "", int page = 1,
+            int pageSize = 20)
         {
-            return View();
+            DateTime beginDate, endDate;
+
+            if (!DateTime.TryParse(beginDateStr, out beginDate))
+            {
+                beginDate = DateTime.MinValue;
+            }
+            if (!DateTime.TryParse(endDateStr, out endDate))
+            {
+                endDate = DateTime.Now;
+            }
+            endDate = endDate.AddDays(1).AddSeconds(-1);
+
+            int totalItem;
+            var list = _orderService.SearchOrderList(user.StoreInfo.StoreId, orderStatus, beginDate, endDate, keyWords,
+                page,
+                pageSize, out totalItem);
+
+            ViewBag.ProductBase = _productService.GetProductBaseList(list.SelectMany(t=>t.OrderDetails).Select(t => t.BaseId).ToArray())
+               .ToDictionary(c => c.BaseId, c => c);
+
+            ViewBag.PorductList = _productService.GetProduct(list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
+                .ToDictionary(c => c.ProductId, c => c);
+
+            var data = new ApiPageList<OrderMaster>()
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalItem,
+                PageList = list
+            };
+
+            return View(data);
         }
 
         public ActionResult AddOrder()
@@ -41,6 +76,24 @@ namespace QingFeng.WebArea.Controllers
         public ActionResult ProductStocks()
         {
             return View();
+        }
+
+        public ActionResult OrderDetail(UserInfo user, long orderId)
+        {
+            var order = _orderService.Get(new {orderId, user.StoreInfo.StoreId});
+            if (order == null)
+            {
+                return Content("未找到指定的订单");
+            }
+            ViewBag.ProductBase = _productService.GetProductBaseList(order.OrderDetails.Select(t => t.BaseId).ToArray())
+                .ToDictionary(c => c.BaseId, c => c);
+
+            ViewBag.PorductList = _productService.GetProduct(order.OrderDetails.Select(t => t.ProductId).ToArray())
+                .ToDictionary(c => c.ProductId, c => c);
+
+            ViewBag.Logistics = _logisticsService.GetLogistics(orderId);
+
+            return View(order);
         }
 
         [HttpPost]
@@ -60,12 +113,13 @@ namespace QingFeng.WebArea.Controllers
 
             var result = _orderService.CreateOrder(user, order, order.OrderDetails.ToList());
 
-            return Json(new ApiResult<bool>(result) {Message = result ? "操作成功" : "操作失败"});
+            return Json(new ApiResult<bool>(result) {Message = result ? order.OrderId.ToString() : "操作失败"});
         }
 
 
-        public JsonResult GetOrderList(UserInfo user, int orderStatus, string beginDateStr, string endDateStr,
-            string keyWords, int page = 1,
+        public JsonResult GetOrderList(UserInfo user, int orderStatus = 0, string beginDateStr = "",
+            string endDateStr = "",
+            string keyWords = "", int page = 1,
             int pageSize = 20)
         {
             DateTime beginDate, endDate;
@@ -98,14 +152,28 @@ namespace QingFeng.WebArea.Controllers
         {
             var list = _productService.SearchProduct(keyWords);
 
-            return Json(list);
+            var baseList = _productService.GetProductBaseList(list.Select(t => t.BaseId).ToArray())
+                .ToDictionary(c => c.BaseId, c => c);
+
+            return Json(list.Select(x => new
+            {
+                baseId = x.BaseId,
+                baseNo = baseList[x.BaseId].BaseNo,
+                productId = x.ProductId,
+                baseName = x.BaseName,
+                productName = x.ProductName,
+                productNo = x.ProductNo,
+                originalPrice = x.OriginalPrice,
+                actualPrice = x.ActualPrice,
+                categoryName = baseList[x.BaseId].CategoryId.ToString()
+            }));
         }
 
 
         public JsonResult GetProductStock(int productId)
         {
             var list =
-                _productStockService.GetList(new {productId, status = 0})
+                _productStockService.GetList(new {productId})
                     .OrderBy(t => t.SkuName)
                     .Where(t => t.StockNum > 0);
 

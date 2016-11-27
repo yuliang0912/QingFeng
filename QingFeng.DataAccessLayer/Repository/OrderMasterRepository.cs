@@ -63,9 +63,7 @@ namespace QingFeng.DataAccessLayer.Repository
             {
                 beginDate,
                 endDate,
-                storeId,
                 keyWords = string.IsNullOrWhiteSpace(keyWords) ? string.Empty : keyWords.FormatSqlLikeString(),
-                orderStatus
             };
 
             Func<object, string> buildWhereSql =

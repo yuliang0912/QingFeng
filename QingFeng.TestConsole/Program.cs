@@ -15,7 +15,7 @@ namespace QingFeng.TestConsole
         {
             #region 用户单元测试
 
-            UserUnitTest.RegisterTest();
+            //UserUnitTest.RegisterTest();
             //UserUnitTest.loginTest();
             //UserUnitTest.GetUserInfoTest();
             //ProductUnitTest.CreateBaseProductTest();
@@ -23,7 +23,7 @@ namespace QingFeng.TestConsole
             //ProductUnitTest.SearchProductTest();
             //ProductUnitTest.SearchProductStockTest();
             //OrderUnitTest.CreateOrder();
-            //OrderUnitTest.SearchOrderListTest();
+            OrderUnitTest.SearchOrderListTest();
             //ProductUnitTest.CreateProductStockTest();
 
             #endregion

@@ -29,7 +29,7 @@ namespace QingFeng.TestConsole
 
         public static void CreateProductTest()
         {
-            var baseId = 2;
+            var baseId = 1;
 
             var colorSku = new List<KeyValuePair<int, string>>()
             {
@@ -109,12 +109,13 @@ namespace QingFeng.TestConsole
 
         public static void CreateProductStockTest()
         {
-            var productId = 9;
+            var productId = 10001;
             var sizeSku = new List<KeyValuePair<int, string>>()
             {
                 new KeyValuePair<int, string>(4, "37码"),
                 new KeyValuePair<int, string>(5, "38码"),
                 new KeyValuePair<int, string>(6, "39码"),
+                new KeyValuePair<int, string>(7, "41.5码"),
             };
             var result = ProductStockService.CreateProductStock(productId, sizeSku);
             Console.WriteLine("创建产品库存测试结果:{0}", result);

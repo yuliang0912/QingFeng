@@ -452,6 +452,7 @@
     <Content Include="Content\scripts\knockout-3.0.1.js" />
     <Content Include="Content\scripts\qingfeng.core.js" />
     <Content Include="Content\scripts\require.js" />
+    <Content Include="Content\scripts\underscore-min.js" />
     <Content Include="Content\search_results.html" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\social_feed.html" />
@@ -536,6 +537,7 @@
     <Content Include="Views\Agent\AddOrder.cshtml" />
     <Content Include="Views\Agent\Products.cshtml" />
     <Content Include="Views\Agent\ProductStocks.cshtml" />
+    <Content Include="Views\Agent\OrderDetail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

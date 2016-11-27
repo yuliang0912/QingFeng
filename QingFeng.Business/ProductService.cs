@@ -7,6 +7,7 @@ using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
 using QingFeng.Common.Extensions;
 using System.Dynamic;
+using QingFeng.Common;
 
 namespace QingFeng.Business
 {
@@ -83,9 +84,19 @@ namespace QingFeng.Business
             return _productBaseRepository.Get(new {baseId});
         }
 
+        public IEnumerable<ProductBase> GetProductBaseList(params int[] baseId)
+        {
+            return _productBaseRepository.GetListByIds(baseId);
+        }
+
         public ProductBase GetProductBase(string baseNo)
         {
             return _productBaseRepository.Get(new {baseNo});
+        }
+
+        public IEnumerable<Product> GetProduct(params int[] productId)
+        {
+            return _productRepository.GetProductListByIds(productId);
         }
 
         public Product GetProduct(int productId)
