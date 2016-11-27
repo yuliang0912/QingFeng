@@ -1,0 +1,200 @@
+﻿
+@{
+    ViewBag.Title = "OrderDetail";
+
+    Layout = "~/Views/Shared/_LayoutAgent.cshtml";
+    var productBase = (ViewBag.ProductBase as Dictionary<int, ProductBase>) ?? new Dictionary<int, ProductBase>();
+    var porductList = (ViewBag.PorductList as Dictionary<int, Product>) ?? new Dictionary<int, Product>();
+    var logistics = (ViewBag.Logistics as IEnumerable<LogisticsInfo>) ?? new List<LogisticsInfo>();
+}
+@using QingFeng.Models
+@model OrderMaster
+
+<div class="page-content" id="page-content" data-back-url="http://agent.findshoes.cn/order/index" data-cureent-url="http://agent.findshoes.cn/order/view/1109">
+    <style type="text/css">
+        .panel {
+            width: 99%;
+            margin: 10px auto;
+        }
+
+        .td_title {
+            width: 100px;
+            text-align: center;
+        }
+
+        .td_input {
+            width: 200px;
+        }
+
+        .td-left {
+            width: 350px;
+        }
+
+        th {
+            text-align: center;
+        }
+    </style>
+    <div class="page-header">
+        <h1 class="form-inline">
+            查看订单详情
+            <a href="http://agent.findshoes.cn/order" class="btn btn-info btn-sm pull-right back-to-list"> <i class="icon-circle-arrow-left"></i> 返回列表</a>
+        </h1>
+
+    </div>
+    <div class="panel panel-info">
+        <!-- Default panel contents -->
+        <div class="panel-heading">订单基本信息</div>
+
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td class="td_title">订单编号：</td>
+                    <td width="300">@Model.OrderNo</td>
+                    <td class="td_title">订单状态：</td>
+                    <td><span style="color:#0F0">@Model.OrderStatus.ToString()</span></td>
+                </tr>
+                <tr>
+                    <td class="td_title">联系人：</td>
+                    <td>@Model.ContactName</td>
+                    <td class="td_title">联系电话：</td>
+                    <td>@Model.ContactPhone</td>
+                </tr>
+                <tr>
+                    <td class="td_title">邮编：</td>
+                    <td>@Model.PostCode</td>
+                    <td class="td_title">收货地址：</td>
+                    <td>@Model.Address</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel panel-info">
+        <!-- Default panel contents -->
+        <div class="panel-heading">订单商品</div>
+
+        <!-- Table -->
+        <table class="table table-bordered" id="table-order-goods">
+            <thead>
+                <tr>
+                    <th width="180">商品名称</th>
+                    <th width="70">商品分类</th>
+                    <th width="70">商品品牌</th>
+                    <th width="150">商品货号</th>
+                    <th width="150">商品颜色</th>
+                    <th width="80">尺码</th>
+                    <th width="150">市场价</th>
+                    <th width="150">采购价</th>
+                    <th width="150">购买数量</th>
+                    <th>订单金额</th>
+                    <th>状态</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderDetails)
+            {
+                    <tr align="center">
+                        <td>@item.ProductName</td>
+                        <td>@productBase[item.BaseId].CategoryId.ToString()</td>
+                        <td>Locaste</td>
+                        <td>@productBase[item.BaseId].BaseNo</td>
+                        <td>@porductList[item.ProductId].ProductNo</td>
+                        <td>@item.SkuName</td>
+                        <td>@porductList[item.ProductId].OriginalPrice</td>
+                        <td>@item.Price</td>
+                        <td>@item.Quantity</td>
+                        <th>@item.Amount</th>
+                        <td>@item.OrderSatus</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="panel panel-info">
+        <!-- Default panel contents -->
+        <div class="panel-heading">配送信息</div>
+
+        <!-- Table -->
+        <table class="table table-bordered" id="table-order-goods">
+            <thead>
+                <tr>
+                    <th width="180">物流公司</th>
+                    <th width="150">运单号</th>
+                    <th width="80">运费</th>
+                    <th>货品</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in logistics)
+                {
+                    var flowIds = item.FlowIds.Split(',').Select(int.Parse);
+                    <tr align="center" valign="middle">
+                        <td rowspan="1">@item.CompanyName</td>
+                        <td rowspan="1">@item.OddNumber</td>
+                        <td rowspan="1">@item.Price</td>
+                        <td>@string.Join(";", Model.OrderDetails.Where(t => flowIds.Contains(t.FlowId)).Select(t => porductList[t.ProductId].ProductNo + "," + t.SkuName)) </td>
+                    </tr>
+                }
+                @if (!logistics.Any())
+                {
+                    <tr align="center" valign="middle">
+                        <td colspan="4">-暂无发货信息-</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="panel panel-success" style="width:600px; margin-left:10px;">
+        <!-- Default panel contents -->
+        <div class="panel-heading">操作日志</div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th width="70">操作人</th>
+                    <th width="80">操作</th>
+                    <th>备注</th>
+                    <th>操作时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr align="center">
+                    <td>eling</td>
+                    <td>品牌商发货</td>
+                    <td></td>
+                    <td>2016-10-18 17:12:52</td>
+                </tr>
+                <tr align="center">
+                    <td>系统操作员</td>
+                    <td>财审订单</td>
+                    <td>（自动审核）确认支付，财务审核通过</td>
+                    <td>2016-10-17 11:06:46</td>
+                </tr>
+                <tr align="center">
+                    <td>系统操作员</td>
+                    <td>审核订单</td>
+                    <td>分销商支付成功, 支付流水号:M161017110555000040979847</td>
+                    <td>2016-10-17 11:06:46</td>
+                </tr>
+                <tr align="center">
+                    <td>axia</td>
+                    <td>添加订单</td>
+                    <td>颜色分类:3415001白色;尺码:44</td>
+                    <td>2016-10-17 11:04:51</td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- /.row -->
+    </div>
+    <script type="text/javascript">
+        $.etopConfirm({ selector: '.order-canceled2,.order-cancelReturned,.order-nostock,.order-nostockCancel' });
+        $("[data-toggle='tooltip']").tooltip({ html: true });
+        $('.back-to-list').off('click').on('click', function () {
+            var url = $('#page-content').attr('data-back-url');
+            if (!url) {
+                url = $(this).attr('href');
+            }
+            url += url.indexOf("?") > -1 ? "&stype=1" : "?stype=1";
+            $.getPageContent({ url: url });
+            return false;
+        })
+    </script>
+</div>
