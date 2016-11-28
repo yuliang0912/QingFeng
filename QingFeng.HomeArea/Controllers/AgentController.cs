@@ -107,6 +107,9 @@ namespace QingFeng.WebArea.Controllers
                 .GroupBy(t => t.ProductId)
                 .ToDictionary(t => t.Key, t => t);
 
+
+            ViewBag.allSkus = productStockList.GroupBy(t => t.SkuId).ToDictionary(t => t.Key, t => t.First().SkuName);
+
             model.SubProduct.ToList().ForEach(t =>
             {
                 if (productStocks.ContainsKey(t.ProductId))

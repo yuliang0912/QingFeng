@@ -2,8 +2,10 @@
 @{
     ViewBag.Title = "ProductStocks";
     Layout = "~/Views/Shared/_LayoutAgent.cshtml";
+    var allSkus = (ViewBag.allSkus as Dictionary<int, string>) ?? new Dictionary<int, string>();
 }
-
+@model QingFeng.Models.ProductBase
+@using System.Linq
 <style type="text/css">
     table tbody td {
         text-align: center;
@@ -22,28 +24,10 @@
         &nbsp;查询库存 <small>
             <i class="icon-search"></i> 筛选:
             <div class="form-group">
-                <label class="sr-only" for="brand_id">品牌</label>
-                <select name="brand_id" id="brand_id" class="form-control input-sm filter_goods">
-                    <option value="0">品牌</option>
-                    <option value="1">Locaste</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="gender_id" class="sr-only">性别</label>
                 <select id="gender_id" class="form-control input-sm filter_goods">
-                    <option value="0">性别</option>
-                    <option value="1">男</option>
-                    <option value="2">女</option>
-                    <option value="3">通用</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="warehouse_id" class="sr-only">仓库</label>
-                <select id="warehouse_id" class="form-control input-sm filter_goods">
-                    <option value="0">仓库</option>
-                    <option value="7">E-TOP(PUR)</option>
-                    <option value="6">虚拟仓</option>
-                    <option value="8">E-TOP(US)</option>
+                    <option value="0">分类</option>
+                    <option value="1">男鞋</option>
+                    <option value="2">女鞋</option>
                 </select>
             </div>
             <div class="form-group">
@@ -66,100 +50,44 @@
                 <th class="center" rowspan="2">品名</th>
                 <th class="center" rowspan="2">货号</th>
                 <th class="center" rowspan="2">颜色</th>
-                <th class="center" rowspan="2">品牌</th>
-                <th class="center" rowspan="2">性别</th>
-                <!-- <th class="center" rowspan="2">供应商</th> -->
-                <th class="center" rowspan="2">仓库</th>
-                <th class="center" rowspan="2"> 小计</th>
+                <th class="center" rowspan="2">子货名</th>
+                <th class="center" rowspan="2">分类</th>
+                <th class="center" rowspan="2">小计</th>
                 <th class="center" colspan="6">尺码</th>
             </tr>
             <tr>
-                <th class="center">35.5</th>
-                <th class="center">36</th>
-                <th class="center">37</th>
-                <th class="center">37.5</th>
-                <th class="center">38</th>
-                <th class="center">39</th>
+                @foreach (var item in allSkus)
+                {
+                    <th class="center">@item.Value</th>
+                }
             </tr>
         </thead>
 
         <tbody>
-            <tr align="center">
-                <td rowspan="1">7-29SPW1023</td>
-                <td rowspan="1">7-29SPW1023</td>
-                <td rowspan="1">7-29SPW1023GG2</td>
-                <td rowspan="1">Locaste</td>
-                <td rowspan="1">女</td>
-                <td>E-TOP(PUR)</td>
-                <td>97</td>
-                <td class="center">
-
-                    12
-                </td>
-                <td class="center">
-
-                    16
-                </td>
-                <td class="center">
-
-                    19
-                </td>
-                <td class="center">
-
-                    16
-                </td>
-                <td class="center">
-
-                    19
-                </td>
-                <td class="center">
-
-                    15
-                </td>
-            </tr>
-            <tr align="center">
-                <td rowspan="1">7-29SPW1023</td>
-                <td rowspan="1">7-29SPW1023</td>
-                <td rowspan="1">7-29SPW102311C</td>
-                <td rowspan="1">Locaste</td>
-                <td rowspan="1">女</td>
-                <td>E-TOP(PUR)</td>
-                <td>96</td>
-                <td class="center">
-
-                    12
-                </td>
-                <td class="center">
-
-                    16
-                </td>
-                <td class="center">
-
-                    19
-                </td>
-                <td class="center">
-
-                    15
-                </td>
-                <td class="center">
-
-                    19
-                </td>
-                <td class="center">
-
-                    15
-                </td>
-            </tr>
+            @foreach (var subProduct in Model.SubProduct)
+            {
+                var dict = subProduct.ProductStocks.GroupBy(t => t.SkuId).ToDictionary(c => c.Key, c => c.First().StockNum);
+                <tr align="center">
+                    <td rowspan="1">@Model.BaseName</td>
+                    <td rowspan="1">@Model.BaseNo</td>
+                    <td rowspan="1">@subProduct.ProductNo</td>
+                    <td rowspan="1">@subProduct.ProductName</td>
+                    <td rowspan="1">@Model.CategoryId.ToString()</td>
+                    <td>@subProduct.ProductStocks.Sum(t => t.StockNum)</td>
+                    @foreach (var item in allSkus)
+                    {
+                        <td class="center">@(dict.ContainsKey(item.Key) ? dict[item.Key] : 0)</td>
+                    }
+                </tr>
+            }
             <!--输出合计数量-->
             <tr align="center">
-                <td colspan="6" class="text-right" style="padding-right: 28px;">合计</td>
+                <td colspan="5" class="text-right" style="padding-right: 28px;">合计</td>
                 <td>193</td>
                 <td>24</td>
                 <td>32</td>
                 <td>38</td>
                 <td>31</td>
-                <td>38</td>
-                <td>30</td>
             </tr>
             <!--输出合计数量 end-->
         </tbody>
