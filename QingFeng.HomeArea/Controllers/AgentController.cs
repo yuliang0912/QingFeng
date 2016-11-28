@@ -74,6 +74,9 @@ namespace QingFeng.WebArea.Controllers
 
             var list = _productService.SearchBaseProduct(keyWords, categoryId, page, pageSize, out totalItem);
 
+            ViewBag.categoryId = categoryId;
+            ViewBag.keyWords = keyWords;
+
             return View(new ApiPageList<ProductBase>
             {
                 Page = page,
@@ -83,13 +86,17 @@ namespace QingFeng.WebArea.Controllers
             });
         }
 
-        public ActionResult ProductStocks(string baseNo)
+        public ActionResult ProductStocks(string baseNo = "")
         {
-            var model = _productService.GetProductBase(baseNo);
+            if (string.IsNullOrEmpty(baseNo))
+            {
+                return View(new ProductBase());
+            }
 
+            var model = _productService.GetProductBase(baseNo);
             if (model == null)
             {
-                return Json(Enumerable.Empty<object>());
+                return Content("<script>alert('未找到指定的产品号');location.href='/agent/ProductStocks';</script>");
             }
 
             model.SubProduct = _productService.GetProductByBaseId(model.BaseId);
@@ -107,7 +114,8 @@ namespace QingFeng.WebArea.Controllers
                     t.ProductStocks = productStocks[t.ProductId].ToList();
                 }
             });
-            return View();
+
+            return View(model);
         }
 
         public ActionResult OrderDetail(UserInfo user, long orderId)

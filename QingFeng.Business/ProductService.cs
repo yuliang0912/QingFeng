@@ -112,16 +112,7 @@ namespace QingFeng.Business
         public IEnumerable<ProductBase> SearchBaseProduct(string keyWords, int categoryId, int page, int pageSize,
             out int totalItem)
         {
-            dynamic condition = new ExpandoObject();
-
-            condition.keyWords = keyWords.FormatSqlLikeString();
-
-            if (categoryId > 0)
-            {
-                condition.categoryId = categoryId;
-            }
-
-            var list = _productBaseRepository.SearchProductBase((object) condition, page, pageSize, out totalItem);
+            var list = _productBaseRepository.SearchProductBase(categoryId, keyWords, page, pageSize, out totalItem);
 
             if (!list.Any()) return list;
 

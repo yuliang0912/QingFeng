@@ -26,14 +26,14 @@
             <div class="form-group">
                 <label class="sr-only" for="category_id">分类</label>
                 <select name="category_id" id="category_id" class="form-control input-sm">
-                    <option value="0">分类</option>
-                    <option value="1">男鞋</option>
-                    <option value="2">女鞋</option>
+                    <option value="0">分类</ option >
+                    <option value="1" @(ViewBag.categoryId == 1 ? "selected" : "")>男鞋</option>
+                    <option value="2" @(ViewBag.categoryId == 2 ? "selected" : "")>女鞋</option>
                 </select>
             </div>
             <div class="form-group">
                 <label class="sr-only" for="order_keyword">关键字</label>
-                <input type="text" name="order_keyword" id="goods_keyword" value="" style="width:160px;" class="form-control input-sm" placeholder="商品名称或货号">
+                <input type="text" name="order_keyword" id="goods_keyword" value="@(ViewBag.keyWords??string.Empty)" style="width:160px;" class="form-control input-sm" placeholder="商品名称或货号">
             </div>
 
             <button type="button" class="btn btn-primary btn-sm " id="order-search">搜索</button>
@@ -106,10 +106,11 @@
             var keyword = $('#goods_keyword').val();
 
             var url = '/agent/products';
-            query_str += 'categoryId=' + category_id;
-            query_str += '&keyword=' + keyword;
+            var query_str = 'stype=1&categoryId=' + category_id;
+            query_str += '&keyWords=' + keyword;
 
             url = url + '?' + query_str;
+
             $.getPageContent({ url: url });
         });
     });
