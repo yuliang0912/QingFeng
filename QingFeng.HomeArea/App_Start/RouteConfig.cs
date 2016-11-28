@@ -1,5 +1,6 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
+using QingFeng.Common;
 
 namespace QingFeng.WebArea
 {
@@ -12,18 +13,24 @@ namespace QingFeng.WebArea
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Home", action = "Index", id = UrlParameter.Optional }
+                defaults: new {controller = "Home", action = "Index", id = UrlParameter.Optional}
             );
 
             routes.MapRoute(
-              name: "orderList",
-              url: "confirmed", //待发货
-              defaults: new { controller = "Agent", action = "OrderList", id = UrlParameter.Optional },
-              constraints: new RouteValueDictionary
-              {
-                   {"page", @"^\d{1,}$"}
-              }
-           );
+                name: "orderList",
+                url: "confirmed", //待发货
+                defaults:
+                new
+                {
+                    controller = "Agent",
+                    action = "OrderList",
+                    orderStatus = AgentEnums.MasterOrderStatus.待发货.GetHashCode()
+                },
+                constraints: new RouteValueDictionary
+                {
+                    {"page", @"^\d{1,}$"}
+                }
+            );
         }
     }
 }

@@ -68,13 +68,45 @@ namespace QingFeng.WebArea.Controllers
             return View();
         }
 
-        public ActionResult Products()
+        public ActionResult Products(string keyWords = "", int categoryId = 0, int page = 1, int pageSize = 20)
         {
-            return View();
+            int totalItem;
+
+            var list = _productService.SearchBaseProduct(keyWords, categoryId, page, pageSize, out totalItem);
+
+            return View(new ApiPageList<ProductBase>
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalItem,
+                PageList = list
+            });
         }
 
-        public ActionResult ProductStocks()
+        public ActionResult ProductStocks(string baseNo)
         {
+            var model = _productService.GetProductBase(baseNo);
+
+            if (model == null)
+            {
+                return Json(Enumerable.Empty<object>());
+            }
+
+            model.SubProduct = _productService.GetProductByBaseId(model.BaseId);
+
+            var productStockList = _productStockService.GetList(new {model.BaseId});
+
+            var productStocks = productStockList
+                .GroupBy(t => t.ProductId)
+                .ToDictionary(t => t.Key, t => t);
+
+            model.SubProduct.ToList().ForEach(t =>
+            {
+                if (productStocks.ContainsKey(t.ProductId))
+                {
+                    t.ProductStocks = productStocks[t.ProductId].ToList();
+                }
+            });
             return View();
         }
 
@@ -116,37 +148,6 @@ namespace QingFeng.WebArea.Controllers
             return Json(new ApiResult<bool>(result) {Message = result ? order.OrderId.ToString() : "操作失败"});
         }
 
-
-        public JsonResult GetOrderList(UserInfo user, int orderStatus = 0, string beginDateStr = "",
-            string endDateStr = "",
-            string keyWords = "", int page = 1,
-            int pageSize = 20)
-        {
-            DateTime beginDate, endDate;
-
-            if (!DateTime.TryParse(beginDateStr, out beginDate))
-            {
-                beginDate = DateTime.MinValue;
-            }
-            if (!DateTime.TryParse(endDateStr, out endDate))
-            {
-                endDate = DateTime.Now;
-            }
-            endDate = endDate.AddDays(1).AddSeconds(-1);
-
-            int totalItem;
-            var list = _orderService.SearchOrderList(user.StoreInfo.StoreId, orderStatus, beginDate, endDate, keyWords,
-                page,
-                pageSize, out totalItem);
-
-            return Json(new ApiPageList<OrderMaster>()
-            {
-                Page = page,
-                PageSize = pageSize,
-                TotalCount = totalItem,
-                PageList = list
-            });
-        }
 
         public JsonResult SearchProduct(string keyWords)
         {

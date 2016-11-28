@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "Products";
+    Layout = "~/Views/Shared/_LayoutAgent.cshtml";
+}
+
+@model QingFeng.Common.ApiCore.Result.ApiPageList<QingFeng.Models.ProductBase>
+
+<style type="text/css">
+    #order-table-list thead tr {
+        background: none;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    #order-table-list td {
+        vertical-align: middle;
+    }
+</style>
+<div class="page-header">
+    <h1 class="form-inline">
+        代理商价格列表 <small>
+            <i class="icon-search"></i> 筛选:
+            <div class="form-group">
+                <label class="sr-only" for="category_id">分类</label>
+                <select name="category_id" id="category_id" class="form-control input-sm">
+                    <option value="0">分类</option>
+                    <option value="1">男鞋</option>
+                    <option value="2">女鞋</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="order_keyword">关键字</label>
+                <input type="text" name="order_keyword" id="goods_keyword" value="" style="width:160px;" class="form-control input-sm" placeholder="商品名称或货号">
+            </div>
+
+            <button type="button" class="btn btn-primary btn-sm " id="order-search">搜索</button>
+        </small>
+    </h1>
+</div>
+<!-- /.page-header -->
+<!-- PAGE CONTENT BEGINS
+-->
+<div class="table-responsive">
+    <table class="table table-bordered" id="order-table-list">
+        <thead>
+            <tr>
+                <th rowspan="2" class="center">品名</th>
+                <th rowspan="2" class="center">货号</th>
+                <th rowspan="2" class="center">品牌</th>
+                <th rowspan="2" class="center">分类</th>
+                <th colspan="5" class="center">spu</th>
+            </tr>
+            <tr>
+                <th>颜色</th>
+                <th>市场价</th>
+                <th>采购价</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.PageList)
+            {
+                var subProductCount = item.SubProduct.Count();
+                for (var i = 0; i < subProductCount; i++)
+                {
+                    var product = item.SubProduct.ToList()[i];
+                    <tr align="center">
+                        @if (i == 0)
+                        {
+                            <td rowspan="@subProductCount">@item.BaseName</td>
+                            <td rowspan="@subProductCount">@item.BaseNo</td>
+                            <td rowspan="@subProductCount">Locaste</td>
+                            <td rowspan="@subProductCount">@item.CategoryId.ToString()</td>
+                        }
+                        <td>@product.ProductNo</td>
+                        <td>@product.OriginalPrice</td>
+                        <td>@product.ActualPrice</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<!-- /.table-responsive -->
+<!-- PAGE CONTENT ENDS -->
+<script type="text/javascript">
+    $(function () {
+        $.showModal({
+            formId: 'price-set-form',
+            'selector': '.add-modal,.set-modal',
+            success: function (response, status) {
+                alert(response.msg);
+                if (response.error == 0) {
+                    $('#etop-modal').modal('hide');
+                    $('#etop-modal').off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
+                        $.pageReload();
+                    });
+                }
+            }
+        });
+
+        $('#order-search').click(function () {
+            var category_id = $('#category_id').val();
+            var keyword = $('#goods_keyword').val();
+
+            var url = '/agent/products';
+            query_str += 'categoryId=' + category_id;
+            query_str += '&keyword=' + keyword;
+
+            url = url + '?' + query_str;
+            $.getPageContent({ url: url });
+        });
+    });
+
+    $('.pagination a').click(function () {
+        var url = $(this).attr('href');
+        $.getPageContent({ url: url });
+        return false;
+    });
+</script>
