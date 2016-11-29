@@ -88,9 +88,9 @@ namespace QingFeng.WebArea.Controllers
             });
         }
 
-        public ActionResult ProductStocks(string baseNo = "")
+        public ActionResult ProductStocks(int categoryId = 0, string baseNo = "")
         {
-            if (!string.IsNullOrEmpty(baseNo))
+            if (string.IsNullOrEmpty(baseNo))
             {
                 return View(new ProductBase());
             }
@@ -109,7 +109,7 @@ namespace QingFeng.WebArea.Controllers
                 .GroupBy(t => t.ProductId)
                 .ToDictionary(t => t.Key, t => t);
 
-
+            ViewBag.categoryId = categoryId;
             ViewBag.allSkus = productStockList.GroupBy(t => t.SkuId).ToDictionary(t => t.Key, t => t.First().SkuName);
 
             model.SubProduct.ToList().ForEach(t =>
@@ -204,7 +204,7 @@ namespace QingFeng.WebArea.Controllers
                 return Json(Enumerable.Empty<object>());
             }
 
-            var list = _productService.SearchBaseProduct(keyWords).Select(t => new
+            var list = _productService.SearchBaseProduct(categoryId, keyWords).Select(t => new
             {
                 baseId = t.BaseId,
                 baseNo = t.BaseNo

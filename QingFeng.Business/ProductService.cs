@@ -131,10 +131,10 @@ namespace QingFeng.Business
             return list;
         }
 
-        public IEnumerable<ProductBase> SearchBaseProduct(string keyWords)
+        public IEnumerable<ProductBase> SearchBaseProduct(int categoryId, string keyWords)
         {
             int totalItem;
-            return _productBaseRepository.SearchProductBase(0, keyWords, 1, 100, out totalItem);
+            return _productBaseRepository.SearchProductBase(categoryId, keyWords, 1, 100, out totalItem);
         }
 
         public IEnumerable<Product> SearchProduct(string keyWords)

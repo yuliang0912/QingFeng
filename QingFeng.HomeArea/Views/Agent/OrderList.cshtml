@@ -116,11 +116,8 @@
 
             $("#end_time").datetimepicker({ format: 'yyyy-mm-dd', language: 'zh-CN', 'endDate': '@DateTime.Now.ToString("yyyy-MM-dd")', minView: "month", autoclose: 1 });
             $('#order-search').click(function () {
-                var shop_id = $('#shop_id').val() * 1;
                 var start_time = $('#start_time').val();
                 var end_time = $('#end_time').val();
-                var brand_id = $('#brand_id').val() * 1;
-                var supplier_id = $('#supplier_id').val() * 1;
                 var keyword = $('#order_keyword').val();
 
                 if (shop_id <= 0 && start_time == '' && end_time == '' && brand_id <= 0 && supplier_id <= 0 && keyword == '') {
@@ -128,9 +125,8 @@
                     return false;
                 }
 
-                var url = 'http://agent.findshoes.cn/order/index';
-                url += '?shop_id=' + shop_id;
-                url += '&start_time=' + start_time;
+                var url = '/agent/orderList';
+                url += '?beginDateStr=' + start_time;
                 url += '&end_time=' + end_time;
                 url += '&brand_id=' + brand_id;
                 url += '&supplier_id=' + supplier_id;
