@@ -55,7 +55,7 @@ namespace QingFeng.DataAccessLayer.Repository
             }
             else if (!string.IsNullOrWhiteSpace(keyWords))
             {
-                condition = new {keyWords};
+                condition = new {keyWords = keyWords.FormatSqlLikeString()};
             }
 
             using (var connection = GetReadConnection)

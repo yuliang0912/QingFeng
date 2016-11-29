@@ -32,8 +32,8 @@
             </div>
             <div class="form-group">
                 <label class="sr-only" for="goods_keyword">关键字</label>
-                <input type="text" placeholder="请输入商品名称或货号" value="7-29SPW1023" class="form-control" name="goods_ipt" id="goods_ipt">
-                <input type="hidden" value="9002" class="form-control" name="goods_ids" id="ipt_goods_id">
+                <input type="text" placeholder="请输入商品名称或货号" value="@Model.BaseNo" class="form-control" name="goods_ipt" id="goods_ipt">
+                <input type="hidden" value="@Model.BaseNo" class="form-control" name="goods_ids" id="ipt_goods_id">
                 <select id="good_ids" class="form-control"></select>
             </div>
 
@@ -103,62 +103,18 @@
     $(function () {
 
         $.etopConfirm();
-        $.showModal({
-            formId: 'stock-form',
-            success: function (response, status) {
-                if (response.error == 0) {
-                    $('#etop-modal').modal('hide');
-                    $('#etop-modal').on('hidden.bs.modal', function (e) {
-                        $.pageReload();
-                    });
-                }
-                else if (response.error == 9) {
-                    var data = response.data;
-                    var msg = '';
-                    for (key in data) {
-                        msg += data[key] + '\r\n';
-                    }
-                    alert(msg);
-                    $('#etop-modal').modal('hide');
-                    $('#etop-modal').on('hidden.bs.modal', function (e) {
-                        $.pageReload();
-                    });
-                }
-                else {
-                    alert(response.msg);
-                }
-            },
-            beforeSubmit: function (formData, jqForm, options) {
-                /*var l = formData.length;
-                for (var i=0; i < l; i++) {
-                   if (!formData[i].value) {
-                        alert('所有资料都不能为空的哦!亲');
-                        return false;
-                    }
-                }  */
-                return true;
-            },
-            selector: '.edit-modal, .add-modal',
-        });
 
         $('#do-goods-filter').click(function () {
-            var brand_id = $('#filter_goods #brand_id').val();
-            var gender_id = $('#filter_goods #gender_id').val();
-            var warehouse_id = $('#filter_goods #warehouse_id').val();
-            var goods_keyword = $('#filter_goods #goods-search').val();
-            var goods_id = $('#ipt_goods_id').val();
+            var goods_id = $('#ipt_goods_id').val().trim();
 
-            if (brand_id <= 0 && gender_id <= 0 && warehouse_id <= 0 && goods_keyword == '') {
-                alert('请选择或输入要过滤的条件！');
-                return false;
+            if (goods_id === '') {
+                layer.msg('请选择或输入需要过滤的条件');
+                return;
             }
 
-            var base_url = 'http://agent.findshoes.cn/stock/search';
-            var params = '?brand_id=' + brand_id + '&gender_id=' + gender_id + '&warehouse_id=' + warehouse_id + '&goods_id=' + goods_id;
+            var url = '/agent/ProductStocks?baseNo=' + goods_id;
 
-            url = base_url + '/' + params;
             $.getPageContent({ url: url });
-
         });
 
         $('.pagination a').off('click').on('click', function () {
@@ -168,41 +124,36 @@
         });
 
         $('#goods_ipt').bind('input propertychange', function () {
-            val = $(this).val();
-            if (val != '') {
-                $.getJSON('http://agent.findshoes.cn/stock/searchGoods' + '?keyword=' + val, function (response) {
-                    if (response.error == 0) {
-                        var list = response.data;
-                        var options = '';
-                        for (var key in list) {
-                            options += '<option value=' + list[key].goods_id + '>' + list[key].goods_name + '</option>';
-                        }
-                        $('#good_ids').html(options);
-                        $('#good_ids').show();
-                        good_ids.size = 25;
-                        $('#good_ids option').click(function () {
-                            $('.filter_goods').attr('disabled', 'disabled');
-                            val = $(this).html();
-                            var id = $(this).val();
-                            $('#goods_ipt').val(val);
-                            $('#ipt_goods_id').val(id);
-                            $('#good_ids').hide();
-                            get_color(id);
-                            get_goods_info(id);
-                        });
-                    }
-                    else {
-                        alert('请求失败');
-                        return false;
-                    }
-                });
-            }
-            else {
+            var categoryId = $("#gender_id").val();
+            var val = $(this).val().trim();
+            if (val === '') {
                 $('.filter_goods').removeAttr('disabled');
-                $('#ipt_goods_id').val(0);
+                $('#ipt_goods_id').val('');
                 $('#good_ids').hide();
+                return;
             }
-
+            $.getJSON('/agent/SearchBaseProductNo?categoryId=' + categoryId + '&keyWords=' + val, function (response) {
+                if (response.ret !== 0) {
+                    layer.msg('请求失败');
+                    return;
+                }
+                var list = response.data;
+                var options = '';
+                $.each(list, function (i, item) {
+                    options += '<option value=' + item.baseNo + '>' + item.baseNo + '</option>';
+                });
+                $('#good_ids').html(options);
+                $('#good_ids').show();
+                good_ids.size = 25;
+                $('#good_ids option').click(function () {
+                    $('.filter_goods').attr('disabled', 'disabled');
+                    val = $(this).html();
+                    var id = $(this).val();
+                    $('#goods_ipt').val(val);
+                    $('#ipt_goods_id').val(id);
+                    $('#good_ids').hide();
+                });
+            });
         });
     })
 </script>

@@ -3,7 +3,7 @@
     var userInfo = ViewBag.User as QingFeng.Models.UserInfo ?? new QingFeng.Models.UserInfo();
 }
 
-@if (stype != null)
+@if (Request.IsAjaxRequest() || stype != null)
 {
     @RenderBody()
     return;

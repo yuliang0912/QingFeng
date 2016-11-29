@@ -46,10 +46,12 @@ namespace QingFeng.WebArea.Controllers
                 page,
                 pageSize, out totalItem);
 
-            ViewBag.ProductBase = _productService.GetProductBaseList(list.SelectMany(t=>t.OrderDetails).Select(t => t.BaseId).ToArray())
-               .ToDictionary(c => c.BaseId, c => c);
+            ViewBag.ProductBase = _productService.GetProductBaseList(
+                    list.SelectMany(t => t.OrderDetails).Select(t => t.BaseId).ToArray())
+                .ToDictionary(c => c.BaseId, c => c);
 
-            ViewBag.PorductList = _productService.GetProduct(list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
+            ViewBag.PorductList = _productService.GetProduct(
+                    list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
                 .ToDictionary(c => c.ProductId, c => c);
 
             var data = new ApiPageList<OrderMaster>()
@@ -88,7 +90,7 @@ namespace QingFeng.WebArea.Controllers
 
         public ActionResult ProductStocks(string baseNo = "")
         {
-            if (string.IsNullOrEmpty(baseNo))
+            if (!string.IsNullOrEmpty(baseNo))
             {
                 return View(new ProductBase());
             }
@@ -138,6 +140,8 @@ namespace QingFeng.WebArea.Controllers
 
             return View(order);
         }
+
+        #region ajax
 
         [HttpPost]
         public JsonResult CreateOrder(UserInfo user, OrderMaster order)
@@ -191,5 +195,23 @@ namespace QingFeng.WebArea.Controllers
 
             return Json(list);
         }
+
+
+        public JsonResult SearchBaseProductNo(string keyWords, int categoryId = 0)
+        {
+            if (string.IsNullOrWhiteSpace(keyWords))
+            {
+                return Json(Enumerable.Empty<object>());
+            }
+
+            var list = _productService.SearchBaseProduct(keyWords).Select(t => new
+            {
+                baseId = t.BaseId,
+                baseNo = t.BaseNo
+            });
+            return Json(list);
+        }
+
+        #endregion
     }
 }
