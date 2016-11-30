@@ -82,7 +82,7 @@
                         <td><span style="color: #5cb85c">@detail.OrderSatus</span></td>
                         @if (i == 0)
                         {
-                            <td rowspan="@item.OrderDetailCount"><span style="color:#5bc0de"><span style="color:#0F0">正常进行</span></span></td>
+                            <td rowspan="@item.OrderDetailCount"><span data-order-status="@item.OrderStatus.GetHashCode()">@item.OrderStatus.ToString()</span></td>
                             <td rowspan="@item.OrderDetailCount" class="last">
                                 <a href="/agent/orderDetail?orderId=@item.OrderId" data-url="/agent/orderDetail?orderId=@item.OrderId" class="load-view">查看</a>
                             </td>
@@ -172,6 +172,20 @@
                 pageIndex: 5, pageSize: 10, recordCount: 99, buttonClickCallback: function (page) {
                     alert(page);
                 }
+            });
+
+            $("span[data-order-status]").each(function() {
+                var status = parseInt($(this).attr("data-order-status"));
+                var color = status === 5 || status === 7
+                    ? "#428bca"
+                    : status === 1
+                    ? "#ccc"
+                    : status === 2
+                    ? "red"
+                    : status === 6
+                    ? "#5bc0de"
+                    : "";
+                $(this).css("color",color);
             });
         });
     </script>
