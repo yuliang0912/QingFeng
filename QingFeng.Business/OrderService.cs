@@ -73,18 +73,18 @@ namespace QingFeng.Business
 
             var result = _orderMaster.CreateOrder(orderMaster, orderDetails);
 
-            //if (result)
-            //{
-            //    _orderLogs.Insert(new OrderLogs()
-            //    {
-            //        UserId = user.UserId,
-            //        OrderId = orderId,
-            //        UserName = user.UserName,
-            //        Title = "添加订单",
-            //        Content = string.Join(",", orderDetails.Select(t => $"{t.ProductName}-{t.SkuName}*{t.Quantity}")),
-            //        CreateDate = DateTime.Now
-            //    });
-            //}
+            if (result)
+            {
+                _orderLogs.Insert(new OrderLogs()
+                {
+                    UserId = user.UserId,
+                    OrderId = orderId,
+                    UserName = user.UserName,
+                    Title = "添加订单",
+                    Content = string.Join(",", orderDetails.Select(t => $"{t.ProductName}-{t.SkuName}*{t.Quantity}")),
+                    CreateDate = DateTime.Now
+                });
+            }
 
             return result;
         }

@@ -24,6 +24,12 @@ namespace QingFeng.WebArea.Controllers
             return View();
         }
 
+        public ActionResult Logout()
+        {
+            FormsAuthenticationWrapper.Instance.SignOut();
+            return Redirect("/home/login");
+        }
+
         public JsonResult LoginCheck(string loginName, string passWord)
         {
             bool isPass;

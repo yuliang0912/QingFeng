@@ -16,6 +16,7 @@ namespace QingFeng.WebArea.Controllers
 
         private readonly OrderService _orderService = new OrderService();
         private readonly ProductService _productService = new ProductService();
+        private readonly OrderLogsService _orderLogsService = new OrderLogsService();
         private readonly LogisticsService _logisticsService = new LogisticsService();
         private readonly ProductStockService _productStockService = new ProductStockService();
         // GET: Agent
@@ -141,6 +142,8 @@ namespace QingFeng.WebArea.Controllers
                 .ToDictionary(c => c.ProductId, c => c);
 
             ViewBag.Logistics = _logisticsService.GetLogistics(orderId);
+
+            ViewBag.OrderLogs = _orderLogsService.GetList(orderId);
 
             return View(order);
         }

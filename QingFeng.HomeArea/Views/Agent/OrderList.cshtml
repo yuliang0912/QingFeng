@@ -91,11 +91,11 @@
                 }
             }
         </tbody>
-        <tfoot>
+        @*<tfoot>
             <tr align="center">
                 <td colspan="17" style="text-align:left !important;"><input type="checkbox" name="choose_all" value="1" id="choose_all" style="margin-left:0.5%;"> <label for="choose_all"> 选中所有</label> <button type="submit" class="btn btn-sm btn-success" style="margin-left: 12px;">支付选中</button></td>
             </tr>
-        </tfoot>
+        </tfoot>*@
     </table>
     <script src="/content/agent/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
     <script type="text/javascript">
@@ -119,11 +119,6 @@
                 var start_time = $('#start_time').val();
                 var end_time = $('#end_time').val();
                 var keyword = $('#order_keyword').val();
-
-                if (start_time == '' && end_time == '' && keyword == '') {
-                    alert('请选择或输入要筛选的条件！');
-                    return false;
-                }
 
                 var url = location.pathname;
                 url += '?beginDateStr=' + start_time;

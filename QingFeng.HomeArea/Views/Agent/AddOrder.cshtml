@@ -37,7 +37,7 @@
         <a href="/agent/orderList" class="btn btn-info btn-sm pull-right back-to-list"> <i class="icon-circle-arrow-left"></i> 返回列表</a>
     </h1>
 </div>
-<form class="form-inline" role="form" id="order-form" method="post" action="http://agent.findshoes.cn/order/add">
+<form class="form-inline" role="form" id="order-form" method="post">
     <div class="panel panel-info">
         <!-- Default panel contents -->
         <div class="panel-heading">订单基本信息</div>
@@ -161,8 +161,7 @@
         </table>
     </div>
     <div style="width:300px; margin:5px auto;">
-        <input type="hidden" name="action" value="dosubmit" />
-        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+        <button type="button" class="btn btn-default" onclick="javasript: location.href = '/agent/orderList';" data-dismiss="modal">取消</button>
         <button type="button" onclick="addOrder()" class="btn btn-primary" id="order-save">保存</button>
     </div>
 </form>

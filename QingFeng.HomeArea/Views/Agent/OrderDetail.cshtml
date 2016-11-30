@@ -6,11 +6,12 @@
     var productBase = (ViewBag.ProductBase as Dictionary<int, ProductBase>) ?? new Dictionary<int, ProductBase>();
     var porductList = (ViewBag.PorductList as Dictionary<int, Product>) ?? new Dictionary<int, Product>();
     var logistics = (ViewBag.Logistics as IEnumerable<LogisticsInfo>) ?? new List<LogisticsInfo>();
+    var orderLogs = (ViewBag.OrderLogs as IEnumerable<OrderLogs>) ?? new List<OrderLogs>();
 }
 @using QingFeng.Models
 @model OrderMaster
 
-<div class="page-content" id="page-content" data-back-url="http://agent.findshoes.cn/order/index" data-cureent-url="http://agent.findshoes.cn/order/view/1109">
+<div class="page-content" id="page-content" data-back-url="/agent/orderList" data-cureent-url="/agent/orderList">
     <style type="text/css">
         .panel {
             width: 99%;
@@ -37,7 +38,7 @@
     <div class="page-header">
         <h1 class="form-inline">
             查看订单详情
-            <a href="http://agent.findshoes.cn/order" class="btn btn-info btn-sm pull-right back-to-list"> <i class="icon-circle-arrow-left"></i> 返回列表</a>
+            <a href="/agent/orderList" class="btn btn-info btn-sm pull-right back-to-list"> <i class="icon-circle-arrow-left"></i> 返回列表</a>
         </h1>
 
     </div>
@@ -156,30 +157,21 @@
                 </tr>
             </thead>
             <tbody>
-                <tr align="center">
-                    <td>eling</td>
-                    <td>品牌商发货</td>
-                    <td></td>
-                    <td>2016-10-18 17:12:52</td>
-                </tr>
-                <tr align="center">
-                    <td>系统操作员</td>
-                    <td>财审订单</td>
-                    <td>（自动审核）确认支付，财务审核通过</td>
-                    <td>2016-10-17 11:06:46</td>
-                </tr>
-                <tr align="center">
-                    <td>系统操作员</td>
-                    <td>审核订单</td>
-                    <td>分销商支付成功, 支付流水号:M161017110555000040979847</td>
-                    <td>2016-10-17 11:06:46</td>
-                </tr>
-                <tr align="center">
-                    <td>axia</td>
-                    <td>添加订单</td>
-                    <td>颜色分类:3415001白色;尺码:44</td>
-                    <td>2016-10-17 11:04:51</td>
-                </tr>
+                @foreach (var item in orderLogs)
+                {
+                    <tr align="center">
+                        <td>@item.UserName</td>
+                        <td>@item.Title</td>
+                        <td>@item.Content</td>
+                        <td>@item.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")</td>
+                    </tr>
+                }
+                @if (!logistics.Any())
+                {
+                    <tr align="center" valign="middle">
+                        <td colspan="4">-暂无日志信息-</td>
+                    </tr>
+                }
             </tbody>
         </table>
         <!-- /.row -->
