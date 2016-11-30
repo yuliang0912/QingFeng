@@ -54,6 +54,10 @@ namespace QingFeng.WebArea.Controllers
                     list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
                 .ToDictionary(c => c.ProductId, c => c);
 
+            ViewBag.beginDateStr = beginDateStr;
+            ViewBag.endDateStr = endDateStr;
+            ViewBag.keyWords = keyWords;
+
             var data = new ApiPageList<OrderMaster>()
             {
                 Page = page,

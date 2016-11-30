@@ -111,6 +111,7 @@ CREATE TABLE `orderDetail` (
   PRIMARY KEY (`flowId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+
 CREATE TABLE `logistics` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,
   `orderId` bigint(20) NOT NULL,
@@ -123,3 +124,15 @@ CREATE TABLE `logistics` (
   `updateDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`Id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `orderlogs` (
+  `logId` int(11) NOT NULL AUTO_INCREMENT,
+  `orderId` bigint(20) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `userName` varchar(32) NOT NULL,
+  `title` varchar(64) NOT NULL,
+  `content` varchar(2000) NOT NULL,
+  `createDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`logId`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
