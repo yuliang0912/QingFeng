@@ -18,11 +18,14 @@ namespace QingFeng.WebArea.Fillter
         }
 
         protected UserInfo CurrentUser;
+
         public void OnAuthorization(AuthorizationContext filterContext)
         {
             var userId = FormsAuthenticationService.Instance.UserId;
 
-            CurrentUser = string.IsNullOrEmpty(userId) ? null : new UserService().GetUserInfo(new { userId });
+            //CurrentUser = string.IsNullOrEmpty(userId) ? null : new UserService().GetUserInfo(new { userId });
+
+            CurrentUser = new UserService().GetUserInfo(new {userName = "admin"});
 
             if (CurrentUser != null &&
                 (CurrentUser.UserRole == _allowRole || _allowRole == Common.AgentEnums.UserRole.AllUser))

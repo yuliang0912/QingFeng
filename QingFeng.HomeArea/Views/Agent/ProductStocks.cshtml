@@ -3,6 +3,7 @@
     ViewBag.Title = "ProductStocks";
     Layout = "~/Views/Shared/_LayoutAgent.cshtml";
     var allSkus = (ViewBag.allSkus as Dictionary<int, string>) ?? new Dictionary<int, string>();
+    var skuCounts = allSkus.ToDictionary(c => c.Key, c => 0);
 }
 @model QingFeng.Models.ProductBase
 @using System.Linq
@@ -76,23 +77,28 @@
                     <td>@subProduct.ProductStocks.Sum(t => t.StockNum)</td>
                     @foreach (var item in allSkus)
                     {
+                        if (dict.ContainsKey(item.Key))
+                        {
+                            skuCounts[item.Key] += dict[item.Key];
+                        }
                         <td class="center">@(dict.ContainsKey(item.Key) ? dict[item.Key] : 0)</td>
                     }
                 </tr>
             }
-            <!--输出合计数量-->
-            <tr align="center">
-                <td colspan="5" class="text-right" style="padding-right: 28px;">合计</td>
-                <td>193</td>
-                <td>24</td>
-                <td>32</td>
-                <td>38</td>
-                <td>31</td>
-            </tr>
+            @if (Model.SubProduct.Any())
+            {
+                <!--输出合计数量-->
+                <tr align="center">
+                    <td colspan="5" class="text-right" style="padding-right: 28px;">合计</td>
+                    <td>@Model.SubProduct.SelectMany(t => t.ProductStocks).Sum(t => t.StockNum)</td>
+                    @foreach (var item in skuCounts)
+                    {
+                        <td>@item.Value</td>
+                    }
+                </tr>
+            }
             <!--输出合计数量 end-->
         </tbody>
-
-
     </table>
 </div>
 <!-- /.table-responsive -->

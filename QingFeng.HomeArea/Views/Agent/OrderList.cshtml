@@ -140,16 +140,6 @@
                 }
             });
 
-            $('#order-form').submit(function (e) {
-                var l = $('.choose-item:checked').length;
-                if (l == 0) {
-                    alert('请选择需要支付的订单');
-                    return false;
-                } else {
-                    return true;
-                }
-            });
-
             $('.load-view').click(function () {
                 var url = $(this).data('url');
                 url += url.indexOf("?") > -1 ? "&stype=1" : "?stype=1";

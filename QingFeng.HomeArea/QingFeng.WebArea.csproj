@@ -540,6 +540,7 @@
     <Content Include="Views\Agent\ProductStocks.cshtml" />
     <Content Include="Views\Agent\OrderDetail.cshtml" />
     <Content Include="Content\agent\css\jquery.pager.css" />
+    <None Include="Properties\PublishProfiles\my_publish.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -547,9 +548,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Product\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\QingFeng.Business\QingFeng.Business.csproj">
       <Project>{d8906a58-c9da-4cf6-ac7f-0adf00b3ed56}</Project>
