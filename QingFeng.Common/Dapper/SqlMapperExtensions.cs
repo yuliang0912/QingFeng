@@ -180,8 +180,9 @@ namespace QingFeng.Common.Dapper
                 return Enumerable.Empty<T>();
             }
 
-            var sql =
-                $"SELECT {columns} FROM {table}{whereFields} ORDER BY {orderBy} LIMIT {(pageIndex - 1)*pageSize},{pageIndex*pageSize}";
+            var sql = string.IsNullOrWhiteSpace(orderBy)
+                ? $"SELECT {columns} FROM {table}{whereFields} LIMIT {(pageIndex - 1)*pageSize},{pageSize}"
+                : $"SELECT {columns} FROM {table}{whereFields} ORDER BY {orderBy} LIMIT {(pageIndex - 1)*pageSize},{pageSize}";
 
             return connection.Query<T>(sql, conditionObj, transaction, true, commandTimeout);
         }

@@ -1,0 +1,111 @@
+﻿
+@{
+    ViewBag.Title = "用户管理";
+}
+@model QingFeng.Common.ApiCore.Result.ApiPageList<QingFeng.Models.UserInfo>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>用户名</th>
+                                <th>昵称</th>
+                                <th>店铺名</th>
+                                <th>创建时间</th>
+                                <th style="width: 200px">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.PageList)
+                            {
+                                <tr>
+                                    <td>@item.UserName</td>
+                                    <td>@item.NickName</td>
+                                    @if (string.IsNullOrWhiteSpace(item.StoreInfo.HomeUrl))
+                                    {
+                                        <td>@item.StoreInfo.StoreName</td>
+                                    }
+                                    else
+                                    {
+                                        <td><a href="@item.StoreInfo.HomeUrl" target="_blank">@item.StoreInfo.StoreName</a></td>
+                                    }
+                                    <td>@item.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")</td>
+                                    <td>
+                                        <button type="button" onclick="location.href='/admin/editUser?userId=@item.UserId'" class="btn btn-primary btn-sm">编辑</button>
+                                        <button type="button" data-user-id="@item.UserId" class="btn btn-primary btn-sm">重置密码</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal inmodal" id="editMenu2" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+                <h5 class="modal-title">重置密码</h5>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal m-t" id="signupForm">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">输入新密码 <i>*</i>：</label>
+                        <div class="col-sm-5">
+                            <input name="passWord" id="passWord" max="30" class="form-control" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-5 col-sm-offset-3">
+                            <button class="btn btn-primary" id="updatePwd" type="button">保存</button>
+                            <button class="btn btn-primary" id="closeModal" type="button">关闭</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function () {
+        var currUserId = 0;
+        $("#updatePwd").click(function () {
+            var passWord = $("#passWord").val().trim();
+            if (passWord.length < 6) {
+                layer.tips("请输入最少6位长度的密码", $("#passWord"));
+                return;
+            }
+
+            $core.ajax.getJSON("/admin/UpdatePassWord", { userId: currUserId, passWord: passWord }, function (data) {
+                if (data !== 1) {
+                    layer.msg("密码修改失败");
+                    return;
+                }
+                layer.msg("密码修改成功", {
+                    success: function () {
+                        setTimeout(function () {
+                            $("#editMenu2").modal("hide");
+                        }, 1000);
+                    }
+                });
+            });
+        });
+
+        $("button[data-user-id]").click(function () {
+            currUserId = parseInt($(this).attr("data-user-id"));
+            $("#passWord").val('');
+            $("#editMenu2").modal("show");
+        });
+        $("#closeModal").click(function() {
+            $("#editMenu2").modal("hide");
+        });
+    });
+</script>

@@ -1,0 +1,155 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+}
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">*用户名：</label>
+                            <div class="col-sm-5">
+                                <input id="userName" name="username" maxlength="30" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">用户昵称：</label>
+                            <div class="col-sm-5">
+                                <input id="nickName" name="nickName" maxlength="30" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">*密码：</label>
+                            <div class="col-sm-5">
+                                <input id="passWord" name="password" maxlength="30" class="form-control" type="password">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">*确认密码：</label>
+                            <div class="col-sm-5">
+                                <input id="confirm_password" name="confirm_password" class="form-control" type="password">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">店铺名：</label>
+                            <div class="col-sm-5">
+                                <input id="storeName" name="storeName" maxlength="50"  class="form-control" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">店铺地址：</label>
+                            <div class="col-sm-5">
+                                <input id="homeUrl" name="homeUrl" maxlength="128"  class="form-control" type="text" aria-required="true" aria-invalid="false">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-5 col-sm-offset-3">
+                                <button class="btn btn-primary" id="submitBtn" type="submit">提交</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/content/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/content/js/plugins/validate/messages_zh.min.js"></script>
+<script>
+    $.validator.setDefaults({
+        highlight: function (e) {
+            $(e).closest(".form-group").removeClass("has-success").addClass("has-error");
+        },
+        success: function (e) {
+            e.closest(".form-group").removeClass("has-error").addClass("has-success");
+        },
+        errorElement: "span",
+        errorPlacement: function (e, r) {
+            e.appendTo(r.is(":radio") || r.is(":checkbox") ? r.parent().parent().parent() : r.parent());
+        },
+        errorClass: "help-block m-b-none",
+        validClass: "help-block m-b-none"
+    });
+
+    $(function () {
+        var e = "<i class='fa fa-times-circle'></i> ";
+        $("#signupForm").validate({
+            rules: {
+                username: {
+                    required: true,
+                    minlength: 11
+                },
+                password: {
+                    required: true,
+                    minlength: 6
+                },
+                confirm_password: {
+                    required: true,
+                    minlength: 6,
+                    equalTo: "#passWord"
+                },
+                homeUrl: {
+                    url: true
+                }
+            },
+            messages: {
+                username: {
+                    required: e + "请输入您的用户名",
+                    minlength: e + "用户名必须11个字符以上"
+                },
+                password: {
+                    required: e + "请输入您的密码",
+                    minlength: e + "密码必须6个字符以上"
+                },
+                confirm_password: {
+                    required: e + "请再次输入密码",
+                    minlength: e + "密码必须6个字符以上",
+                    equalTo: e + "两次输入的密码不一致"
+                }
+            },
+            submitHandler: function (form) {
+                $("#submitBtn").attr("disabled", true);
+
+                var userName = $("#userName").val().trim();
+                var nickName = $("#nickName").val().trim();
+                var passWord = $("#passWord").val().trim();
+                var storeName = $("#storeName").val().trim();
+                var homeUrl = $("#homeUrl").val().trim();
+
+                var postInfo = {
+                    userName: userName, nickName: nickName, passWord: passWord, storeInfo: {
+                        storeName: storeName,
+                        homeUrl: homeUrl
+                    }
+                };
+
+                $core.ajax.postJSON("/admin/AddStoreUser", postInfo, function (data) {
+                    if (data === 1) {
+                        layer.msg("添加用户成功", {
+                            success: function () {
+                            }
+                        });
+                        return;
+                    }
+                    if (data === 0) {
+                        layer.msg("添加用户失败");
+                    }
+                    else if (data === 2) {
+                        layer.msg("用户名已经存在");
+                    } else if (data === 3) {
+                        layer.msg("店铺信息错误");
+                    }
+                    else {
+                        layer.msg(this.message);
+                    }
+                    $("#submitBtn").attr("disabled", false);
+                });
+
+                return false;
+            }
+        });
+    });
+</script>

@@ -10,8 +10,8 @@
     <meta name="GENERATOR" content="MSHTML 11.00.9600.17496" />
     <title>登录页面</title>
     <script src="~/Content/js/jquery.min.js"></script>
+    <script src="/content/scripts/qingfeng.core.js"></script>
     <link href="/content/css/login.css" type="text/css" rel="stylesheet" />
-    <script src="~/Content/scripts/saas.framework.js"></script>
 </head>
 <body>
     <div class="top_div"></div>
@@ -55,7 +55,7 @@
                 return;
             }
 
-            $saas.ajax.getJSON("/Home/LoginCheck", { loginName: username, passWord: pwd }, function (data) {
+            $core.ajax.getJSON("/Home/LoginCheck", { loginName: username, passWord: pwd }, function (data) {
                 if (data.isPass === 0) {
                     result.text("账号密码错误");
                 }

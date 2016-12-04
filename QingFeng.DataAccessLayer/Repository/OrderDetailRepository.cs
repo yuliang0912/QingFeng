@@ -23,7 +23,7 @@ namespace QingFeng.DataAccessLayer.Repository
                 return new List<OrderDetail>();
             }
 
-            var additional = $"AND orderId IN ('{string.Join("','", orderId)}')";
+            var additional = $"AND orderId IN ({string.Join(",", orderId)})";
 
             Func<object, string> buildWhereSql =
                 (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional);

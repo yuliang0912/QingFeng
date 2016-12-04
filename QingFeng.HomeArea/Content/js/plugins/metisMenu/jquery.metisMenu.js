@@ -80,7 +80,8 @@
         },
 
         //Enable the link on the second click.
-        doubleTapToGo: function(elem) {
+        doubleTapToGo: function (elem) {
+
             var $this = this.element;
 
             //if the class "doubleTapToGo" exists, remove it and return
@@ -112,6 +113,7 @@
             if (el.data(pluginName)) {
                 el.data(pluginName).remove();
             }
+
             el.data(pluginName, new Plugin(this, options));
         });
         return this;

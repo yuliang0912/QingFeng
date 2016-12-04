@@ -297,7 +297,7 @@
             layer.msg("订单中不存在任何有效商品,请检查是否添加商品,并且选择尺码");
             return;
         }
-        $saas.ajax.postJSON("/agent/CreateOrder", order, function (data) {
+        $core.ajax.postJSON("/agent/CreateOrder", order, function (data) {
             if (data === 1) {
                 var orderId = this.message
                 layer.alert("订单添加成功", function () {
@@ -316,7 +316,7 @@
             layer.msg("请输入要搜索的商品货号");
             return;
         }
-        $saas.ajax.getJSON("/agent/SearchProduct", { keyWords: keyword }, function (data) {
+        $core.ajax.getJSON("/agent/SearchProduct", { keyWords: keyword }, function (data) {
             var html = "";
             $.each(data, function (i, item) {
                 html += '<option value="' + item.productId + '">' + item.productName + "&nbsp;&nbsp;" + item.productNo + "&nbsp;&nbsp;" + item.categoryName + '</option>';
@@ -350,7 +350,7 @@
     });
 
     function GetProductStock(productId, randId) {
-        $saas.ajax.getJSON("/agent/GetProductStock", { productId: productId }, function (data) {
+        $core.ajax.getJSON("/agent/GetProductStock", { productId: productId }, function (data) {
             var html = "<option value=\"0\">请选择尺码</option>";
             $.each(data, function (i, item) {
                 html += '<option value="' + item.skuId + '">' + item.skuName + '</option>';

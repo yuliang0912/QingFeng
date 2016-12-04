@@ -41,19 +41,19 @@ namespace QingFeng.WebArea.Controllers
             return Json(new {isPass, userRole = userInfo?.UserRole}, JsonRequestBehavior.AllowGet);
         }
 
-        public JsonResult GetUserList(int page = 1, int pageSize = 10)
-        {
-            int totalItem;
-            var list = _userService.GetPageList(page, pageSize, out totalItem);
+        //public JsonResult GetUserList(int page = 1, int pageSize = 10)
+        //{
+        //    int totalItem;
+        //    var list = _userService.GetPageList(page, pageSize, out totalItem);
 
-            return Json(new ApiPageList<UserInfo>()
-            {
-                Page = page,
-                PageSize = pageSize,
-                TotalCount = totalItem,
-                PageList = list
-            });
-        }
+        //    return Json(new ApiPageList<UserInfo>()
+        //    {
+        //        Page = page,
+        //        PageSize = pageSize,
+        //        TotalCount = totalItem,
+        //        PageList = list
+        //    });
+        //}
 
 
         [AdminAuthorize(AgentEnums.UserRole.Administrator)]

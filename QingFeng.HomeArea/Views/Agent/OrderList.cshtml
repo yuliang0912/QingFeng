@@ -19,10 +19,6 @@
     th {
         text-align: center;
     }
-
-    .pagination {
-        margin: 10px 0;
-    }
 </style>
 
 <div class="header" style="margin-top:0px;">
@@ -62,43 +58,43 @@
             </tr>
         </thead>
         <tbody>
-        @foreach (var item in Model.PageList)
-        {
-            for (var i = 0; i < item.OrderDetailCount; i++)
+            @foreach (var item in Model.PageList)
             {
-                var detail = item.OrderDetails.ToList()[i];
-                <tr align="center">
-                    @if (i == 0)
+                for (var i = 0; i < item.OrderDetailCount; i++)
+                {
+                    var detail = item.OrderDetails.ToList()[i];
+                    <tr align="center">
+                        @if (i == 0)
                     {
-                        <td rowspan="@item.OrderDetailCount">@item.OrderId</td>
-                        <td rowspan="@item.OrderDetailCount">@item.CreateDate.ToString()</td>
-                        <td rowspan="@item.OrderDetailCount">@item.OrderNo</td>
-                        <td rowspan="@item.OrderDetailCount">@item.ContactName</td>
-                        <td rowspan="@item.OrderDetailCount">@item.ContactPhone</td>
-                    }
-                    <td>@productBase[detail.BaseId].BaseNo</td>
-                    <td>@porductList[detail.ProductId].ProductNo</td>
-                    <td>@detail.SkuName</td>
-                    <td><span style="color: #5cb85c">@detail.OrderSatus</span></td>
-                    @if (i == 0)
-                    {
-                        <td rowspan="@item.OrderDetailCount"><span data-order-status="@item.OrderStatus.GetHashCode()">@item.OrderStatus.ToString()</span></td>
-                        <td rowspan="@item.OrderDetailCount" class="last">
-                            <a href="/agent/orderDetail?orderId=@item.OrderId" data-url="/agent/orderDetail?orderId=@item.OrderId" class="load-view">查看</a>
-                        </td>
-                    }
-                </tr>
+                            <td rowspan="@item.OrderDetailCount">@item.OrderId</td>
+                            <td rowspan="@item.OrderDetailCount">@item.CreateDate.ToString()</td>
+                            <td rowspan="@item.OrderDetailCount">@item.OrderNo</td>
+                            <td rowspan="@item.OrderDetailCount">@item.ContactName</td>
+                            <td rowspan="@item.OrderDetailCount">@item.ContactPhone</td>
+                        }
+                        <td>@productBase[detail.BaseId].BaseNo</td>
+                        <td>@porductList[detail.ProductId].ProductNo</td>
+                        <td>@detail.SkuName</td>
+                        <td><span data-detail-order-status="@detail.OrderSatus.GetHashCode()">@detail.OrderSatus</span></td>
+                        @if (i == 0)
+                        {
+                            <td rowspan="@item.OrderDetailCount"><span data-order-status="@item.OrderStatus.GetHashCode()">@item.OrderStatus.ToString()</span></td>
+                            <td rowspan="@item.OrderDetailCount" class="last">
+                                <a href="/agent/orderDetail?orderId=@item.OrderId" data-url="/agent/orderDetail?orderId=@item.OrderId" class="load-view">查看</a>
+                            </td>
+                        }
+                    </tr>
+                }
             }
-        }
         </tbody>
         @if (Model.PageCount > 1)
         {
             <tfoot>
-            <tr align="center">
-                <td colspan="11" style="text-align: center;">
-                    <div id="pageDiv"></div>
-                </td>
-            </tr>
+                <tr align="center">
+                    <td colspan="11" style="text-align: center;">
+                        <div id="pageDiv"></div>
+                    </td>
+                </tr>
             </tfoot>
         }
     </table>
@@ -152,15 +148,12 @@
                 return false;
             });
 
-            $('.pagination a').click(function () {
-                var url = $(this).attr('href');
-                $.getPageContent({ url: url });
-                return false;
-            });
 
             $("#pageDiv").pager({
                 pageIndex: @(Model.Page), pageSize: @(Model.PageSize), recordCount: @(Model.TotalCount), buttonClickCallback: function (page) {
-                    alert(page);
+                    var url = location.href;
+                    url += url.indexOf("?") > -1 ? "&page=" + page : "?page="+page;
+                    $.getPageContent({ url: url });
                 }
             });
 
@@ -174,6 +167,18 @@
                     ? "red"
                     : status === 6
                     ? "#5bc0de"
+                    : "";
+                $(this).css("color",color);
+            });
+
+            $("span[data-detail-order-status]").each(function() {
+                var status = parseInt($(this).attr("data-order-status"));
+                var color = status === 1
+                    ? "#ccc"
+                    : status === 2
+                    ? "#428bca"
+                    : status === 3
+                    ? "#ccc"
                     : "";
                 $(this).css("color",color);
             });

@@ -29,6 +29,7 @@
     <script type="text/javascript" src="/content/agent/js/jquery.min.js"></script>
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/content/agent/js/bootstrap.min.js"></script>
+    <script src="/content/scripts/qingfeng.core.js"></script>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -253,7 +254,6 @@
     <script src="/content/agent/js/ace.min.js"></script>
     <script src="/content/agent/js/layer.js"></script>
     <script src="/content/agent/js/jquery.pager.js"></script>
-    <script src="/content/scripts/saas.framework.js"></script>
     <script type="text/javascript" src="/content/agent/js/jquery.form.js"></script>
     <script type="text/javascript" src="/content/agent/js/jquery.ztree.all-3.5.min.js"></script>
     <script>
@@ -269,7 +269,7 @@
                 layer.msg("请输入大于6位的密码");
                 return;
             }
-            $saas.ajax.getJSON("/Home/UpdatePassWord", { oldPwd: oldPwd, newPwd: newPwd }, function(data) {
+            $core.ajax.getJSON("/Home/UpdatePassWord", { oldPwd: oldPwd, newPwd: newPwd }, function (data) {
                 if (data === 1) {
                     layer.msg("修改成功");
                     $("#etop-modal").modal("hide");

@@ -64,18 +64,39 @@
                             H+
                         </div>
                     </li>
-                    <li>
+                <li>
                     <a href="#">
                         <i class="fa fa-home"></i>
-                        <span class="nav-label">分销商管理</span>
+                        <span class="nav-label">用户管理</span>
                         <span class="fa arrow"></span>
                     </a>
                     <ul class="nav nav-second-level">
                         <li>
-                            <a class="J_menuItem" href="/home/register" data-index="0">创建店铺</a>
+                            <a class="J_menuItem" href="/admin/userList" data-index="0">用户管理</a>
+                        </li>
+                        <li>
+                            <a class="J_menuItem" href="/admin/createUser" data-index="0">创建用户</a>
                         </li>
                     </ul>
                 </li>
+                    <li>
+                        <a href="#">
+                            <i class="fa fa-home"></i>
+                            <span class="nav-label">商品管理</span>
+                            <span class="fa arrow"></span>
+                        </a>
+                        <ul class="nav nav-second-level">
+                            <li>
+                                <a class="J_menuItem" href="/admin/products" data-index="0">商品管理</a>
+                            </li>
+                            <li>
+                                <a class="J_menuItem" href="/admin/addBaseProducts" data-index="0">添加基础商品</a>
+                            </li>
+                            <li>
+                                <a class="J_menuItem" href="/admin/createUser" data-index="0">商品颜色管理</a>
+                            </li>
+                        </ul>
+                    </li>
                     <li>
                         <a href="#">
                             <i class="fa fa-home"></i>
@@ -568,7 +589,7 @@
                 </button>
                 <nav class="page-tabs J_menuTabs">
                     <div class="page-tabs-content">
-                        <a href="/content/javascript:;" class="active J_menuTab" data-id="index_v1.html">首页</a>
+                        <a href="javascript:;" class="active J_menuTab" data-id="index_v1.html">首页</a>
                     </div>
                 </nav>
                 <button class="roll-nav roll-right J_tabRight">
@@ -904,11 +925,11 @@
     </div>
     <script src="/content/js/jquery.min.js?v=2.1.4"></script>
     <script src="/content/js/bootstrap.min.js?v=3.3.6"></script>
-    <script src="/content/js/plugins/metisMenu/jquery.metisMenu.js"></script>
+    <script src="/content/js/plugins/metisMenu/jquery.metisMenu.js?v=@DateTime.Now.Ticks"></script>
     <script src="/content/js/plugins/slimscroll/jquery.slimscroll.min.js"></script>
     <script src="/content/js/plugins/layer/layer.min.js"></script>
     <script src="/content/js/hplus.min.js?v=4.1.0"></script>
-    <script type="text/javascript" src="/content/js/contabs.min.js"></script>
+    <script type="text/javascript" src="/content/js/contabs.js?v=@DateTime.Now.Ticks"></script>
     <script src="/content/js/plugins/pace/pace.min.js"></script>
 </body>
 

@@ -44,7 +44,7 @@
                             location.href = "/home/login";
                         }
                         if (result.ret === 0 && result.errcode !== 0) {
-                            alert(result.message || "出错啦");
+                            layer(result.message || "出错啦");
                         } else {
                             successFunc && successFunc.call(result, result.data == undefined ? result : result.data);
                         }

@@ -1,0 +1,151 @@
+﻿
+@{
+    ViewBag.Title = "AddBaseProducts";
+}
+
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">*货号：</label>
+                            <div class="col-sm-5">
+                                <input id="baseNo" name="baseNo" maxlength="32" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">*货名：</label>
+                            <div class="col-sm-5">
+                                <input id="baseName" name="baseName" maxlength="120" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">*市场价：</label>
+                            <div class="col-sm-5">
+                                <input id="originalPrice" name="originalPrice" maxlength="10" class="form-control" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">*采购价：</label>
+                            <div class="col-sm-5">
+                                <input id="actualPrice" name="actualPrice" maxlength="10" class="form-control" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">分类：</label>
+                            <div class="col-sm-5">
+                                <select class="form-control m-b" id="categoryId" name="categoryId">
+                                    <option value="1">男鞋</option>
+                                    <option value="2">女鞋</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-5 col-sm-offset-3">
+                                <button class="btn btn-primary" id="submitBtn" type="submit">提交</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/content/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/content/js/plugins/validate/messages_zh.min.js"></script>
+<script>
+    $.validator.setDefaults({
+        highlight: function (e) {
+            $(e).closest(".form-group").removeClass("has-success").addClass("has-error");
+        },
+        success: function (e) {
+            e.closest(".form-group").removeClass("has-error").addClass("has-success");
+        },
+        errorElement: "span",
+        errorPlacement: function (e, r) {
+            e.appendTo(r.is(":radio") || r.is(":checkbox") ? r.parent().parent().parent() : r.parent());
+        },
+        errorClass: "help-block m-b-none",
+        validClass: "help-block m-b-none"
+    });
+
+    $(function () {
+        var e = "<i class='fa fa-times-circle'></i> ";
+        $("#signupForm").validate({
+            rules: {
+                baseNo: {
+                    required: true,
+                    maxlength: 32,
+                    minlength:2
+                },
+                baseName: {
+                    required: true,
+                    maxlength: 120,
+                    minlength: 2
+                },
+                originalPrice: {
+                    number: true,
+                    min:0
+                },
+                actualPrice: {
+                    number: true,
+                    min: 0
+                }
+            },
+            messages: {
+                originalPrice: {
+                    required: e + "请输入市场价",
+                    min: e + "市场价不能低于0元"
+                },
+                actualPrice: {
+                    required: e + "请输入市场价",
+                    min: e + "采购价不能低于0元"
+                }
+            },
+            submitHandler: function (form) {
+                $("#submitBtn").attr("disabled", true);
+
+                var userName = $("#userName").val().trim();
+                var nickName = $("#nickName").val().trim();
+                var passWord = $("#passWord").val().trim();
+                var storeName = $("#storeName").val().trim();
+                var homeUrl = $("#homeUrl").val().trim();
+
+                var postInfo = {
+                    userName: userName, nickName: nickName, passWord: passWord, storeInfo: {
+                        storeName: storeName,
+                        homeUrl: homeUrl
+                    }
+                };
+
+                $core.ajax.postJSON("/admin/AddStoreUser", postInfo, function (data) {
+                    if (data === 1) {
+                        layer.msg("添加用户成功", {
+                            success: function () {
+                            }
+                        });
+                        return;
+                    }
+                    if (data === 0) {
+                        layer.msg("添加用户失败");
+                    }
+                    else if (data === 2) {
+                        layer.msg("用户名已经存在");
+                    } else if (data === 3) {
+                        layer.msg("店铺信息错误");
+                    }
+                    else {
+                        layer.msg(this.message);
+                    }
+                    $("#submitBtn").attr("disabled", false);
+                });
+
+                return false;
+            }
+        });
+    });
+</script>
+

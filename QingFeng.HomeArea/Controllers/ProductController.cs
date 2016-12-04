@@ -16,23 +16,7 @@ namespace QingFeng.WebArea.Controllers
         private readonly ProductService _productService = new ProductService();
         private readonly ProductStockService _productStockService = new ProductStockService();
 
-        /// <summary>
-        /// 添加基础产品信息
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPost, AdminAuthorize(AgentEnums.UserRole.Administrator)]
-        public JsonResult AddBaseProduct(ProductBase model)
-        {
-            if (model == null)
-            {
-                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "数据接收失败"});
-            }
-
-            var result = _productService.CreateBaseProduct(model);
-
-            return Json(new ApiResult<bool>(result));
-        }
+        
 
         /// <summary>
         /// 根据颜色自动创建子商品

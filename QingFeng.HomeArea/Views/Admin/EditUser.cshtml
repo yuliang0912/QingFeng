@@ -1,0 +1,132 @@
+﻿
+@{
+    ViewBag.Title = "Register";
+}
+@model QingFeng.Models.UserInfo
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">用户ID：</label>
+                            <div class="col-sm-5">
+                                <label class="col-sm-1 control-label">@Model.UserId</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">*用户名：</label>
+                            <div class="col-sm-5">
+                                <label class="col-sm-1 control-label">@Model.UserName</label>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">用户昵称：</label>
+                            <div class="col-sm-5">
+                                <input id="nickName" name="nickName" maxlength="30" value="@Model.NickName" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">店铺名：</label>
+                            <div class="col-sm-5">
+                                <input id="storeName" name="storeName" maxlength="50" value="@Model.StoreInfo.StoreName" class="form-control" type="text" aria-required="true" aria-invalid="false">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">店铺地址：</label>
+                            <div class="col-sm-5">
+                                <input id="homeUrl" name="homeUrl" maxlength="128" value="@Model.StoreInfo.HomeUrl" class="form-control" type="text" aria-required="true" aria-invalid="false">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-5 col-sm-offset-3">
+                                <button class="btn btn-primary" id="submitBtn" type="submit">提交</button>
+                                <button class="btn btn-primary" type="button" onclick="location.href = history.go(-1)">返回</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="/content/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/content/js/plugins/validate/messages_zh.min.js"></script>
+<script>
+    $.validator.setDefaults({
+        highlight: function (e) {
+            $(e).closest(".form-group").removeClass("has-success").addClass("has-error");
+        },
+        success: function (e) {
+            e.closest(".form-group").removeClass("has-error").addClass("has-success");
+        },
+        errorElement: "span",
+        errorPlacement: function (e, r) {
+            e.appendTo(r.is(":radio") || r.is(":checkbox") ? r.parent().parent().parent() : r.parent());
+        },
+        errorClass: "help-block m-b-none",
+        validClass: "help-block m-b-none"
+    });
+
+    $(function() {
+        var e = "<i class='fa fa-times-circle'></i> ";
+        $("#signupForm").validate({
+            rules: {
+                homeUrl: {
+                    url: true
+                }
+            },
+            messages: {
+                username: {
+                    required: e + "请输入您的用户名",
+                    minlength: e + "用户名必须11个字符以上"
+                },
+                password: {
+                    required: e + "请输入您的密码",
+                    minlength: e + "密码必须6个字符以上"
+                },
+                confirm_password: {
+                    required: e + "请再次输入密码",
+                    minlength: e + "密码必须6个字符以上",
+                    equalTo: e + "两次输入的密码不一致"
+                }
+            },
+            submitHandler: function(form) {
+
+                $("#submitBtn").attr("disabled", true);
+
+                var nickName = $("#nickName").val().trim();
+                var storeName = $("#storeName").val().trim();
+                var homeUrl = $("#homeUrl").val().trim();
+
+                var postInfo = {
+                    nickName: nickName,
+                    userId: '@Model.UserId', storeInfo: {
+                        storeName: storeName,
+                        homeUrl: homeUrl
+                    }
+                };
+  
+                $core.ajax.postJSON("/admin/UpdateUserInfo", postInfo, function (data) {
+                    $("#submitBtn").attr("disabled", false);
+                    if (data === 1) {
+                        layer.msg("用户信息修改成功");
+                        return;
+                    }
+                    if (data === 0) {
+                        layer.msg("用户信息修改失败");
+                    }
+                    else {
+                        layer.msg(this.message);
+                    }
+                });
+
+                return false;
+            }
+        });
+    });
+</script>
