@@ -1,8 +1,10 @@
 ﻿
 @{
-    ViewBag.Title = "AddBaseProducts";
+    ViewBag.Title = "EditBaseProduct";
 }
 
+@using QingFeng.Common
+@model QingFeng.Models.ProductBase
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -13,39 +15,41 @@
                         <div class="form-group">
                             <label class="col-sm-1 control-label">*货号：</label>
                             <div class="col-sm-5">
-                                <input id="baseNo" name="baseNo" maxlength="32" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                                <input readonly="readonly"  maxlength="120" value="@Model.BaseNo" class="form-control" type="text" aria-required="true" aria-invalid="true">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-1 control-label">*货名：</label>
                             <div class="col-sm-5">
-                                <input id="baseName" name="baseName" maxlength="120" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                                <input id="baseName" name="baseName" maxlength="120" value="@Model.BaseName" class="form-control" type="text" aria-required="true" aria-invalid="true">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-1 control-label">*市场价：</label>
                             <div class="col-sm-5">
-                                <input id="originalPrice" name="originalPrice" maxlength="10" class="form-control" type="text">
+                                <input id="originalPrice" name="originalPrice" value="@Model.OriginalPrice" maxlength="10" class="form-control" type="text">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-1 control-label">*采购价：</label>
                             <div class="col-sm-5">
-                                <input id="actualPrice" name="actualPrice" maxlength="10" class="form-control" type="text">
+                                <input id="actualPrice" name="actualPrice" value="@Model.ActualPrice" maxlength="10" class="form-control" type="text">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-1 control-label">分类：</label>
                             <div class="col-sm-5">
                                 <select class="form-control m-b" id="categoryId" name="categoryId">
-                                    <option value="1">男鞋</option>
-                                    <option value="2">女鞋</option>
+                                    <option value="0">-请选择商品分类-</option>
+                                    <option value="1" @(Model.CategoryId == AgentEnums.Category.男鞋 ? "selected" : "")>男鞋</option>
+                                    <option value="2" @(Model.CategoryId == AgentEnums.Category.女鞋 ? "selected" : "")>女鞋</option>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-5 col-sm-offset-3">
                                 <button class="btn btn-primary" id="submitBtn" type="submit">提交</button>
+                                <button class="btn btn-primary" onclick="location.href = '/admin/BaseProducts'; return false;" type="submit">返回</button>
                             </div>
                         </div>
                     </form>
@@ -79,7 +83,7 @@
                 baseNo: {
                     required: true,
                     maxlength: 32,
-                    minlength:2
+                    minlength: 2
                 },
                 baseName: {
                     required: true,
@@ -88,11 +92,15 @@
                 },
                 originalPrice: {
                     number: true,
-                    min:0
+                    min: 0
                 },
                 actualPrice: {
                     number: true,
                     min: 0
+                },
+                categoryId: {
+                    required: true,
+                    range: ["1", "2"]
                 }
             },
             messages: {
@@ -103,39 +111,31 @@
                 actualPrice: {
                     required: e + "请输入市场价",
                     min: e + "采购价不能低于0元"
+                },
+                categoryId: {
+                    range: e + "请选择商品分类"
                 }
             },
             submitHandler: function (form) {
                 $("#submitBtn").attr("disabled", true);
 
-                var userName = $("#userName").val().trim();
-                var nickName = $("#nickName").val().trim();
-                var passWord = $("#passWord").val().trim();
-                var storeName = $("#storeName").val().trim();
-                var homeUrl = $("#homeUrl").val().trim();
+                var baseNo = $("#baseNo").val().trim();
+                var baseName = $("#baseName").val().trim();
+                var originalPrice = $("#originalPrice").val().trim();
+                var actualPrice = $("#actualPrice").val().trim();
+                var categoryId = $("#categoryId").val();
 
-                var postInfo = {
-                    userName: userName, nickName: nickName, passWord: passWord, storeInfo: {
-                        storeName: storeName,
-                        homeUrl: homeUrl
-                    }
+                var productInfo = {
+                    baseNo: baseNo, baseName: baseName, originalPrice: originalPrice, actualPrice: actualPrice, categoryId: categoryId
                 };
 
-                $core.ajax.postJSON("/admin/AddStoreUser", postInfo, function (data) {
+                $core.ajax.postJSON("/admin/CreateBaseProduct", productInfo, function (data) {
                     if (data === 1) {
-                        layer.msg("添加用户成功", {
-                            success: function () {
-                            }
-                        });
+                        layer.msg("添加商品成功", { success: function () { setTimeout(function () { location.reload() }, 1500) } });
                         return;
                     }
                     if (data === 0) {
-                        layer.msg("添加用户失败");
-                    }
-                    else if (data === 2) {
-                        layer.msg("用户名已经存在");
-                    } else if (data === 3) {
-                        layer.msg("店铺信息错误");
+                        layer.msg("添加商品失败");
                     }
                     else {
                         layer.msg(this.message);

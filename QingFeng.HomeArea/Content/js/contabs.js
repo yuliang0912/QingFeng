@@ -116,6 +116,7 @@ $(function () {
         // 选项卡菜单已存在
         $('.J_menuTab').each(function () {
             if ($(this).data('id') == dataUrl) {
+                var isReflush = $(this).hasClass('reflush');
                 if (!$(this).hasClass('active')) {
                     $(this).addClass('active').siblings('.J_menuTab').removeClass('active');
                     scrollToTab(this);
@@ -124,7 +125,7 @@ $(function () {
                         if ($(this).data('id') == dataUrl) {
                             $(this).show().siblings('.J_iframe').hide();
                             //二次点击重新打开
-                            $(this).attr("src", dataUrl);
+                            isReflush && $(this).attr("src", dataUrl);
                             return false;
                         }
                     });

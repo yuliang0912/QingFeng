@@ -11,35 +11,35 @@
                 <div class="ibox-content">
                     <table class="table table-bordered">
                         <thead>
-                            <tr>
-                                <th>用户名</th>
-                                <th>昵称</th>
-                                <th>店铺名</th>
-                                <th>创建时间</th>
-                                <th style="width: 200px">操作</th>
-                            </tr>
+                        <tr>
+                            <th>用户名</th>
+                            <th>昵称</th>
+                            <th>店铺名</th>
+                            <th>创建时间</th>
+                            <th style="width: 200px">操作</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            @foreach (var item in Model.PageList)
-                            {
-                                <tr>
-                                    <td>@item.UserName</td>
-                                    <td>@item.NickName</td>
-                                    @if (string.IsNullOrWhiteSpace(item.StoreInfo.HomeUrl))
-                                    {
-                                        <td>@item.StoreInfo.StoreName</td>
-                                    }
-                                    else
-                                    {
-                                        <td><a href="@item.StoreInfo.HomeUrl" target="_blank">@item.StoreInfo.StoreName</a></td>
-                                    }
-                                    <td>@item.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")</td>
-                                    <td>
-                                        <button type="button" onclick="location.href='/admin/editUser?userId=@item.UserId'" class="btn btn-primary btn-sm">编辑</button>
-                                        <button type="button" data-user-id="@item.UserId" class="btn btn-primary btn-sm">重置密码</button>
-                                    </td>
-                                </tr>
-                            }
+                        @foreach (var item in Model.PageList)
+                        {
+                            <tr>
+                                <td>@item.UserName</td>
+                                <td>@item.NickName</td>
+                                @if (string.IsNullOrWhiteSpace(item.StoreInfo.HomeUrl))
+                                {
+                                    <td>@item.StoreInfo.StoreName</td>
+                                }
+                                else
+                                {
+                                    <td><a href="@item.StoreInfo.HomeUrl" target="_blank">@item.StoreInfo.StoreName</a></td>
+                                }
+                                <td>@item.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")</td>
+                                <td>
+                                    <button type="button" onclick="location.href = '/admin/editUser?userId=@item.UserId'" class="btn btn-primary btn-sm">编辑</button>
+                                    <button type="button" data-user-id="@item.UserId" class="btn btn-primary btn-sm">重置密码</button>
+                                </td>
+                            </tr>
+                        }
                         </tbody>
                     </table>
                 </div>
@@ -47,6 +47,7 @@
         </div>
     </div>
 </div>
+
 <div class="modal inmodal" id="editMenu2" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content animated bounceInRight">

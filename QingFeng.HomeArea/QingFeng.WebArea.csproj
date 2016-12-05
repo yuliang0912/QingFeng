@@ -552,7 +552,11 @@
     <Content Include="Views\Admin\UserList.cshtml" />
     <Content Include="Views\Admin\EditUser.cshtml" />
     <Content Include="Views\Admin\Products.cshtml" />
-    <Content Include="Views\Admin\AddBaseProducts.cshtml" />
+    <Content Include="Views\Admin\AddBaseProduct.cshtml" />
+    <Content Include="Views\Admin\ColorList.cshtml" />
+    <Content Include="Views\Admin\SizeList.cshtml" />
+    <Content Include="Views\Admin\BaseProducts.cshtml" />
+    <Content Include="Views\Admin\EditBaseProduct.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

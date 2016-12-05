@@ -163,7 +163,7 @@
         // loop thru visible pages and render buttons
         for (var page = startPoint; page <= endPoint; page++) {
             var currentButton = pageIndex === page
-                ? $('<li class="active">' + page + '</li>')
+                ? $('<li data-page="' + page + '" class="active">' + page + '</li>')
                 : $('<li data-page="' + page + '"><a href="javascript:;">' + page + '</a></li>');
 
             currentButton.click(function () {

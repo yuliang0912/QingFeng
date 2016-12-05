@@ -1,0 +1,87 @@
+﻿
+@{
+    ViewBag.Title = "BaseProducts";
+}
+@model QingFeng.Common.ApiCore.Result.ApiPageList<QingFeng.Models.ProductBase>
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="text-align: left">
+                    <div class="ibox-tools">
+                        <button type="button" onclick="location.href='/admin/addBaseProduct'" class="btn btn-primary btn-sm">添加商品</button>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>货名</th>
+                                <th>货号</th>
+                                <th>市场价</th>
+                                <th>采购价</th>
+                                <th>子产品数量</th>
+                                <th>添加时间</th>
+                                <th style="width: 250px">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.PageList)
+                            {
+                                <tr>
+                                    <td>@item.BaseName</td>
+                                    <td>@item.BaseNo</td>
+                                    <td>@item.OriginalPrice</td>
+                                    <td>@item.ActualPrice</td>
+                                    <td style="text-align: center">
+                                        <span style="padding-right: 10px; font-size: 15px;">@item.SubProduct.Count()</span>
+                                        <a class="btn btn-white btn-bitbucket">
+                                            <i class="fa fa-road"></i>
+                                        </a>
+                                    </td>
+                                    <td>@item.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")</td>
+                                    <td data-base-id="@item.BaseId">
+                                        <button type="button" onclick="location.href = '/admin/EditBaseProduct?baseId=@item.BaseId'" class="btn btn-primary btn-sm">编辑</button>
+                                        <button type="button" class="btn btn-primary btn-sm">删除</button>
+                                        <button type="button" class="btn btn-primary btn-sm">创建子产品</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        @if (Model.PageCount > 1)
+                        {
+                            <tfoot>
+                                <tr align="center">
+                                    <td colspan="7" style="text-align: center;">
+                                        <div id="pageDiv"></div>
+                                    </td>
+                                </tr>
+                            </tfoot>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function() {
+        $("#pageDiv").pager({
+            pageIndex: @(Model.Page), pageSize: @(Model.PageSize), recordCount: @(Model.TotalCount), buttonClickCallback: function (page) {
+                var url = location.href;
+                if (url.indexOf("?page=") > -1) {
+                    url = url.replace(/[?]page=[\d]*/i, '?page=' + page);
+                } else if(url.indexOf("&page=") > -1) {
+                    url = url.replace(/[&]page=[\d]*/i, '&page=' + page);
+                }else if (url.indexOf("?")>-1) {
+                    url = url + "&page=" + page;
+                }else{
+                    url = url + "?page=" + page;
+                }
+                location.href = url;
+
+            }
+        });
+    })
+</script>

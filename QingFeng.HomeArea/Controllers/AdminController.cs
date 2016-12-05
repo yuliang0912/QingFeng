@@ -18,6 +18,7 @@ namespace QingFeng.WebArea.Controllers
     {
         private readonly UserService _userService = new UserService();
         private readonly OrderService _orderService = new OrderService();
+        private readonly SkuItemService _skuItemService = new SkuItemService();
         private readonly ProductService _productService = new ProductService();
         private readonly ProductStockService _productStockService = new ProductStockService();
 
@@ -55,8 +56,59 @@ namespace QingFeng.WebArea.Controllers
             return View(userInfo);
         }
 
+        public ActionResult EditBaseProduct(int baseId)
+        {
+            var model = _productService.GetProductBase(baseId);
+
+            if (model == null)
+            {
+                return Content("未找到有效产品");
+            }
+
+            return View(model);
+        }
+
+        public ActionResult AddBaseProduct()
+        {
+            return View();
+        }
+
+        public ActionResult Products()
+        {
+            return View();
+        }
+
+        public ActionResult BaseProducts(int page = 1, int pageSize = 20)
+        {
+            int totalItem;
+            var list = _productService.SearchBaseProduct(string.Empty, 0, page, pageSize, out totalItem);
+
+            return View(new ApiPageList<ProductBase>()
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalItem,
+                PageList = list
+            });
+        }
+
+        public ActionResult ColorList()
+        {
+            var list = _skuItemService.GetList(AgentEnums.SkuType.Color);
+            return View(list);
+        }
+
+        public ActionResult SizeList()
+        {
+            var list = _skuItemService.GetList(AgentEnums.SkuType.Size).OrderBy(t => t.SkuName);
+            return View(list);
+        }
+
+
+        #region Ajax
+
         [HttpPost]
-        public ActionResult AddStoreUser(UserInfo userInfo)
+        public JsonResult AddStoreUser(UserInfo userInfo)
         {
             if (string.IsNullOrWhiteSpace(userInfo.UserName) || string.IsNullOrWhiteSpace(userInfo.PassWord))
             {
@@ -68,38 +120,79 @@ namespace QingFeng.WebArea.Controllers
             return Json(new ApiResult<int>(result));
         }
 
-        public ActionResult AddBaseProducts()
-        {
-            return View();
-        }
-
         /// <summary>
         /// 添加基础产品信息
         /// </summary>
+        /// <param name="user"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        [HttpPost, AdminAuthorize(AgentEnums.UserRole.Administrator)]
-        public JsonResult AddBaseProduct(ProductBase model)
+        [HttpPost]
+        public JsonResult CreateBaseProduct(UserInfo user, ProductBase model)
         {
             if (model == null)
             {
-                return Json(new ApiResult<int>(2) { Ret = RetEum.ApplicationError, Message = "数据接收失败" });
+                return Json(new ApiResult<int>(2) {Message = "未接收到数据"});
             }
 
-            var result = _productService.CreateBaseProduct(model);
+            if (string.IsNullOrWhiteSpace(model.BaseNo) || string.IsNullOrWhiteSpace(model.BaseName))
+            {
+                return Json(new ApiResult<int>(3) {Message = "货名和货号不能为空"});
+            }
 
+            if (_productService.GetProductBase(model.BaseNo) != null)
+            {
+                return Json(new ApiResult<int>(4) {Message = "当前货号已经存在"});
+            }
+
+            model.CreateUserId = user.UserId;
+            var result = _productService.CreateBaseProduct(model);
             return Json(new ApiResult<bool>(result));
         }
 
+        public JsonResult GetOrderList(int orderStatus, string beginDateStr, string endDateStr,
+            string keyWords, int page = 1,
+            int pageSize = 20)
+        {
+            DateTime beginDate, endDate;
+
+            if (!DateTime.TryParse(beginDateStr, out beginDate))
+            {
+                beginDate = DateTime.MinValue;
+            }
+            if (!DateTime.TryParse(endDateStr, out endDate))
+            {
+                endDate = DateTime.Now;
+            }
+            endDate = endDate.AddDays(1).AddSeconds(-1);
+
+            int totalItem;
+            var list = _orderService.SearchOrderList(0, orderStatus, beginDate, endDate, keyWords,
+                page,
+                pageSize, out totalItem);
+
+            return Json(new ApiPageList<OrderMaster>()
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalItem,
+                PageList = list
+            });
+        }
+
         [HttpPost]
-        public ActionResult UpdateUserInfo(UserInfo userInfo)
+        public JsonResult UpdateUserInfo(UserInfo userInfo)
         {
             return Json(_userService.UpdateUserInfo(userInfo));
         }
 
-        public ActionResult Products()
+        public JsonResult UpdatePassWord(UserInfo user, int userId, string passWord)
         {
-            return View();
+            if (string.IsNullOrWhiteSpace(passWord))
+            {
+                return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "密码不能为空"});
+            }
+
+            return Json(_userService.UpdatePassWord(userId, passWord));
         }
 
         [HttpPost]
@@ -143,46 +236,31 @@ namespace QingFeng.WebArea.Controllers
             return Json(result);
         }
 
-
-        public ActionResult UpdatePassWord(UserInfo user, int userId, string passWord)
+        public JsonResult UpdateSkuStatus(int skuId, int status)
         {
-            if (string.IsNullOrWhiteSpace(passWord))
-            {
-                return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "密码不能为空"});
-            }
+            status = status == 0 ? 0 : 1;
 
-            return Json(_userService.UpdatePassWord(userId, passWord));
+            var result = _skuItemService.Update(new {status}, new {skuId});
+
+            return Json(result);
         }
 
-
-        public JsonResult GetOrderList(int orderStatus, string beginDateStr, string endDateStr,
-            string keyWords, int page = 1,
-            int pageSize = 20)
+        [HttpPost]
+        public JsonResult AddSku(SkuItem sku)
         {
-            DateTime beginDate, endDate;
-
-            if (!DateTime.TryParse(beginDateStr, out beginDate))
+            if (sku == null)
             {
-                beginDate = DateTime.MinValue;
+                return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "未接收到有效数据"});
             }
-            if (!DateTime.TryParse(endDateStr, out endDate))
+            if (string.IsNullOrWhiteSpace(sku.SkuName))
             {
-                endDate = DateTime.Now;
+                return Json(new ApiResult<int>(4) {Ret = RetEum.ApplicationError, Message = "名称不能为空"});
             }
-            endDate = endDate.AddDays(1).AddSeconds(-1);
-
-            int totalItem;
-            var list = _orderService.SearchOrderList(0, orderStatus, beginDate, endDate, keyWords,
-                page,
-                pageSize, out totalItem);
-
-            return Json(new ApiPageList<OrderMaster>()
-            {
-                Page = page,
-                PageSize = pageSize,
-                TotalCount = totalItem,
-                PageList = list
-            });
+            sku.SkuImgUrl = string.Empty;
+            var result = _skuItemService.AddSkuItem(sku);
+            return Json(result);
         }
+
+        #endregion
     }
 }
