@@ -7,9 +7,10 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
-                <div class="ibox-title" style="text-align: left">
-                    <div class="ibox-tools">
-                        <button type="button" onclick="location.href='/admin/addBaseProduct'" class="btn btn-primary btn-sm">添加商品</button>
+                <div class="ibox-title" style="text-align: left;min-height: 55px;">
+                    <label>商品管理</label>
+                    <div class="ibox-tools" style="padding-right: 30px;">
+                        <button type="button" onclick="location.href = '/admin/addBaseProduct'" class="btn btn-primary btn-success">添加商品</button>
                     </div>
                 </div>
                 <div class="ibox-content">
@@ -20,6 +21,7 @@
                                 <th>货号</th>
                                 <th>市场价</th>
                                 <th>采购价</th>
+                                <th>分类</th>
                                 <th>子产品数量</th>
                                 <th>添加时间</th>
                                 <th style="width: 250px">操作</th>
@@ -33,9 +35,10 @@
                                     <td>@item.BaseNo</td>
                                     <td>@item.OriginalPrice</td>
                                     <td>@item.ActualPrice</td>
+                                    <td>@item.CategoryId.ToString()</td>
                                     <td style="text-align: center">
                                         <span style="padding-right: 10px; font-size: 15px;">@item.SubProduct.Count()</span>
-                                        <a class="btn btn-white btn-bitbucket">
+                                        <a class="btn btn-white btn-bitbucket" data-base-id="@item.BaseId">
                                             <i class="fa fa-road"></i>
                                         </a>
                                     </td>
@@ -43,7 +46,7 @@
                                     <td data-base-id="@item.BaseId">
                                         <button type="button" onclick="location.href = '/admin/EditBaseProduct?baseId=@item.BaseId'" class="btn btn-primary btn-sm">编辑</button>
                                         <button type="button" class="btn btn-primary btn-sm">删除</button>
-                                        <button type="button" class="btn btn-primary btn-sm">创建子产品</button>
+                                        <button type="button" onclick="location.href='/product/createProduct?baseId=@item.BaseId'" class="btn btn-primary btn-sm">管理子产品</button>
                                     </td>
                                 </tr>
                             }
@@ -82,6 +85,17 @@
                 location.href = url;
 
             }
+        });
+
+        $("a[data-base-id]").click(function() {
+            var baseId = $(this).attr("data-base-id");
+            var index = layer.open({ content: "/product/subProducts?baseId=" + baseId, type: 2 });
+            layer.style(index, {
+                width: '800px',
+                height: "500px",
+                top: '50px',
+                left:'20%'
+            });
         });
     })
 </script>

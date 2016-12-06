@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewBag.Title = "SubProducts";
+}
+
+@model IEnumerable<QingFeng.Models.Product>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>货名</th>
+                                <th>颜色号</th>
+                                <th>市场价</th>
+                                <th>采购价</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>@item.ProductName</td>
+                                    <td>@item.ProductNo</td>
+                                    <td>@item.OriginalPrice</td>
+                                    <td>@item.ActualPrice</td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            @if (!Model.Any())
+                            {
+                                <tr>
+                                    <td colspan="4" style="text-align: center">-暂无数据-</td>
+                                </tr>
+                            }
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

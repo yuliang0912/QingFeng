@@ -34,7 +34,7 @@
                 $this.find("li").not(".active").has("ul").children("ul").collapse("hide");
             } else {
                 $this.find("li.active").has("ul").children("ul").addClass("collapse in");
-                $this.find("li").not(".active").has("ul").children("ul").addClass("collapse");
+                $this.find("li").not(".active").has("ul").children("ul").addClass("collapse in");
             }
 
             //add the "doubleTapToGo" class to active items if needed
@@ -59,7 +59,7 @@
                 $(this).parent("li").toggleClass("active").children("ul").collapse("toggle");
 
                 if ($toggle) {
-                    $(this).parent("li").siblings().removeClass("active").children("ul.in").collapse("hide");
+                    $(this).parent("li").children("ul.in"); //.collapse("hide");
                 }
 
             });

@@ -15,17 +15,56 @@ namespace QingFeng.WebArea.Controllers
     {
         private readonly ProductService _productService = new ProductService();
         private readonly ProductStockService _productStockService = new ProductStockService();
+        private readonly SkuItemService _skuItemService = new SkuItemService();
 
-        
+
+        public ActionResult EditProduct(int productId)
+        {
+            var model = _productService.GetProduct(productId);
+
+            if (model == null)
+            {
+                return Content("未找到有效产品");
+            }
+
+            return View(model);
+        }
+
+        public ActionResult SubProducts(int baseId)
+        {
+            var list = _productService.GetProductByBaseId(baseId);
+            return View(list);
+        }
+
+        [HttpGet, AdminAuthorize(AgentEnums.UserRole.AllUser)]
+        public ActionResult CreateProduct(int baseId)
+        {
+            var baseProduct = _productService.GetProductBase(baseId);
+
+            if (baseProduct == null)
+            {
+                return Content("未找到有效产品");
+            }
+
+            var skuList = _skuItemService.GetList(AgentEnums.SkuType.Color);
+
+            ViewBag.ColorSku = skuList.Where(t => t.Status == 0)
+                .Select(t => new KeyValuePair<int, string>(t.SkuId, t.SkuName))
+                .ToList();
+
+            ViewBag.SubProducts = _productService.GetProductByBaseId(baseId).ToList();
+
+            return View(baseProduct);
+        }
 
         /// <summary>
         /// 根据颜色自动创建子商品
         /// </summary>
         /// <param name="baseId"></param>
-        /// <param name="colorSku"></param>
+        /// <param name="colorSkuIds"></param>
         /// <returns></returns>
-        [HttpPost, AdminAuthorize(AgentEnums.UserRole.Administrator)]
-        public JsonResult CreateProduct(int baseId, List<KeyValuePair<int, string>> colorSku)
+        [HttpPost, AdminAuthorize(AgentEnums.UserRole.AllUser)]
+        public JsonResult CreateProduct(int baseId, string colorSkuIds)
         {
             var baseProduct = _productService.GetProductBase(baseId);
 
@@ -33,11 +72,12 @@ namespace QingFeng.WebArea.Controllers
             {
                 return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "未找到商品"});
             }
-            if (colorSku == null || colorSku.Count < 1)
+            if (string.IsNullOrWhiteSpace(colorSkuIds))
             {
                 return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "颜色SKU必须指定一个"});
             }
-            var result = _productService.CreateProduct(baseId, colorSku);
+            var colorList = colorSkuIds.Split(',').Select(int.Parse).ToList();
+            var result = _productService.CreateProduct(baseId, colorList);
 
             return Json(new ApiResult<int>(result));
         }

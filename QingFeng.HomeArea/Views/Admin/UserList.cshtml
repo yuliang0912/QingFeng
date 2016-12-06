@@ -11,35 +11,38 @@
                 <div class="ibox-content">
                     <table class="table table-bordered">
                         <thead>
-                        <tr>
-                            <th>用户名</th>
-                            <th>昵称</th>
-                            <th>店铺名</th>
-                            <th>创建时间</th>
-                            <th style="width: 200px">操作</th>
-                        </tr>
+                            <tr>
+                                <th>用户名</th>
+                                <th>昵称</th>
+                                <th>店铺名</th>
+                                <th>创建时间</th>
+                                <th>状态</th>
+                                <th style="width: 200px">操作</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        @foreach (var item in Model.PageList)
-                        {
-                            <tr>
-                                <td>@item.UserName</td>
-                                <td>@item.NickName</td>
-                                @if (string.IsNullOrWhiteSpace(item.StoreInfo.HomeUrl))
-                                {
-                                    <td>@item.StoreInfo.StoreName</td>
-                                }
-                                else
-                                {
-                                    <td><a href="@item.StoreInfo.HomeUrl" target="_blank">@item.StoreInfo.StoreName</a></td>
-                                }
-                                <td>@item.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")</td>
-                                <td>
-                                    <button type="button" onclick="location.href = '/admin/editUser?userId=@item.UserId'" class="btn btn-primary btn-sm">编辑</button>
-                                    <button type="button" data-user-id="@item.UserId" class="btn btn-primary btn-sm">重置密码</button>
-                                </td>
-                            </tr>
-                        }
+                            @foreach (var item in Model.PageList)
+                            {
+                                <tr>
+                                    <td>@item.UserName</td>
+                                    <td>@item.NickName</td>
+                                    @if (string.IsNullOrWhiteSpace(item.StoreInfo.HomeUrl))
+                                    {
+                                        <td>@item.StoreInfo.StoreName</td>
+                                    }
+                                    else
+                                    {
+                                        <td><a href="@item.StoreInfo.HomeUrl" target="_blank">@item.StoreInfo.StoreName</a></td>
+                                    }
+                                    <td>@item.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")</td>
+                                    <td>@(@item.Status == 0 ? "正常" : "冻结")</td>
+                                    <td>
+                                        <button type="button" onclick="location.href = '/admin/editUser?userId=@item.UserId'" class="btn btn-primary btn-sm">编辑</button>
+                                        <button type="button" data-user-id="@item.UserId" class="btn btn-primary btn-sm">重置密码</button>
+                                        <button type="button" onclick="updateUserStatus('@item.UserId','@(item.Status == 0 ? "冻结" : "恢复")')" class="btn btn-primary btn-sm">@(item.Status == 0 ? "冻结" : "恢复")</button>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 </div>
@@ -76,23 +79,23 @@
 </div>
 
 <script>
-    $(function () {
+    $(function() {
         var currUserId = 0;
-        $("#updatePwd").click(function () {
+        $("#updatePwd").click(function() {
             var passWord = $("#passWord").val().trim();
             if (passWord.length < 6) {
                 layer.tips("请输入最少6位长度的密码", $("#passWord"));
                 return;
             }
 
-            $core.ajax.getJSON("/admin/UpdatePassWord", { userId: currUserId, passWord: passWord }, function (data) {
+            $core.ajax.getJSON("/admin/UpdatePassWord", { userId: currUserId, passWord: passWord }, function(data) {
                 if (data !== 1) {
                     layer.msg("密码修改失败");
                     return;
                 }
                 layer.msg("密码修改成功", {
-                    success: function () {
-                        setTimeout(function () {
+                    success: function() {
+                        setTimeout(function() {
                             $("#editMenu2").modal("hide");
                         }, 1000);
                     }
@@ -100,7 +103,7 @@
             });
         });
 
-        $("button[data-user-id]").click(function () {
+        $("button[data-user-id]").click(function() {
             currUserId = parseInt($(this).attr("data-user-id"));
             $("#passWord").val('');
             $("#editMenu2").modal("show");
@@ -109,4 +112,16 @@
             $("#editMenu2").modal("hide");
         });
     });
+
+    function updateUserStatus(userId, msg) {
+        layer.confirm("是否确定" + msg + "该用户?", function() {
+            $core.ajax.getJSON("/admin/DelOrRecoveryStatus", { userId: userId }, function(data) {
+                if (data === 1) {
+                    layer.msg("操作成功", { success: function() { setTimeout(function() { location.reload(); }, 1000) } });
+                } else {
+                    layer.msg("操作失败");
+                }
+            });
+        });
+    }
 </script>

@@ -199,8 +199,8 @@
     <Content Include="Content\css\plugins\toastr\toastr.min.css" />
     <Content Include="Content\css\plugins\treeview\bootstrap-treeview.css" />
     <Content Include="Content\css\plugins\webuploader\webuploader.css" />
+    <Content Include="Content\css\style.css" />
     <Content Include="Content\css\style.min.css" />
-    <Content Include="Content\css\style.min862f.css" />
     <Content Include="Content\css_animation.html" />
     <Content Include="Content\diff.html" />
     <Content Include="Content\draggable_panels.html" />
@@ -557,6 +557,9 @@
     <Content Include="Views\Admin\SizeList.cshtml" />
     <Content Include="Views\Admin\BaseProducts.cshtml" />
     <Content Include="Views\Admin\EditBaseProduct.cshtml" />
+    <Content Include="Views\Product\SubProducts.cshtml" />
+    <Content Include="Views\Product\CreateProduct.cshtml" />
+    <Content Include="Views\Product\EditProduct.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

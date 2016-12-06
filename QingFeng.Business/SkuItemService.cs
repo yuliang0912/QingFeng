@@ -13,6 +13,11 @@ namespace QingFeng.Business
     {
         private readonly SkuItemRepository _skuItemRepository = new SkuItemRepository();
 
+        public IEnumerable<SkuItem> GetList()
+        {
+            return _skuItemRepository.GetList(null);
+        }
+
         public IEnumerable<SkuItem> GetList(AgentEnums.SkuType skuType)
         {
             return _skuItemRepository.GetList(new {skuType = skuType.GetHashCode()});

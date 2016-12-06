@@ -11,6 +11,7 @@ using QingFeng.Common;
 
 namespace QingFeng.Business
 {
+    
     public class ProductService
     {
         private readonly ProductRepository _productRepository = new ProductRepository();
@@ -18,10 +19,17 @@ namespace QingFeng.Business
         private readonly SkuItemRepository _skuItemRepository = new SkuItemRepository();
 
 
-        public int CreateProduct(int baseId, List<KeyValuePair<int, string>> colorSku)
+        public int CreateProduct(int baseId, List<int> colorList)
         {
-            var baseInfo = _productBaseRepository.Get(new {baseId});
+            var colorSku = _skuItemRepository.GetListByIds(colorList.ToArray())
+                .Select(t => new KeyValuePair<int, string>(t.SkuId, t.SkuName));
 
+            if (!colorSku.Any())
+            {
+                return 0;
+            }
+
+            var baseInfo = _productBaseRepository.Get(new {baseId});
             if (baseInfo == null)
             {
                 return 0;
@@ -59,6 +67,11 @@ namespace QingFeng.Business
                 }
             }
             return addCount;
+        }
+
+        public bool UpdateProductBaseInfo(object model, object condition)
+        {
+            return _productBaseRepository.Update(model, condition);
         }
 
         public bool CreateBaseProduct(ProductBase model)

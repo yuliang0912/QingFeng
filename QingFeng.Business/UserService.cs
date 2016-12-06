@@ -130,6 +130,16 @@ namespace QingFeng.Business
             return _userInfoRepository.Update(new {model.NickName}, new {model.UserId});
         }
 
+        public bool DelOrRecoveryStatus(int userId)
+        {
+            var userInfo = _userInfoRepository.Get(new {userId, userRole = AgentEnums.UserRole.StoreUser.GetHashCode()});
+            if (userInfo == null)
+            {
+                return false;
+            }
+            return _userInfoRepository.Update(new {status = userInfo.Status == 0 ? 1 : 0}, new {userId});
+        }
+
         public UserInfo Login(string userName, string passWord, out bool isPass)
         {
             var user = _userInfoRepository.Get(new { userName });

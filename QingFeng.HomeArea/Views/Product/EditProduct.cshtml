@@ -3,8 +3,7 @@
     ViewBag.Title = "EditBaseProduct";
 }
 
-@using QingFeng.Common
-@model QingFeng.Models.ProductBase
+@model QingFeng.Models.Product
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
@@ -15,13 +14,13 @@
                         <div class="form-group">
                             <label class="col-sm-1 control-label">*货号：</label>
                             <div class="col-sm-5">
-                                <input readonly="readonly" maxlength="120" value="@Model.BaseNo" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                                <input readonly="readonly" maxlength="120" value="@Model.ProductNo" class="form-control" type="text" aria-required="true" aria-invalid="true">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-1 control-label">*货名：</label>
                             <div class="col-sm-5">
-                                <input id="baseName" name="baseName" maxlength="120" value="@Model.BaseName" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                                <input id="baseName" name="baseName" maxlength="120" value="@Model.ProductName" class="form-control" type="text" aria-required="true" aria-invalid="true">
                             </div>
                         </div>
                         <div class="form-group">
@@ -37,19 +36,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-1 control-label">分类：</label>
-                            <div class="col-sm-5">
-                                <select class="form-control m-b" id="categoryId" name="categoryId">
-                                    <option value="0">-请选择商品分类-</option>
-                                    <option value="1" @(Model.CategoryId == AgentEnums.Category.男鞋 ? "selected" : "")>男鞋</option>
-                                    <option value="2" @(Model.CategoryId == AgentEnums.Category.女鞋 ? "selected" : "")>女鞋</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <div class="col-sm-5 col-sm-offset-3">
                                 <button class="btn btn-primary" id="submitBtn" type="submit">提交</button>
-                                <button class="btn btn-primary" onclick="location.href = '/admin/BaseProducts'; return false;" type="submit">返回</button>
+                                <button class="btn btn-primary" onclick="location.href = '/product/createProduct?baseId=@Model.BaseId'; return false;" type="submit">返回</button>
                             </div>
                         </div>
                     </form>
@@ -62,21 +51,21 @@
 <script src="/content/js/plugins/validate/messages_zh.min.js"></script>
 <script>
     $.validator.setDefaults({
-        highlight: function(e) {
+        highlight: function (e) {
             $(e).closest(".form-group").removeClass("has-success").addClass("has-error");
         },
-        success: function(e) {
+        success: function (e) {
             e.closest(".form-group").removeClass("has-error").addClass("has-success");
         },
         errorElement: "span",
-        errorPlacement: function(e, r) {
+        errorPlacement: function (e, r) {
             e.appendTo(r.is(":radio") || r.is(":checkbox") ? r.parent().parent().parent() : r.parent());
         },
         errorClass: "help-block m-b-none",
         validClass: "help-block m-b-none"
     });
 
-    $(function() {
+    $(function () {
         var e = "<i class='fa fa-times-circle'></i> ";
         $("#signupForm").validate({
             rules: {
@@ -111,7 +100,7 @@
                     range: e + "请选择商品分类"
                 }
             },
-            submitHandler: function(form) {
+            submitHandler: function (form) {
                 $("#submitBtn").attr("disabled", true);
 
                 var baseName = $("#baseName").val().trim();
@@ -126,7 +115,7 @@
                 $core.ajax.postJSON("/admin/EditBaseProduct", productInfo, function (data) {
                     if (data === 1) {
                         layer.msg("商品编辑成功");
-                    } 
+                    }
                     else if (data === 0) {
                         layer.msg("商品编辑失败");
                     }
@@ -140,4 +129,3 @@
         });
     });
 </script>
-

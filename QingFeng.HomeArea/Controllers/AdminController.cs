@@ -68,6 +68,7 @@ namespace QingFeng.WebArea.Controllers
             return View(model);
         }
 
+
         public ActionResult AddBaseProduct()
         {
             return View();
@@ -149,6 +150,37 @@ namespace QingFeng.WebArea.Controllers
             return Json(new ApiResult<bool>(result));
         }
 
+
+        [HttpPost]
+        public JsonResult EditBaseProduct(UserInfo user, ProductBase model)
+        {
+            if (model == null)
+            {
+                return Json(new ApiResult<int>(2) {Message = "未接收到数据"});
+            }
+
+            var baseProduct = _productService.GetProductBase(model.BaseId);
+            if (baseProduct == null)
+            {
+                return Json(new ApiResult<int>(5) {Message = "参数错误,未找到制定商品"});
+            }
+
+            if (string.IsNullOrWhiteSpace(model.BaseName))
+            {
+                return Json(new ApiResult<int>(3) {Message = "货名和货号不能为空"});
+            }
+
+            var result = _productService.UpdateProductBaseInfo(new
+            {
+                model.BaseName,
+                model.OriginalPrice,
+                model.ActualPrice,
+                categoryId = model.CategoryId.GetHashCode()
+            }, new {baseProduct.BaseId});
+
+            return Json(new ApiResult<bool>(result));
+        }
+
         public JsonResult GetOrderList(int orderStatus, string beginDateStr, string endDateStr,
             string keyWords, int page = 1,
             int pageSize = 20)
@@ -183,6 +215,11 @@ namespace QingFeng.WebArea.Controllers
         public JsonResult UpdateUserInfo(UserInfo userInfo)
         {
             return Json(_userService.UpdateUserInfo(userInfo));
+        }
+
+        public JsonResult DelOrRecoveryStatus(UserInfo user, int userId)
+        {
+            return Json(_userService.DelOrRecoveryStatus(userId));
         }
 
         public JsonResult UpdatePassWord(UserInfo user, int userId, string passWord)

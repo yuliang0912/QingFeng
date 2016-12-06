@@ -31,11 +31,7 @@ namespace QingFeng.TestConsole
         {
             var baseId = 1;
 
-            var colorSku = new List<KeyValuePair<int, string>>()
-            {
-                new KeyValuePair<int, string>(1, "红色"),
-                new KeyValuePair<int, string>(3, "蓝色")
-            };
+            var colorSku = new List<int>() {1, 3};
 
             var result = ProductService.CreateProduct(baseId, colorSku);
             Console.WriteLine("创建产品测试结果:{0}", result);

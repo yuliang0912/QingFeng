@@ -6,7 +6,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>C:\Users\yuliang\Desktop</_PublishTargetUrl>
+    <_PublishTargetUrl>C:\Users\yuliang\Desktop\q.ciwong.com</_PublishTargetUrl>
   </PropertyGroup>
   <ItemGroup>
     <File Include="bin/Dapper.dll">
@@ -25,19 +25,19 @@
       <publishTime>11/25/2016 19:59:16</publishTime>
     </File>
     <File Include="bin/QingFeng.Business.dll">
-      <publishTime>12/02/2016 19:34:23</publishTime>
+      <publishTime>12/06/2016 23:34:04</publishTime>
     </File>
     <File Include="bin/QingFeng.Common.dll">
-      <publishTime>12/02/2016 19:34:23</publishTime>
+      <publishTime>12/06/2016 23:34:04</publishTime>
     </File>
     <File Include="bin/QingFeng.DataAccessLayer.dll">
-      <publishTime>12/02/2016 19:34:23</publishTime>
+      <publishTime>12/06/2016 23:34:04</publishTime>
     </File>
     <File Include="bin/QingFeng.Models.dll">
-      <publishTime>12/02/2016 19:34:23</publishTime>
+      <publishTime>12/06/2016 23:34:04</publishTime>
     </File>
     <File Include="bin/QingFeng.WebArea.dll">
-      <publishTime>12/02/2016 19:34:56</publishTime>
+      <publishTime>12/06/2016 23:34:08</publishTime>
     </File>
     <File Include="bin/roslyn/csc.exe">
       <publishTime>11/25/2016 19:59:15</publishTime>
@@ -121,7 +121,7 @@
       <publishTime>11/22/2016 22:19:43</publishTime>
     </File>
     <File Include="Config/ConnectionStrings.config">
-      <publishTime>12/01/2016 22:12:22</publishTime>
+      <publishTime>12/02/2016 20:34:18</publishTime>
     </File>
     <File Include="Content/404.html">
       <publishTime>11/22/2016 22:19:43</publishTime>
@@ -145,9 +145,42 @@
       <publishTime>11/25/2016 19:57:29</publishTime>
     </File>
     <File Include="Content/agent/css/jquery.pager.css">
-      <publishTime>12/01/2016 22:10:12</publishTime>
+      <publishTime>12/03/2016 13:37:39</publishTime>
     </File>
     <File Include="Content/agent/css/layer.css">
+      <publishTime>11/25/2016 19:57:29</publishTime>
+    </File>
+    <File Include="Content/agent/fonts/fontawesome-webfont.eot">
+      <publishTime>11/25/2016 19:57:29</publishTime>
+    </File>
+    <File Include="Content/agent/fonts/fontawesome-webfont.svg">
+      <publishTime>11/25/2016 19:57:29</publishTime>
+    </File>
+    <File Include="Content/agent/fonts/fontawesome-webfont.ttf">
+      <publishTime>11/25/2016 19:57:29</publishTime>
+    </File>
+    <File Include="Content/agent/fonts/fontawesome-webfont.woff">
+      <publishTime>11/25/2016 19:57:29</publishTime>
+    </File>
+    <File Include="Content/agent/fonts/fontawesome-webfont.woff2">
+      <publishTime>11/25/2016 19:57:29</publishTime>
+    </File>
+    <File Include="Content/agent/fonts/FontAwesome.otf">
+      <publishTime>11/25/2016 19:57:29</publishTime>
+    </File>
+    <File Include="Content/agent/fonts/glyphicons-halflings-regular.eot">
+      <publishTime>11/25/2016 19:57:29</publishTime>
+    </File>
+    <File Include="Content/agent/fonts/glyphicons-halflings-regular.svg">
+      <publishTime>11/25/2016 19:57:29</publishTime>
+    </File>
+    <File Include="Content/agent/fonts/glyphicons-halflings-regular.ttf">
+      <publishTime>11/25/2016 19:57:29</publishTime>
+    </File>
+    <File Include="Content/agent/fonts/glyphicons-halflings-regular.woff">
+      <publishTime>11/25/2016 19:57:29</publishTime>
+    </File>
+    <File Include="Content/agent/fonts/glyphicons-halflings-regular.woff2">
       <publishTime>11/25/2016 19:57:29</publishTime>
     </File>
     <File Include="Content/agent/img/user.jpg">
@@ -175,7 +208,7 @@
       <publishTime>11/25/2016 19:57:29</publishTime>
     </File>
     <File Include="Content/agent/js/jquery.pager.js">
-      <publishTime>12/01/2016 22:10:12</publishTime>
+      <publishTime>12/05/2016 22:47:21</publishTime>
     </File>
     <File Include="Content/agent/js/jquery.ztree.all-3.5.min.js">
       <publishTime>11/25/2016 19:57:29</publishTime>
@@ -449,6 +482,9 @@
     </File>
     <File Include="Content/css/plugins/webuploader/webuploader.css">
       <publishTime>11/22/2016 22:19:43</publishTime>
+    </File>
+    <File Include="Content/css/style.css">
+      <publishTime>12/06/2016 22:16:45</publishTime>
     </File>
     <File Include="Content/css/style.min.css">
       <publishTime>11/22/2016 22:19:43</publishTime>
@@ -752,6 +788,9 @@
     </File>
     <File Include="Content/js/bootstrap.min.js">
       <publishTime>11/22/2016 22:19:43</publishTime>
+    </File>
+    <File Include="Content/js/contabs.js">
+      <publishTime>12/05/2016 21:37:02</publishTime>
     </File>
     <File Include="Content/js/contabs.min.js">
       <publishTime>11/22/2016 22:19:43</publishTime>
@@ -1060,7 +1099,7 @@
       <publishTime>11/22/2016 22:19:43</publishTime>
     </File>
     <File Include="Content/js/plugins/metisMenu/jquery.metisMenu.js">
-      <publishTime>11/22/2016 22:19:43</publishTime>
+      <publishTime>12/06/2016 22:47:22</publishTime>
     </File>
     <File Include="Content/js/plugins/morris/morris.js">
       <publishTime>11/22/2016 22:19:43</publishTime>
@@ -1249,7 +1288,7 @@
       <publishTime>11/22/2016 22:19:43</publishTime>
     </File>
     <File Include="Content/scripts/qingfeng.core.js">
-      <publishTime>11/22/2016 22:19:43</publishTime>
+      <publishTime>12/06/2016 20:22:23</publishTime>
     </File>
     <File Include="Content/scripts/require.js">
       <publishTime>11/22/2016 22:19:43</publishTime>
@@ -1335,17 +1374,44 @@
     <File Include="packages.config">
       <publishTime>11/23/2016 19:31:36</publishTime>
     </File>
+    <File Include="Views/Admin/AddBaseProduct.cshtml">
+      <publishTime>12/05/2016 22:26:52</publishTime>
+    </File>
+    <File Include="Views/Admin/BaseProducts.cshtml">
+      <publishTime>12/06/2016 20:55:33</publishTime>
+    </File>
+    <File Include="Views/Admin/ColorList.cshtml">
+      <publishTime>12/05/2016 21:26:34</publishTime>
+    </File>
+    <File Include="Views/Admin/CreateUser.cshtml">
+      <publishTime>12/04/2016 10:31:09</publishTime>
+    </File>
+    <File Include="Views/Admin/EditBaseProduct.cshtml">
+      <publishTime>12/06/2016 20:10:29</publishTime>
+    </File>
+    <File Include="Views/Admin/EditUser.cshtml">
+      <publishTime>12/04/2016 11:01:08</publishTime>
+    </File>
     <File Include="Views/Admin/Login.cshtml">
       <publishTime>11/23/2016 22:25:15</publishTime>
     </File>
+    <File Include="Views/Admin/Products.cshtml">
+      <publishTime>12/04/2016 11:07:53</publishTime>
+    </File>
+    <File Include="Views/Admin/SizeList.cshtml">
+      <publishTime>12/05/2016 21:33:57</publishTime>
+    </File>
+    <File Include="Views/Admin/UserList.cshtml">
+      <publishTime>12/06/2016 23:06:18</publishTime>
+    </File>
     <File Include="Views/Agent/AddOrder.cshtml">
-      <publishTime>11/30/2016 23:08:10</publishTime>
+      <publishTime>12/04/2016 12:24:41</publishTime>
     </File>
     <File Include="Views/Agent/OrderDetail.cshtml">
       <publishTime>11/30/2016 23:18:56</publishTime>
     </File>
     <File Include="Views/Agent/OrderList.cshtml">
-      <publishTime>12/02/2016 19:33:46</publishTime>
+      <publishTime>12/03/2016 13:36:48</publishTime>
     </File>
     <File Include="Views/Agent/Products.cshtml">
       <publishTime>11/28/2016 23:29:06</publishTime>
@@ -1354,19 +1420,28 @@
       <publishTime>12/01/2016 22:10:12</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>11/22/2016 22:19:44</publishTime>
+      <publishTime>12/06/2016 22:24:27</publishTime>
     </File>
     <File Include="Views/Home/Login.cshtml">
-      <publishTime>11/25/2016 19:57:29</publishTime>
+      <publishTime>12/02/2016 22:14:57</publishTime>
     </File>
     <File Include="Views/Home/Register.cshtml">
       <publishTime>11/23/2016 19:18:23</publishTime>
     </File>
+    <File Include="Views/Product/CreateProduct.cshtml">
+      <publishTime>12/06/2016 23:16:57</publishTime>
+    </File>
+    <File Include="Views/Product/EditProduct.cshtml">
+      <publishTime>12/06/2016 23:16:43</publishTime>
+    </File>
+    <File Include="Views/Product/SubProducts.cshtml">
+      <publishTime>12/06/2016 20:05:08</publishTime>
+    </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>11/22/2016 22:19:44</publishTime>
+      <publishTime>12/06/2016 22:17:53</publishTime>
     </File>
     <File Include="Views/Shared/_LayoutAgent.cshtml">
-      <publishTime>12/01/2016 22:19:36</publishTime>
+      <publishTime>12/05/2016 22:34:32</publishTime>
     </File>
     <File Include="Views/web.config">
       <publishTime>11/22/2016 22:19:44</publishTime>
@@ -1375,7 +1450,7 @@
       <publishTime>11/23/2016 19:18:23</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>12/02/2016 19:34:26</publishTime>
+      <publishTime>12/06/2016 23:34:09</publishTime>
     </File>
   </ItemGroup>
 </Project>
