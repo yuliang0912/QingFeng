@@ -59,6 +59,9 @@
                 if (data.isPass === 0) {
                     result.text("账号密码错误");
                 }
+                else if (data.isPass === 2) {
+                    result.text("账号已被冻结,请联系管理员");
+                }
                 else if (data.userRole === 1) {
                     location.href = "/home/index";
                 } else {
