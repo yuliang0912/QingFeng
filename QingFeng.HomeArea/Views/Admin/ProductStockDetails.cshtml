@@ -1,0 +1,172 @@
+﻿
+@{
+    ViewBag.Title = "ProductStockDetails";
+    var productInfo = ViewBag.productInfo as Product ?? new Product();
+    var sizeSku = ViewBag.sizeSku as List<KeyValuePair<int, string>>;
+}
+@using QingFeng.Models
+@model List<ProductStock>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="text-align: left; min-height: 55px;">
+                    <label>库存管理</label>
+                    <div class="ibox-tools" style="padding-right: 30px;">
+                        <button type="button" onclick="location.reload()" class="btn btn-primary btn-success">刷新库存</button>
+                        <button type="button" onclick="location.href = '/admin/productStocks'" class="btn btn-primary btn-success">返回</button>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>货号</th>
+                            <th>颜色</th>
+                            <th>尺码</th>
+                            <th>最后变更时间</th>
+                            <th>库存</th>
+                            <th>操作</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@productInfo.BaseNo</td>
+                                <td>@productInfo.ProductNo</td>
+                                <td>@item.SkuName</td>
+                                <td>@item.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                <td>@item.StockNum</td>
+                                <td>
+                                    <button type="button" data-stock-id="@item.StockId" data-stock="@item.StockNum" class="btn btn-primary btn-sm">设置库存</button>
+                                </td>
+                            </tr>
+                        }
+                        </tbody>
+                        <tfoot>
+                        @if (Model.Any())
+                        {
+                            <tr>
+                                <td colspan="4" style="text-align: right; font-weight: bold">合计:</td>
+                                <td colspan="2">@Model.Sum(t => t.StockNum)</td>
+                            </tr>
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" style="text-align: center;">--暂无库存数据--</td>
+                            </tr>
+                        }
+                        </tfoot>
+                    </table>
+                    <div class="input-group">
+                        @if (sizeSku.Any())
+                        {
+                            <select data-placeholder="请选择尺码..." id="sizeSku" class="chosen-select" multiple style="width: 350px;" tabindex="2">
+                                @foreach (var item in sizeSku)
+                                {
+                                    <option value="@item.Key" hassubinfo="true">@item.Value</option>
+                                }
+                            </select>
+                            <span style="padding-left: 30px;"><button type="button" id="createStock" style="padding-left: 20px;" class="btn btn-primary btn-success">智能创建库存</button></span>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+                <h5 class="modal-title">库存设置</h5>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal m-t" id="signupForm">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label">输入新库存 <i>*</i>：</label>
+                        <div class="col-sm-5">
+                            <input name="stock" id="stock" maxlength="30" class="form-control" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-5 col-sm-offset-3">
+                            <button class="btn btn-primary" id="updateStock" type="button">保存</button>
+                            <button class="btn btn-primary" onclick="$('#myModal').modal('hide');" type="button">关闭</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<link href="/content/css/plugins/chosen/chosen.css" rel="stylesheet">
+<script src="/content/js/plugins/chosen/chosen.jquery.js"></script>
+<script>
+    $(function () {
+        var config = {
+            '.chosen-select': {},
+            '.chosen-select-deselect': {
+                allow_single_deselect: true
+            },
+            '.chosen-select-no-single': {
+                disable_search_threshold: 10
+            },
+            '.chosen-select-no-results': {
+                no_results_text: 'Oops, nothing found!'
+            },
+            '.chosen-select-width': {
+                width: "95%"
+            }
+        }
+        for (var selector in config) {
+            $(selector).chosen(config[selector]);
+        }
+    });
+
+    $("#createStock").click(function () {
+        var skuItems = $("#sizeSku").val();
+
+        if (!skuItems) {
+            layer.msg("请选择需要创建库存的尺码");
+            return;
+        }
+
+        $core.ajax.postJSON("/admin/CreateProductStock", { productId: '@productInfo.ProductId', sizeSkuIds: skuItems.toString() }, function (data) {
+            if (data === 0) {
+                layer.msg("操作成功,本次暂未添加新的产品");
+                return;
+            }
+            layer.msg("操作成功", { success: function () { setTimeout(function () { location.reload(); }, 1000) } });
+        });
+    });
+
+    var currStockId = 0;
+    $("button[data-stock-id]").click(function() {
+        currStockId = $(this).attr("data-stock-id");
+        $("#stock").val($(this).attr("data-stock"));
+        $("#myModal").modal('show');
+    });
+
+    $("#updateStock").click(function() {
+        var stockNum = $("#stock").val().trim();
+        if (!/^[0-9]*$/.test(stockNum)) {
+            layer.tips("请输入正确的数字", $("#stock"));
+            return;
+        }
+        $core.ajax.getJSON("/admin/UpdateProductStock", { stockId: currStockId, stockNum: stockNum }, function (data) {
+            if (data === 1) {
+                layer.msg("操作成功", { success: function() { setTimeout(function() { location.reload(); }, 1000) } });
+            } else {
+                layer.msg("操作失败");
+            }
+        });
+    });
+</script>

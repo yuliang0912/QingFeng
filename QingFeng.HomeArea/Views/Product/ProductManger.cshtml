@@ -1,0 +1,134 @@
+﻿@{
+    ViewBag.Title = "CreateProduct";
+
+    var colorSku = ViewBag.ColorSku as List<KeyValuePair<int, string>>;
+}
+
+@using QingFeng.Models
+@model  ProductBase
+
+<link href="/content/css/plugins/chosen/chosen.css" rel="stylesheet">
+<script src="/content/js/plugins/chosen/chosen.jquery.js"></script>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="text-align: left;min-height: 55px;">
+                    <label>管理子产品-@Model.BaseName</label>
+                    <div class="ibox-tools" style="padding-right: 30px;">
+                        <button type="button" onclick="location.reload()" class="btn btn-primary btn-success">刷新商品</button>
+                        <button type="button" onclick="location.href = '/admin/baseProducts'" class="btn btn-primary btn-success">返回</button>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>货名</th>
+                                <th>货号</th>
+                                <th>市场价</th>
+                                <th>采购价</th>
+                                <th>状态</th>
+                                <th>添加时间</th>
+                                <th style="width: 170px">操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.SubProduct)
+                            {
+                                <tr>
+                                    <td>@item.ProductName</td>
+                                    <td>@item.ProductNo</td>
+                                    <td>@item.OriginalPrice</td>
+                                    <td>@item.ActualPrice</td>
+                                    <td>@(item.Status == 0 ? "正常" : "已删除" )</td>
+                                    <td>@item.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")</td>
+                                    <td data-base-id="@item.BaseId">
+                                        <button type="button" onclick="location.href = '/product/EditProduct?productId=@item.ProductId'" class="btn btn-primary btn-sm">编辑</button>
+                                        <button type="button" onclick="updateProductStatus(@item.ProductId,'@(item.Status == 0 ? "删除" : "恢复")')" class="btn btn-primary btn-sm">@(item.Status == 0 ? "删除" : "恢复")</button>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        @if (!Model.SubProduct.Any())
+                        {
+                            <tfoot>
+                                <tr align="center">
+                                    <td colspan="6" style="text-align: center;">--暂无数据--</td>
+                                </tr>
+                            </tfoot>
+                        }
+                    </table>
+                    <div class="input-group">
+                        @if (colorSku.Any())
+                        {
+                            <select data-placeholder="请选择子产品颜色..." id="colorSku" class="chosen-select" multiple style="width: 350px;" tabindex="2">
+                                @foreach (var item in colorSku)
+                                {
+                                    <option value="@item.Key" hassubinfo="true">@item.Value</option>
+                                }
+                            </select>
+                            <span style="padding-left: 30px;"><button type="button" id="createProduct" style="padding-left: 20px;" class="btn btn-primary btn-success">智能创建子产品</button></span>
+                        }
+                        <span style="padding-left: 30px;"><button type="button" onclick="location.href = '/product/createProduct?baseId=@Model.BaseId'" style="padding-left: 20px;" class="btn btn-primary btn-success">手动创建子产品</button></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        var config = {
+            '.chosen-select': {},
+            '.chosen-select-deselect': {
+                allow_single_deselect: true
+            },
+            '.chosen-select-no-single': {
+                disable_search_threshold: 10
+            },
+            '.chosen-select-no-results': {
+                no_results_text: 'Oops, nothing found!'
+            },
+            '.chosen-select-width': {
+                width: "95%"
+            }
+        }
+        for (var selector in config) {
+            $(selector).chosen(config[selector]);
+        }
+
+        $("#createProduct").click(function () {
+            var skuItems = $("#colorSku").val();
+
+            if (!skuItems) {
+                layer.msg("请选择需要创建的子产品颜色");
+                return;
+            }
+
+            $core.ajax.postJSON("/product/CreateProduct", { baseId: '@Model.BaseId', colorSkuIds: skuItems.toString() }, function (data) {
+                if (data === 0) {
+                    layer.msg("操作成功,本次暂未添加新的产品");
+                    return;
+                }
+                layer.msg("操作成功,本次成功添加或恢复" + data + "个新产品", { success: function () { setTimeout(function () { location.reload(); }, 1500) } });
+            });
+        });
+    });
+
+    function updateProductStatus(productId, msg) {
+        var tips = "是否确认" + msg + "该产品?";
+        layer.confirm(tips, function () {
+            $core.ajax.getJSON("/product/UpdateProductStatus", { productId: productId, status: msg === "删除" ? 1 : 0 }, function (data) {
+                if (data === 1) {
+                    layer.msg("操作成功", { success: function () { setTimeout(function () { location.reload(); }, 1000) } });
+                } else {
+                    layer.msg("操作失败");
+                }
+            });
+        });
+    }
+</script>

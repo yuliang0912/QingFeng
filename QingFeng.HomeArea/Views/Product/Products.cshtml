@@ -1,0 +1,117 @@
+﻿
+@{
+    ViewBag.Title = "Products";
+}
+@model QingFeng.Common.ApiCore.Result.ApiPageList<QingFeng.Models.ProductBase>
+
+<style>
+    table tr th {
+        text-align: center;
+        font-size: 14px;
+    }
+
+    table tr td {
+        height: 40px;
+        text-align: left;
+        font-size: 13px;
+    }
+</style>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+                            <select class="input-sm form-control input-s-sm inline" id="categoryId">
+                                <option value="0">请选择分类</option>
+                                <option value="1" @(ViewBag.categoryId == 1 ? "selected" : "")>男鞋</option>
+                                <option value="2" @(ViewBag.categoryId == 2 ? "selected" : "")>女鞋</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <input type="text" autocomplete="off" disableautocomplete placeholder="商品名称或货号" id="keyWords" value="@(ViewBag.keyWords??string.Empty)" class="input-sm form-control"> <span class="input-group-btn">
+                                    <button type="button" class="btn btn-sm btn-primary" id="order-search">搜索</button>
+                                </span>
+                            </div>
+                        </div>
+                        <div style="float: right; padding-right: 20px;">
+                            <button type="button" onclick="location.href = location.pathname" class="btn btn-success btn-primary">刷新价格表</button>
+                        </div>
+                    </div>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th rowspan="2" class="center">品名</th>
+                            <th rowspan="2" class="center">货号</th>
+                            <th rowspan="2" class="center">品牌</th>
+                            <th rowspan="2" class="center">分类</th>
+                            <th colspan="5" class="center">spu</th>
+                        </tr>
+                        <tr>
+                            <th>颜色</th>
+                            <th>市场价</th>
+                            <th>采购价</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model.PageList)
+                        {
+                            var subProductCount = item.SubProduct.Count();
+                            for (var i = 0; i < subProductCount; i++)
+                            {
+                                var product = item.SubProduct.ToList()[i];
+                                <tr align="center">
+                                    @if (i == 0)
+                                    {
+                                        <td rowspan="@subProductCount">@item.BaseName</td>
+                                        <td rowspan="@subProductCount">@item.BaseNo</td>
+                                        <td rowspan="@subProductCount">Locaste</td>
+                                        <td rowspan="@subProductCount">@item.CategoryId.ToString()</td>
+                                    }
+                                    <td>@product.ProductNo</td>
+                                    <td>@product.OriginalPrice</td>
+                                    <td>@product.ActualPrice</td>
+                                </tr>
+                            }
+                        }
+                        </tbody>
+                        @if (Model.PageCount > 1)
+                        {
+                            <tfoot>
+                            <tr align="center">
+                                <td colspan="9" style="text-align: center;">
+                                    <div id="pageDiv"></div>
+                                </td>
+                            </tr>
+                            </tfoot>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function() {
+        $("#pageDiv").pager({
+            pageIndex: @(Model.Page),
+            pageSize: @(Model.PageSize),
+            recordCount: @(Model.TotalCount),
+            buttonClickCallback: function(page) {
+                location.href = $core.changeUrlArg(location.href, "page", page);
+            }
+        });
+    });
+
+    $('#order-search').click(function () {
+        var categoryId = $('#categoryId').val();
+        var keyWords = $('#keyWords').val();
+
+        location.href = location.pathname + "?categoryId=" + categoryId + "&keyWords=" + keyWords;
+    });
+</script>
+

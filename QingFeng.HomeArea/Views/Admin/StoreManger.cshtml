@@ -1,0 +1,85 @@
+﻿
+@{
+    ViewBag.Title = "StoreManger";
+}
+
+@model QingFeng.Models.UserInfo
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="text-align: left;min-height: 55px;">
+                    <label>店铺管理:    (@Model.UserName)</label>
+                    <div class="ibox-tools" style="padding-right: 30px;">
+                        <button type="button" id="addStore" class="btn btn-primary btn-success">添加新店铺</button>
+                        <button type="button" onclick="location.href = '/admin/userList'" class="btn btn-primary btn-success">返回</button>
+                    </div>  
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>店铺ID</th>
+                                <th>店铺名称</th>
+                                <th>创建时间</th>
+                                <th>状态</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.StoreList.ToList())
+                            {
+                                <tr>
+                                    <td>@item.StoreId</td>
+                                    <td>@item.StoreName</td>
+                                    <td>@item.CreateDate.ToString("yy-MM-dd hh:mm:ss")</td>
+                                    <td>@(@item.Status == 0 ? "正常" : "已删除")</td>
+                                    <td><button type="button" onclick="updateStoreStatus('@item.StoreId','@(item.Status == 0 ? "删除" : "恢复")')" class="btn btn-primary btn-sm">@(item.Status == 0 ? "删除" : "恢复")</button></td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            @if (!Model.StoreList.Any())
+                            {
+                                <tr>
+                                    <td colspan="5" style="text-align: center">-暂无数据-</td>
+                                </tr>
+                            }
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function() {
+        $("#addStore").click(function() {
+            $core.ajax.postJSON("/admin/AddStore", { userId: '@(Model.UserId)' }, function(data) {
+                if (data === 1) {
+                    layer.msg("添加店铺成功", { success: function() { setTimeout(function() { location.reload() }, 1000) } });
+                    return;
+                }
+                if (data === 0) {
+                    layer.msg("添加商品失败");
+                } else {
+                    layer.msg(this.message);
+                }
+            });
+        });
+    });
+
+    function updateStoreStatus(storeId, msg) {
+        layer.confirm("是否确定" + msg + "该店铺?", function() {
+            $core.ajax.postJSON("/admin/UpdateStoreStatus", { storeId: storeId, status: msg === "删除" ? 1 : 0 }, function(data) {
+                if (data === 1) {
+                    layer.msg("操作成功", { success: function() { setTimeout(function() { location.reload(); }, 1000) } });
+                } else {
+                    layer.msg("操作失败");
+                }
+            });
+        });
+    }
+</script>

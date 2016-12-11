@@ -1,0 +1,343 @@
+﻿
+@{
+    ViewBag.Title = "OrderDetail";
+
+    var productBase = (ViewBag.ProductBase as Dictionary<int, ProductBase>) ?? new Dictionary<int, ProductBase>();
+    var porductList = (ViewBag.PorductList as Dictionary<int, Product>) ?? new Dictionary<int, Product>();
+    var orderLogs = (ViewBag.OrderLogs as IEnumerable<OrderLogs>) ?? new List<OrderLogs>();
+    var complanyList = ViewBag.ComplanyList as List<KeyValuePair<int, string>>;
+}
+@using QingFeng.Common
+@using QingFeng.Models
+@model OrderMaster
+<style>
+    table tr td {
+        text-align: left;
+    }
+</style>
+
+<div class="wrapper wrapper-content animated fadeInRight">
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="ibox float-e-margins">
+                <div class="ibox-title" style="text-align: left; min-height: 55px;">
+                    <label>查看订单详情</label>
+                    <div class="ibox-tools" style="padding-right: 20px;">
+                        <button type="button" onclick="location.reload()" class="btn btn-primary btn-success">刷新订单</button>
+                        <button type="button" onclick="history.go(-1)" class="btn btn-primary btn-success">返回</button>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr><th colspan="5" style="text-align: left">订单基本信息</th></tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>订单编号：</td>
+                                <td colspan="3">@Model.OrderNo</td>
+                            </tr>
+                            <tr>
+                                <td>联系人：</td>
+                                <td>@Model.ContactName</td>
+                                <td>联系电话：</td>
+                                <td>@Model.ContactPhone</td>
+                            </tr>
+                            <tr>
+                                <td>邮编：</td>
+                                <td>@Model.PostCode</td>
+                                <td>收货地址：</td>
+                                <td>@Model.Address</td>
+                            </tr>
+                            <tr>
+                                <td>订单状态：</td>
+                                <td><span>@Model.OrderStatus.ToString()</span></td>
+                                <td>订单总金额：</td>
+                                <td><span>@Model.OrderAmount</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p />
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>选择</th>
+                                <th>商品名称</th>
+                                <th>商品分类</th>
+                                <th>商品品牌</th>
+                                <th>商品货号</th>
+                                <th>商品颜色</th>
+                                <th>尺码</th>
+                                <th>市场价</th>
+                                <th>采购价</th>
+                                <th>购买数量</th>
+                                <th>订单金额</th>
+                                <th>状态</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrderDetails)
+                            {
+                                <tr align="center">
+                                    <td>
+                                        @if (item.OrderStatus == AgentEnums.OrderDetailStatus.待发货 && (Model.OrderStatus == AgentEnums.MasterOrderStatus.待发货 || Model.OrderStatus == AgentEnums.MasterOrderStatus.进行中))
+                                        {
+                                            <input type="checkbox" data-flowId="@item.FlowId" class="i-checks" name="input[]">
+                                        }
+                                    </td>
+                                    <td>@item.BaseName</td>
+                                    <td>@productBase[item.BaseId].CategoryId.ToString()</td>
+                                    <td>Locaste</td>
+                                    <td>@productBase[item.BaseId].BaseNo</td>
+                                    <td>@porductList[item.ProductId].ProductNo</td>
+                                    <td>@item.SkuName</td>
+                                    <td>@porductList[item.ProductId].OriginalPrice</td>
+                                    <td>@item.Price</td>
+                                    <td>@item.Quantity</td>
+                                    <td>@item.Amount</td>
+                                    <td>@item.OrderStatus</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <table class="table table-bordered" id="table-order-goods">
+                        <thead>
+                            <tr>
+                                <th>商品名称</th>
+                                <th>商品货号</th>
+                                <th>商品颜色</th>
+                                <th>尺码</th>
+                                <th>物流公司</th>
+                                <th>运单号</th>
+                                <th>运费</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrderDetails)
+                            {
+                                <tr align="center" valign="middle">
+                                    <td>@item.BaseName</td>
+                                    <td>@item.BaseId</td>
+                                    <td>@item.ProductNo</td>
+                                    <td>@item.SkuName</td>
+                                    <td>@(item.LogisticsInfo == null ? "-" : item.LogisticsInfo.CompanyName)</td>
+                                    <td>@(item.LogisticsInfo == null ? "-" : item.LogisticsInfo.OddNumber)</td>
+                                    <td>@(item.LogisticsInfo == null ? "-" : item.LogisticsInfo.Price.ToString())</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>操作人</th>
+                                <th>操作</th>
+                                <th>备注</th>
+                                <th>操作时间</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in orderLogs)
+                            {
+                                <tr align="center">
+                                    <td>@item.UserName</td>
+                                    <td>@item.Title</td>
+                                    <td>@item.Content</td>
+                                    <td>@item.CreateDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                </tr>
+                            }
+                            @if (!orderLogs.Any())
+                            {
+                                <tr align="center" valign="middle">
+                                    <td colspan="4" style="text-align: center">-暂无日志信息-</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-sm-12" style="text-align: center">
+                            @if (Model.OrderStatus == AgentEnums.MasterOrderStatus.已支付)
+                            {
+                                <button type="button" onclick="confirmPay()" class="btn btn-sm btn-primary">确认收款</button>
+                            }
+                            @if (Model.OrderStatus == AgentEnums.MasterOrderStatus.待发货 || Model.OrderStatus == AgentEnums.MasterOrderStatus.进行中)
+                            {
+                                <button type="button" onclick="openModal()" class="btn btn-sm btn-primary">去发货</button>
+                            }
+                            @if (Model.OrderStatus != AgentEnums.MasterOrderStatus.已取消 && Model.OrderStatus != AgentEnums.MasterOrderStatus.已完成)
+                            {
+                                <button type="button" onclick="$('#myModal').modal('show')" class="btn btn-sm btn-primary">取消订单</button>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-body">
+                <form class="form-horizontal m-t">
+                    <div class="form-group">
+                        <textarea maxlength="500" class="form-control" id="message" rows="3" placeholder="请输入备注..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-5 col-sm-offset-3" style="text-align: center">
+                            <button class="btn btn-primary" onclick="cancelOrder()" type="button">确认取消订单</button>
+                            <button class="btn btn-primary" onclick="$('#myModal').modal('hide')" type="button">关闭</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal" id="myModal1" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content animated bounceInRight">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">关闭</span></button>
+                <h5 class="modal-title">选择物流</h5>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal m-t" id="signupForm">
+                    <div class="form-group">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">选择物流公司 <i>*</i>：</label>
+                            <div class="col-sm-5">
+                                <select class="form-control m-b help-block m-b-none" id="expressId">
+                                    <option value="0">请选择物流公司</option>
+                                    @foreach (var item in complanyList)
+                                    {
+                                        <option value="@item.Key">@item.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">输入运单号 <i>*</i>：</label>
+                            <div class="col-sm-5">
+                                <input id="expressNo" maxlength="25" class="form-control" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label">输入运费 <i>*</i>：</label>
+                            <div class="col-sm-5">
+                                <input id="price" maxlength="5" class="form-control" type="text">
+                            </div>
+                        </div>
+                        <div class="col-sm-5 col-sm-offset-3" style="text-align: center">
+                            <button class="btn btn-primary" onclick="sendDeliverGoods()" type="button">确认发货</button>
+                            <button class="btn btn-primary" onclick="$('#myModal1').modal('hide')" type="button">关闭</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    var orderId = "@Model.OrderId.ToString()";
+
+    function confirmPay() {
+        layer.confirm("是否确定已收到该订单款项(共计:@(Model.OrderAmount)元),收到请确认,否则请取消?", function() {
+            $core.ajax.getJSON("/admin/ConfrimPayed", { orderId: orderId }, function(data) {
+                if (data === 1) {
+                    layer.msg("操作成功", { success: function() { setTimeout(function() { location.reload(); }, 1000) } });
+                } else if (data === 2) {
+                    layer.msg("操作失败");
+                } else {
+                    layer.msg(this.message);
+                }
+            });
+        });
+    }
+
+    function openModal() {
+        if ($("div.checked .i-checks[data-flowId]").length < 1) {
+            layer.msg("未选中需要发货的商品");
+            return;
+        }
+        $("#myModal1").modal("show");
+    }
+
+    function cancelOrder() {
+        layer.confirm("是否确定取消该订单?", function() {
+            $core.ajax.getJSON("/admin/CancelOrder", {
+                orderId: orderId,
+                remark: $("#message").val().trim()
+            }, function(data) {
+                if (data === 1) {
+                    layer.msg("操作成功", { success: function() { setTimeout(function() { location.reload(); }, 1000) } });
+                } else if (data === 2) {
+                    layer.msg("操作失败");
+                } else {
+                    layer.msg(this.message);
+                }
+            });
+        });
+    }
+
+    function sendDeliverGoods() {
+        var checkedIds = [];
+        $("div.checked .i-checks[data-flowId]").each(function() {
+            checkedIds.push($(this).attr("data-flowId"));
+        });
+
+        if (checkedIds.length === 0) {
+            layer.msg("未选中需要发货的商品");
+            return;
+        }
+
+        var expressInfo = {};
+        expressInfo.companyId = $("#expressId").val();
+        expressInfo.oddNumber = $("#expressNo").val().trim();
+        expressInfo.price = parseFloat($("#price").val().trim());
+        expressInfo.companyName = $("#expressId :checked").text();
+
+        if (expressInfo.companyId === "0") {
+            layer.tips("请选择快递公司", $("#expressId"));
+            return;
+        }
+        if (expressInfo.oddNumber.length === 0) {
+            layer.tips("请输入运单号", $("#expressNo"));
+            return;
+        }
+        if (isNaN(expressInfo.price)) {
+            layer.tips("请输入运费", $("#price"));
+            return;
+        }
+
+        var postData = {
+            orderId: orderId,
+            flowIds: checkedIds,
+            model: expressInfo
+        }
+
+        $core.ajax.postJSON("/admin/SendDeliverGoods", postData, function(data) {
+            if (data === 1) {
+                layer.msg("发货成功", { success: function () { setTimeout(function () { location.reload(); }, 1000) } });
+            } else if (data === 0) {
+                layer.msg("发货失败");
+            } else {
+                layer.msg(this.message);
+            }
+        });
+    }
+</script>
+<script src="/Content/js/plugins/iCheck/icheck.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.i-checks').iCheck({
+            checkboxClass: 'icheckbox_square-green',
+            radioClass: 'iradio_square-green'
+        });
+    });
+</script>
