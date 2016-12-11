@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using QingFeng.Common.Dapper;
 
 namespace QingFeng.Models
@@ -30,5 +32,9 @@ namespace QingFeng.Models
         public DateTime CreateDate { get; set; }
 
         public DateTime UpdateDate { get; set; }
+
+        [IgnoreField]
+        public List<int> FlowIdList
+            => string.IsNullOrWhiteSpace(FlowIds) ? new List<int>() : FlowIds.Split(',').Select(int.Parse).ToList();
     }
 }

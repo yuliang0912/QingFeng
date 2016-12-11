@@ -33,12 +33,17 @@ namespace QingFeng.DataAccessLayer.Repository
             }
         }
 
-        public IEnumerable<ProductBase> SearchProductBase(int categoryId, string keyWords, int page, int pageSize,
+        public IEnumerable<ProductBase> SearchProductBase(int categoryId, string keyWords,int status, int page, int pageSize,
             out int totalItem)
         {
             var additional = string.IsNullOrWhiteSpace(keyWords)
                 ? string.Empty
                 : "AND (BaseName LIKE @keyWords OR BaseNo LIKE @keyWords)";
+
+            if (status > -1)
+            {
+                additional += " AND status = " + status;
+            }
 
             Func<object, string> buildWhereSql =
                 (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional, "keyWords");

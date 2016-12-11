@@ -24,13 +24,14 @@ namespace QingFeng.Business
             {
                 var storeInfos =
                     _storeRepository.GetBatchStoreInfos(list.Select(t => t.UserId).ToArray())
-                        .ToDictionary(c => c.MasterUserId, c => c);
+                        .GroupBy(t => t.MasterUserId, c => c)
+                        .ToDictionary(c => c.Key, c => c.ToList());
 
                 list.ToList().ForEach(t =>
                 {
                     if (storeInfos.ContainsKey(t.UserId))
                     {
-                        t.StoreInfo = storeInfos[t.UserId];
+                        t.StoreList = storeInfos[t.UserId];
                     }
                 });
             }
@@ -41,36 +42,22 @@ namespace QingFeng.Business
         //注册用户
         public int RegisterUser(UserInfo model)
         {
-            if (_userInfoRepository.Count(new { model.UserName }) > 0)
+            if (_userInfoRepository.Count(new {model.UserName}) > 0)
             {
                 return 2;
-            }
-
-            if (model.StoreInfo == null)
-            {
-                return 3;
             }
 
             model.Avatar = model.Avatar ?? "/content/agent/img/user.jpg";
             model.NickName = model.NickName ?? model.UserName;
             model.UserRole = AgentEnums.UserRole.StoreUser;
             model.Salt = StringExtensions.GetRandomString();
-            model.PassWord = string.Concat(model.UserName, PassWordSplitString, model.UserRole.GetHashCode(), model.PassWord).Hmacsha1(model.Salt);
+
+            model.PassWord =
+                string.Concat(model.UserName, PassWordSplitString, model.UserRole.GetHashCode(), model.PassWord)
+                    .Hmacsha1(model.Salt);
             model.CreateDate = DateTime.Now;
 
-            model.StoreInfo.StoreName = model.StoreInfo.StoreName ?? string.Empty;
-            model.StoreInfo.HomeUrl = model.StoreInfo.HomeUrl ?? string.Empty;
-
-            using (var trans = new TransactionScope())
-            {
-                var userId = _userInfoRepository.Insert(model, true);
-                model.StoreInfo.MasterUserId = userId;
-                model.StoreInfo.CreateDate = model.CreateDate;
-                var storeIsSuccess = _storeRepository.Insert(model.StoreInfo) > 0;
-                trans.Complete();
-
-                return userId > 0 && storeIsSuccess ? 1 : 0;
-            }
+            return _userInfoRepository.Insert(model) > 0 ? 1 : 0;
         }
 
         public int UpdatePassWord(int userId, string password)
@@ -118,14 +105,6 @@ namespace QingFeng.Business
                 return false;
             }
 
-            if (model.StoreInfo != null)
-            {
-                _storeRepository.Update(new
-                {
-                    storeName = model.StoreInfo.StoreName ?? string.Empty,
-                    homeUrl = model.StoreInfo.HomeUrl ?? string.Empty,
-                }, new {masterUserId = model.UserId});
-            }
             model.NickName = model.NickName ?? userInfo.UserName;
             return _userInfoRepository.Update(new {model.NickName}, new {model.UserId});
         }
@@ -161,7 +140,7 @@ namespace QingFeng.Business
 
             if (userInfo != null)
             {
-                userInfo.StoreInfo = new StoreService().GetStoreInfo(new {masterUserId = userInfo.UserId});
+                userInfo.StoreList = _storeRepository.GetBatchStoreInfos(userInfo.UserId).ToList();
             }
 
             return userInfo;

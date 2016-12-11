@@ -61,6 +61,10 @@
                 {
                     <th class="center">@item.Value</th>
                 }
+                @if (!allSkus.Any())
+                {
+                    <th class="center">-</th>
+                }
             </tr>
         </thead>
 
@@ -83,6 +87,10 @@
                         }
                         <td class="center">@(dict.ContainsKey(item.Key) ? dict[item.Key] : 0)</td>
                     }
+                    @if (!allSkus.Any())
+                    {
+                        <th class="center">-</th>
+                    }
                 </tr>
             }
             @if (Model.SubProduct.Any())
@@ -95,6 +103,10 @@
                     {
                         <td>@item.Value</td>
                     }
+                    @if (!allSkus.Any())
+                    {
+                        <th class="center">-</th>
+                    }
                 </tr>
             }
             <!--输出合计数量 end-->
@@ -106,11 +118,11 @@
 
 <script type="text/javascript">
 
-    $(function () {
+    $(function() {
 
         $.etopConfirm();
 
-        $('#do-goods-filter').click(function () {
+        $('#do-goods-filter').click(function() {
             var goods_id = $('#ipt_goods_id').val().trim();
             var categoryId = $("#gender_id").val();
             if (goods_id === '') {
@@ -123,13 +135,13 @@
             $.getPageContent({ url: url });
         });
 
-        $('.pagination a').off('click').on('click', function () {
+        $('.pagination a').off('click').on('click', function() {
             var url = $(this).attr('href');
             $.getPageContent({ url: url });
             return false;
         });
 
-        $('#goods_ipt').bind('input propertychange', function () {
+        $('#goods_ipt').bind('input propertychange', function() {
             var categoryId = $("#gender_id").val();
             var val = $(this).val().trim();
             if (val === '') {
@@ -138,20 +150,20 @@
                 $('#good_ids').hide();
                 return;
             }
-            $.getJSON('/agent/SearchBaseProductNo?categoryId=' + categoryId + '&keyWords=' + val, function (response) {
+            $.getJSON('/agent/SearchBaseProductNo?categoryId=' + categoryId + '&keyWords=' + val, function(response) {
                 if (response.ret !== 0) {
                     layer.msg('请求失败');
                     return;
                 }
                 var list = response.data;
                 var options = '';
-                $.each(list, function (i, item) {
+                $.each(list, function(i, item) {
                     options += '<option value=' + item.baseNo + '>' + item.baseNo + '</option>';
                 });
                 $('#good_ids').html(options);
                 $('#good_ids').show();
                 good_ids.size = 25;
-                $('#good_ids option').click(function () {
+                $('#good_ids option').click(function() {
                     $('.filter_goods').attr('disabled', 'disabled');
                     val = $(this).html();
                     var id = $(this).val();
@@ -161,6 +173,6 @@
                 });
             });
         });
-    })
+    });
 </script>
 

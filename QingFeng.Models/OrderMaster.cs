@@ -38,6 +38,8 @@ namespace QingFeng.Models
         /// </summary>
         public int StoreId { get; set; }
 
+        public string StoreName { get; set; }
+
         /// <summary>
         /// 店铺所有人
         /// </summary>

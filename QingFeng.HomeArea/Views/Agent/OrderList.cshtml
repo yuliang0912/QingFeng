@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "OrderList";
     Layout = "~/Views/Shared/_LayoutAgent.cshtml";
-
+    var storeList = (ViewBag.User as UserInfo).StoreList.ToDictionary(c => c.StoreId, c => c.StoreName);
     var productBase = (ViewBag.ProductBase as Dictionary<int, ProductBase>) ?? new Dictionary<int, ProductBase>();
     var porductList = (ViewBag.PorductList as Dictionary<int, Product>) ?? new Dictionary<int, Product>();
 }
@@ -27,6 +27,15 @@
             <a class="btn btn-info btn-sm pull-right load-view" href="/agent/addOrder" data-url="/agent/addOrder"><i class="icon icon-plus"></i> 添加订单</a>
             &nbsp;<i class="icon icon-search"></i>筛选:
             <div class="form-group">
+                <select name="storeId" id="storeId" class="form-control input-sm">
+                    <option value="0">店铺</option>
+                    @foreach (var item in storeList)
+                    {
+                        <option @(ViewBag.storeId == item.Key ? "selected" : string.Empty ) value="@item.Key">@item.Value</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
                 从&nbsp;<input type="text" class="form-control input-sm" placeholder="请选择开始时间" value="@ViewBag.beginDateStr" readonly="" style="width:100px;" name="start_time" id="start_time">
                 到&nbsp;<input type="text" class="form-control input-sm" placeholder="请选择结束时间" value="@ViewBag.endDateStr" readonly="" name="end_time" id="end_time">
             </div>
@@ -44,6 +53,7 @@
                 <th rowspan="2">订单流水号</th>
                 <th rowspan="2">日期</th>
                 <th rowspan="2">订单号</th>
+                <th rowspan="2">店铺</th>
                 <th rowspan="2">收货人</th>
                 <th rowspan="2">电话</th>
                 <th colspan="4" style="border-bottom-width:1px;">订单商品</th>
@@ -65,17 +75,18 @@
                     var detail = item.OrderDetails.ToList()[i];
                     <tr align="center">
                         @if (i == 0)
-                    {
+                        {
                             <td rowspan="@item.OrderDetailCount">@item.OrderId</td>
-                            <td rowspan="@item.OrderDetailCount">@item.CreateDate.ToString()</td>
+                            <td rowspan="@item.OrderDetailCount">@item.CreateDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
                             <td rowspan="@item.OrderDetailCount">@item.OrderNo</td>
+                            <td rowspan="@item.OrderDetailCount">@item.StoreName</td>
                             <td rowspan="@item.OrderDetailCount">@item.ContactName</td>
                             <td rowspan="@item.OrderDetailCount">@item.ContactPhone</td>
                         }
                         <td>@productBase[detail.BaseId].BaseNo</td>
                         <td>@porductList[detail.ProductId].ProductNo</td>
                         <td>@detail.SkuName</td>
-                        <td><span data-detail-order-status="@detail.OrderSatus.GetHashCode()">@detail.OrderSatus</span></td>
+                        <td><span data-detail-order-status="@detail.OrderStatus.GetHashCode()">@detail.OrderStatus</span></td>
                         @if (i == 0)
                         {
                             <td rowspan="@item.OrderDetailCount"><span data-order-status="@item.OrderStatus.GetHashCode()">@item.OrderStatus.ToString()</span></td>
@@ -125,6 +136,7 @@
                 url += '?beginDateStr=' + start_time;
                 url += '&endDateStr=' + end_time;
                 url += '&keyWords=' + encodeURI(keyword);
+                url += '&storeId=' + $('#storeId').val();
 
                 location.href = url;
             });
@@ -151,8 +163,7 @@
 
             $("#pageDiv").pager({
                 pageIndex: @(Model.Page), pageSize: @(Model.PageSize), recordCount: @(Model.TotalCount), buttonClickCallback: function (page) {
-                    var url = location.href;
-                    url += url.indexOf("?") > -1 ? "&page=" + page : "?page="+page;
+                    var url = $core.changeUrlArg(location.href, "page", page);
                     $.getPageContent({ url: url });
                 }
             });

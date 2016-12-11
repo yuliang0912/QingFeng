@@ -23,7 +23,7 @@ namespace QingFeng.TestConsole
             {
                 OrderNo = "FN" + GuidConvert.ToString16(),
                 UserId = user.UserId,
-                StoreId = user.StoreInfo.StoreId,
+                StoreId = user.StoreList.First().StoreId,
                 ContactName = "余亮",
                 ContactPhone = "18923803593",
                 Address = "民治大道" + new Random().Next(1, 9) + "栋",
@@ -62,7 +62,7 @@ namespace QingFeng.TestConsole
             int totalItem, storeId = 6, orderStatus = 3;
             var keyWords = "";
 
-            var list = OrderService.SearchOrderList(storeId, orderStatus, DateTime.MinValue, DateTime.Now, keyWords, 1, 10,
+            var list = OrderService.SearchOrderList(0,storeId, orderStatus, DateTime.MinValue, DateTime.Now, keyWords, 1, 10,
                 out totalItem);
 
             var result = new ApiPageList<OrderMaster>()

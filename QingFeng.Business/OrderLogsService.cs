@@ -16,5 +16,11 @@ namespace QingFeng.Business
         {
             return _orderLogsRepository.GetList(new {orderId}).OrderByDescending(t => t.CreateDate);
         }
+
+        public bool CreateLog(OrderLogs model)
+        {
+            model.CreateDate = DateTime.Now;
+            return _orderLogsRepository.Insert(model) > 0;
+        }
     }
 }

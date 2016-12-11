@@ -10,16 +10,27 @@ namespace QingFeng.Business
     public class ProductStockService
     {
         private readonly ProductRepository _productRepository = new ProductRepository();
+        private readonly SkuItemRepository _skuItemRepository = new SkuItemRepository();
         private readonly ProductStockRepository _productStockRepository = new ProductStockRepository();
 
-        public int CreateProductStock(int productId, List<KeyValuePair<int, string>> sizeSku)
+        public int CreateProductStock(int productId, List<int> sizeList)
         {
+            var sizeSku = _skuItemRepository.GetListByIds(sizeList.ToArray())
+                .Select(t => new KeyValuePair<int, string>(t.SkuId, t.SkuName));
+
+            if (!sizeSku.Any())
+            {
+                return 0;
+            }
+
             var product = _productRepository.Get(new {productId});
             if (product == null)
             {
                 return 0;
             }
             var productStockList = _productStockRepository.GetList(new {productId}).ToList();
+
+
             var addCount = 0;
             using (var trans = new TransactionScope())
             {
@@ -54,9 +65,19 @@ namespace QingFeng.Business
             return _productStockRepository.GetList(condition);
         }
 
+        public ProductStock Get(object condition)
+        {
+            return _productStockRepository.Get(condition);
+        }
+
         public bool SetProductStock(int productId, List<KeyValuePair<int, int>> sizeSku)
         {
             return false;
+        }
+
+        public IEnumerable<ProductStock> GetProductStockListByBaseIds(params int[] baseId)
+        {
+            return _productStockRepository.GetProductStockListByBaseIds(baseId);
         }
     }
 }

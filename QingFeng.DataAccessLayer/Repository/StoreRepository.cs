@@ -14,14 +14,14 @@ namespace QingFeng.DataAccessLayer.Repository
         const string TableName = "storeInfo";
         public StoreRepository() : base("storeInfo") { }
 
-        public IEnumerable<StoreInfo> GetBatchStoreInfos(params int[] storeId)
+        public IEnumerable<StoreInfo> GetBatchStoreInfos(params int[] userId)
         {
-            if (storeId == null || !storeId.Any())
+            if (userId == null || !userId.Any())
             {
                 return new List<StoreInfo>();
             }
 
-            var additional = $"AND masterUserId IN ({string.Join(",", storeId)})";
+            var additional = $"AND masterUserId IN ({string.Join(",", userId)})";
 
             Func<object, string> buildWhereSql =
                 (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional);

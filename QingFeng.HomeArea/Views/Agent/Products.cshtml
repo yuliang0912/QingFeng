@@ -60,27 +60,37 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var item in Model.PageList)
+        @foreach (var item in Model.PageList)
+        {
+            var subProductCount = item.SubProduct.Count();
+            for (var i = 0; i < subProductCount; i++)
             {
-                var subProductCount = item.SubProduct.Count();
-                for (var i = 0; i < subProductCount; i++)
-                {
-                    var product = item.SubProduct.ToList()[i];
-                    <tr align="center">
-                        @if (i == 0)
-                        {
-                            <td rowspan="@subProductCount">@item.BaseName</td>
-                            <td rowspan="@subProductCount">@item.BaseNo</td>
-                            <td rowspan="@subProductCount">Locaste</td>
-                            <td rowspan="@subProductCount">@item.CategoryId.ToString()</td>
-                        }
-                        <td>@product.ProductNo</td>
-                        <td>@product.OriginalPrice</td>
-                        <td>@product.ActualPrice</td>
-                    </tr>
-                }
+                var product = item.SubProduct.ToList()[i];
+                <tr align="center">
+                    @if (i == 0)
+                    {
+                        <td rowspan="@subProductCount">@item.BaseName</td>
+                        <td rowspan="@subProductCount">@item.BaseNo</td>
+                        <td rowspan="@subProductCount">Locaste</td>
+                        <td rowspan="@subProductCount">@item.CategoryId.ToString()</td>
+                    }
+                    <td>@product.ProductNo</td>
+                    <td>@product.OriginalPrice</td>
+                    <td>@product.ActualPrice</td>
+                </tr>
             }
+        }
         </tbody>
+        @if (Model.PageCount > 1)
+        {
+            <tfoot>
+                <tr align="center">
+                    <td colspan="11" style="text-align: center;">
+                        <div id="pageDiv"></div>
+                    </td>
+                </tr>
+            </tfoot>
+        }
     </table>
 </div>
 <!-- /.table-responsive -->
@@ -98,6 +108,13 @@
                         $.pageReload();
                     });
                 }
+            }
+        });
+
+        $("#pageDiv").pager({
+            pageIndex: @(Model.Page), pageSize: @(Model.PageSize), recordCount: @(Model.TotalCount), buttonClickCallback: function (page) {
+                var url = $core.changeUrlArg(location.href, "page", page);
+                $.getPageContent({ url: url });
             }
         });
 

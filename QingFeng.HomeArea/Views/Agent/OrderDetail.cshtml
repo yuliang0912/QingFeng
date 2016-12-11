@@ -3,11 +3,13 @@
     ViewBag.Title = "OrderDetail";
 
     Layout = "~/Views/Shared/_LayoutAgent.cshtml";
+    var user = ViewBag.User as UserInfo;
     var productBase = (ViewBag.ProductBase as Dictionary<int, ProductBase>) ?? new Dictionary<int, ProductBase>();
     var porductList = (ViewBag.PorductList as Dictionary<int, Product>) ?? new Dictionary<int, Product>();
     var logistics = (ViewBag.Logistics as IEnumerable<LogisticsInfo>) ?? new List<LogisticsInfo>();
     var orderLogs = (ViewBag.OrderLogs as IEnumerable<OrderLogs>) ?? new List<OrderLogs>();
 }
+@using QingFeng.Common
 @using QingFeng.Models
 @model OrderMaster
 
@@ -52,7 +54,13 @@
                     <td class="td_title">订单编号：</td>
                     <td width="300">@Model.OrderNo</td>
                     <td class="td_title">订单状态：</td>
-                    <td><span style="color:#0F0">@Model.OrderStatus.ToString()</span></td>
+                    <td>
+                        <span>@Model.OrderStatus.ToString()</span>
+                        @if (Model.OrderStatus == AgentEnums.MasterOrderStatus.待支付)
+                        {
+                            <button type="button" onclick="$('#pay-qrcode').modal('show')" class="btn btn-primary">去支付</button>
+                        }
+                    </td>
                 </tr>
                 <tr>
                     <td class="td_title">联系人：</td>
@@ -60,12 +68,18 @@
                     <td class="td_title">联系电话：</td>
                     <td>@Model.ContactPhone</td>
                 </tr>
+            <tr>
+                <td class="td_title">店铺：</td>
+                <td>@Model.StoreName</td>
+                <td class="td_title">邮编：</td>
+                <td>@Model.PostCode</td>
+            </tr>
                 <tr>
-                    <td class="td_title">邮编：</td>
-                    <td>@Model.PostCode</td>
+                    <td class="td_title">订单总金额：</td>
+                    <td>@Model.OrderAmount</td>
                     <td class="td_title">收货地址：</td>
                     <td>@Model.Address</td>
-                </tr>
+            </tr>
             </tbody>
         </table>
     </div>
@@ -74,7 +88,7 @@
         <div class="panel-heading">订单商品</div>
 
         <!-- Table -->
-        <table class="table table-bordered" id="table-order-goods">
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <th width="180">商品名称</th>
@@ -98,13 +112,13 @@
                         <td>@productBase[item.BaseId].CategoryId.ToString()</td>
                         <td>Locaste</td>
                         <td>@productBase[item.BaseId].BaseNo</td>
-                        <td>@porductList[item.ProductId].ProductNo</td>
+                        <td>@item.ProductNo</td>
                         <td>@item.SkuName</td>
                         <td>@porductList[item.ProductId].OriginalPrice</td>
                         <td>@item.Price</td>
                         <td>@item.Quantity</td>
                         <th>@item.Amount</th>
-                        <td>@item.OrderSatus</td>
+                        <td>@item.OrderStatus</td>
                     </tr>
                 }
             </tbody>
@@ -118,31 +132,31 @@
         <table class="table table-bordered" id="table-order-goods">
             <thead>
                 <tr>
-                    <th width="180">物流公司</th>
-                    <th width="150">运单号</th>
-                    <th width="80">运费</th>
-                    <th>货品</th>
+                    <th>商品名称</th>
+                    <th>商品货号</th>
+                    <th>商品颜色</th>
+                    <th>尺码</th>
+                    <th>物流公司</th>
+                    <th>运单号</th>
+                    <th>运费</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in logistics)
-                {
-                    var flowIds = item.FlowIds.Split(',').Select(int.Parse);
-                    <tr align="center" valign="middle">
-                        <td rowspan="1">@item.CompanyName</td>
-                        <td rowspan="1">@item.OddNumber</td>
-                        <td rowspan="1">@item.Price</td>
-                        <td>@string.Join(";", Model.OrderDetails.Where(t => flowIds.Contains(t.FlowId)).Select(t => porductList[t.ProductId].ProductNo + "," + t.SkuName)) </td>
-                    </tr>
-                }
-                @if (!logistics.Any())
+                @foreach (var item in Model.OrderDetails)
                 {
                     <tr align="center" valign="middle">
-                        <td colspan="4">-暂无发货信息-</td>
+                        <td>@item.BaseName</td>
+                        <td>@item.BaseId</td>
+                        <td>@item.ProductNo</td>
+                        <td>@item.SkuName</td>
+                        <td>@(item.LogisticsInfo == null ? "-" : item.LogisticsInfo.CompanyName)</td>
+                        <td>@(item.LogisticsInfo == null ? "-" : item.LogisticsInfo.OddNumber)</td>
+                        <td>@(item.LogisticsInfo == null ? "-" : item.LogisticsInfo.Price.ToString())</td>
                     </tr>
                 }
             </tbody>
         </table>
+
     </div>
     <div class="panel panel-success" style="width:600px; margin-left:10px;">
         <!-- Default panel contents -->
@@ -163,7 +177,7 @@
                         <td>@item.UserName</td>
                         <td>@item.Title</td>
                         <td>@item.Content</td>
-                        <td>@item.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")</td>
+                        <td>@item.CreateDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
                     </tr>
                 }
                 @if (!logistics.Any())
@@ -179,7 +193,7 @@
     <script type="text/javascript">
         $.etopConfirm({ selector: '.order-canceled2,.order-cancelReturned,.order-nostock,.order-nostockCancel' });
         $("[data-toggle='tooltip']").tooltip({ html: true });
-        $('.back-to-list').off('click').on('click', function () {
+        $('.back-to-list').off('click').on('click', function() {
             var url = $('#page-content').attr('data-back-url');
             if (!url) {
                 url = $(this).attr('href');
@@ -187,6 +201,45 @@
             url += url.indexOf("?") > -1 ? "&stype=1" : "?stype=1";
             $.getPageContent({ url: url });
             return false;
-        })
+        });
+
+        $("#order-pay").click(function() {
+            layer.msg("11");
+        });
     </script>
 </div>
+
+<div class="modal fade" id="pay-qrcode" tabindex="-1" role="dialog" aria-labelledby="etop-modal-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content form-horizontal">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="关闭"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">支付订单:tonyzu@126.com</h4>
+            </div>
+            <div class="modal-body">
+                <div style="width: 100%; text-align: center">
+                    <img src="/Content/img/alipay.png"/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="confirmPay" class="btn btn-primary">已完成支付</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#confirmPay").click(function () {
+        layer.confirm("是否确定已支付订单款项,共计(@Model.OrderAmount)元,点击确定订单将更改为已支付状态.", function () {
+            $core.ajax.postJSON("/agent/PayOrder", { orderId: "@Model.OrderId" }, function (data) {
+                if (data === 1) {
+                    layer.msg("订单状态修改成功", { success: function () { setTimeout(function () { location.reload(); }, 1000) } });
+                } else if (data === 0) {
+                    layer.msg("操作失败");
+                } else {
+                    layer.msg(this.message);
+                }
+            });
+        });
+    })
+</script>

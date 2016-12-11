@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using QingFeng.Common.Dapper;
 using static QingFeng.Common.AgentEnums;
 
@@ -25,10 +21,16 @@ namespace QingFeng.Models
 
         public int BaseId { get; set; }
 
+        public string BaseNo { get; set; }
+
+        public string BaseName { get; set; }
+
         /// <summary>
         /// 商品ID
         /// </summary>		
         public int ProductId { get; set; }
+
+        public string ProductNo { get; set; }
 
         /// <summary>
         /// 商品名称
@@ -63,9 +65,9 @@ namespace QingFeng.Models
         /// <summary>
         /// 商品状态
         /// </summary>		
-        public OrderDetailStatus OrderSatus { get; set; }
+        public OrderDetailStatus OrderStatus { get; set; }
 
         [IgnoreField]
-        public IEnumerable<LogisticsInfo> Logistics { get; set; }
+        public LogisticsInfo LogisticsInfo { get; set; }
     }
 }

@@ -2,117 +2,162 @@
     ViewBag.Title = "CreateProduct";
 
     var colorSku = ViewBag.ColorSku as List<KeyValuePair<int, string>>;
-    var subProducts = ViewBag.SubProducts as List<Product> ?? new List<Product>();
 }
 
-@using QingFeng.Models
-@model ProductBase
-
-<link href="/content/css/plugins/chosen/chosen.css" rel="stylesheet">
-<script src="/content/js/plugins/chosen/chosen.jquery.js"></script>
-
+@model QingFeng.Models.ProductBase
 
 <div class="wrapper wrapper-content animated fadeInRight">
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
                 <div class="ibox-title" style="text-align: left;min-height: 55px;">
-                    <label>@Model.BaseName</label>
-                    <div class="ibox-tools" style="padding-right: 30px;">
-                        <button type="button" onclick="location.href = '/admin/baseProducts'" class="btn btn-primary btn-success">返回</button>
-                    </div>
+                    <label>手动创建子商品:(@Model.BaseName)</label>
                 </div>
                 <div class="ibox-content">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>货名</th>
-                                <th>货号</th>
-                                <th>市场价</th>
-                                <th>采购价</th>
-                                <th>状态</th>
-                                <th>添加时间</th>
-                                <th style="width: 170px">操作</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var item in subProducts)
-                            {
-                                <tr>
-                                    <td>@item.ProductName</td>
-                                    <td>@item.ProductNo</td>
-                                    <td>@item.OriginalPrice</td>
-                                    <td>@item.ActualPrice</td>
-                                    <td>@(item.Status == 0 ? "正常" : "已删除" )</td>
-                                    <td>@item.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")</td>
-                                    <td data-base-id="@item.BaseId">
-                                        <button type="button" onclick="location.href = '/product/EditProduct?productId=@item.ProductId'" class="btn btn-primary btn-sm">编辑</button>
-                                        <button type="button" class="btn btn-primary btn-sm">@(item.Status == 0 ? "删除" : "恢复" )</button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                        @if (!subProducts.Any())
-                        {
-                            <tfoot>
-                                <tr align="center">
-                                    <td colspan="6" style="text-align: center;">--暂无数据--</td>
-                                </tr>
-                            </tfoot>
-                        }
-                    </table>
-                    <div class="input-group">
-                        <select data-placeholder="请选择子产品颜色..." id="colorSku" class="chosen-select" multiple style="width: 350px;" tabindex="2">
-                            @foreach (var item in colorSku)
-                            {
-                                <option value="@item.Key" hassubinfo="true">@item.Value</option>
-                            }
-                        </select>
-                        <span style="padding-left: 30px;"><button type="button" id="createProduct" style="padding-left: 20px;" class="btn btn-primary btn-success">创建子产品</button></span>
-                    </div>
+                    <form class="form-horizontal m-t" id="signupForm">
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">*基础货号：</label>
+                            <div class="col-sm-5">
+                                <input readonly="readonly" value="@Model.BaseNo" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">*货名：</label>
+                            <div class="col-sm-5">
+                                <input id="productName" name="productName" value="@(Model.BaseName)-" maxlength="120" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">*货号：</label>
+                            <div class="col-sm-5">
+                                <input id="productNo" name="productNo" maxlength="32" value="@(Model.BaseNo)-" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">*市场价：</label>
+                            <div class="col-sm-5">
+                                <input id="originalPrice" name="originalPrice" value="@(Model.OriginalPrice)" maxlength="10" class="form-control" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">*采购价：</label>
+                            <div class="col-sm-5">
+                                <input id="actualPrice" name="actualPrice" value="@(Model.ActualPrice)" maxlength="10" class="form-control" type="text">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label">颜色：</label>
+                            <div class="col-sm-5">
+                                <select class="form-control m-b" id="skuId" name="categoryId">
+                                    @foreach (var item in colorSku)
+                                    {
+                                        <option value="@item.Key">@item.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-sm-5 col-sm-offset-3">
+                                <button class="btn btn-primary" id="submitBtn" type="submit">提交</button>
+                                <button class="btn btn-primary" onclick="location.href = '/product/ProductManger?baseId=@(Model.BaseId)'; return false;" type="submit">返回</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
+<script src="/content/js/plugins/validate/jquery.validate.min.js"></script>
+<script src="/content/js/plugins/validate/messages_zh.min.js"></script>
 <script>
-    $(function () {
-        var config = {
-            '.chosen-select': {},
-            '.chosen-select-deselect': {
-                allow_single_deselect: true
-            },
-            '.chosen-select-no-single': {
-                disable_search_threshold: 10
-            },
-            '.chosen-select-no-results': {
-                no_results_text: 'Oops, nothing found!'
-            },
-            '.chosen-select-width': {
-                width: "95%"
-            }
-        }
-        for (var selector in config) {
-            $(selector).chosen(config[selector]);
-        }
+    $.validator.setDefaults({
+        highlight: function(e) {
+            $(e).closest(".form-group").removeClass("has-success").addClass("has-error");
+        },
+        success: function(e) {
+            e.closest(".form-group").removeClass("has-error").addClass("has-success");
+        },
+        errorElement: "span",
+        errorPlacement: function(e, r) {
+            e.appendTo(r.is(":radio") || r.is(":checkbox") ? r.parent().parent().parent() : r.parent());
+        },
+        errorClass: "help-block m-b-none",
+        validClass: "help-block m-b-none"
+    });
 
-        $("#createProduct").click(function () {
-            var skuItems = $("#colorSku").val();
-
-            if (!skuItems) {
-                layer.msg("请选择需要创建的子产品颜色");
-                return;
-            }
-
-            $core.ajax.postJSON("/product/CreateProduct", { baseId: '@Model.BaseId', colorSkuIds: skuItems.toString() }, function (data) {
-                if (data === 0) {
-                    layer.msg("操作成功,本次暂未添加新的产品");
-                    return;
+    $(function() {
+        var e = "<i class='fa fa-times-circle'></i> ";
+        $("#signupForm").validate({
+            rules: {
+                productNo: {
+                    required: true,
+                    maxlength: 32,
+                    minlength: 2
+                },
+                productName: {
+                    required: true,
+                    maxlength: 120,
+                    minlength: 2
+                },
+                originalPrice: {
+                    number: true,
+                    min: 0
+                },
+                actualPrice: {
+                    number: true,
+                    min: 0
+                },
+                categoryId: {
+                    required: true
                 }
-                layer.msg("操作成功,本次成功添加或恢复" + data + "个新产品", { success: function () { setTimeout(function () { location.reload(); }, 1500) } });
-            });
+            },
+            messages: {
+                originalPrice: {
+                    required: e + "请输入市场价",
+                    min: e + "市场价不能低于0元"
+                },
+                actualPrice: {
+                    required: e + "请输入市场价",
+                    min: e + "采购价不能低于0元"
+                },
+                categoryId: {
+                    range: e + "请选择商品颜色"
+                }
+            },
+            submitHandler: function(form) {
+                $("#submitBtn").attr("disabled", true);
+
+                var productNo = $("#productNo").val().trim();
+                var productName = $("#productName").val().trim();
+                var originalPrice = $("#originalPrice").val().trim();
+                var actualPrice = $("#actualPrice").val().trim();
+                var skuId = $("#skuId").val();
+
+                var productInfo = {
+                    baseId: '@Model.BaseId', productNo: productNo,
+                    productName: productName, originalPrice: originalPrice,
+                    actualPrice: actualPrice, colorId: skuId
+                };
+
+                $core.ajax.postJSON("/product/AddProduct", productInfo, function (data) {
+                    if (data === 1) {
+                        layer.msg("添加商品成功", { success: function () { setTimeout(function () { location.reload() }, 1500) } });
+                        return;
+                    }
+                    else if (data === 0) {
+                        layer.msg("添加商品失败");
+                    }
+                    else if (data === 2) {
+                        layer.msg("商品货号和货名不能为空");
+                    }
+                    else if (data === 3) {
+                        layer.tips("货号已存在", "#productNo");
+                    }
+                    $("#submitBtn").attr("disabled", false);
+                });
+                return false;
+            }
         });
     });
 </script>

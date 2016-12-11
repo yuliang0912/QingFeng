@@ -8,6 +8,9 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
+                <div class="ibox-title" style="text-align: left;min-height: 55px;">
+                    <label>编辑用户信息</label>
+                </div>
                 <div class="ibox-content">
                     <form class="form-horizontal m-t" id="signupForm">
                         <div class="form-group">
@@ -29,21 +32,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label class="col-sm-1 control-label">店铺名：</label>
-                            <div class="col-sm-5">
-                                <input id="storeName" name="storeName" maxlength="50" value="@Model.StoreInfo.StoreName" class="form-control" type="text" aria-required="true" aria-invalid="false">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-1 control-label">店铺地址：</label>
-                            <div class="col-sm-5">
-                                <input id="homeUrl" name="homeUrl" maxlength="128" value="@Model.StoreInfo.HomeUrl" class="form-control" type="text" aria-required="true" aria-invalid="false">
-                            </div>
-                        </div>
-                        <div class="form-group">
                             <div class="col-sm-5 col-sm-offset-3">
                                 <button class="btn btn-primary" id="submitBtn" type="submit">提交</button>
-                                <button class="btn btn-primary" type="button" onclick="location.href = history.go(-1)">返回</button>
+                                <button class="btn btn-primary" type="button" onclick="location.href = '/admin/userlist'">返回</button>
                             </div>
                         </div>
                     </form>
@@ -100,15 +91,10 @@
                 $("#submitBtn").attr("disabled", true);
 
                 var nickName = $("#nickName").val().trim();
-                var storeName = $("#storeName").val().trim();
-                var homeUrl = $("#homeUrl").val().trim();
 
                 var postInfo = {
                     nickName: nickName,
-                    userId: '@Model.UserId', storeInfo: {
-                        storeName: storeName,
-                        homeUrl: homeUrl
-                    }
+                    userId: '@Model.UserId'
                 };
   
                 $core.ajax.postJSON("/admin/UpdateUserInfo", postInfo, function (data) {

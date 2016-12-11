@@ -34,6 +34,24 @@ namespace QingFeng.DataAccessLayer.Repository
             }
         }
 
+        public IEnumerable<OrderDetail> GetBatchOrderDetailList(params int[] flowId)
+        {
+            if (flowId == null || !flowId.Any())
+            {
+                return new List<OrderDetail>();
+            }
+
+            var additional = $"AND flowId IN ({string.Join(",", flowId)})";
+
+            Func<object, string> buildWhereSql =
+                (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional);
+
+            using (var connection = GetReadConnection)
+            {
+                return connection.QueryList<OrderDetail>(null, TableName, buildWhereSql);
+            }
+        }
+
         public bool BatchUpdateOrderStatus(long orderId, List<int> flowIds, AgentEnums.OrderDetailStatus orderStatus)
         {
             var rows = 0;
@@ -41,7 +59,8 @@ namespace QingFeng.DataAccessLayer.Repository
             {
                 foreach (var item in flowIds)
                 {
-                    rows += connection.Update(new {orderStatus}, new {orderId, flowId = item}, TableName);
+                    rows += connection.Update(new {orderStatus = orderStatus.GetHashCode()},
+                        new {orderId, flowId = item}, TableName);
                 }
             }
             return rows > 0;

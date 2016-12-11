@@ -12,6 +12,7 @@ namespace QingFeng.Business
     public class OrderService
     {
         private readonly ProductRepository _product = new ProductRepository();
+        private readonly ProductBaseRepository _productBase =new ProductBaseRepository();
         private readonly LogisticsRepository _logistics = new LogisticsRepository();
         private readonly OrderMasterRepository _orderMaster = new OrderMasterRepository();
         private readonly OrderDetailRepository _orderDetail = new OrderDetailRepository();
@@ -29,26 +30,27 @@ namespace QingFeng.Business
             var productList = _product.GetProductListByIds(orderDetails.Select(t => t.ProductId).ToArray())
                 .ToDictionary(c => c.ProductId, c => c);
 
-            if (productList.Count != orderDetails.Count)
-            {
-                return false;
-            }
+            var baseProductList = _productBase.GetListByIds(productList.Select(t => t.Value.BaseId).ToArray())
+                .ToDictionary(c => c.BaseId, c => c);
 
-            var skuList = _skuItemRepository.GetListByIds(orderDetails.Select(t => t.SkuId).ToArray())
+            var skuIds = productList.Select(t => t.Value.ColorId).ToList();
+            skuIds.AddRange(orderDetails.Select(t => t.SkuId).ToList());
+
+            var skuList = _skuItemRepository.GetListByIds(skuIds.ToArray())
                 .ToDictionary(c => c.SkuId, c => c.SkuName);
 
-            if (skuList.Count != orderDetails.Select(t => t.SkuId).Distinct().Count())
-            {
-                return false;
-            }
-
             var orderId = GuidConvert.ToUniqueId();
+
+            var remark = string.Empty;
 
             orderDetails.ForEach(t =>
             {
                 var product = productList[t.ProductId];
                 t.Quantity = t.Quantity < 1 ? 1 : t.Quantity;
                 t.BaseId = product.BaseId;
+                t.BaseNo = baseProductList[product.BaseId].BaseNo;
+                t.BaseName = baseProductList[product.BaseId].BaseName;
+                t.ProductNo = product.ProductNo;
                 t.ProductName = product.ProductName;
                 t.ImgUrl = string.IsNullOrWhiteSpace(product.ImgList)
                     ? string.Empty
@@ -57,11 +59,14 @@ namespace QingFeng.Business
                 t.OrderId = orderId;
                 t.OrderNo = orderMaster.OrderNo;
                 t.Remark = (t.Remark ?? string.Empty).CutString(120);
-                t.OrderSatus = AgentEnums.OrderDetailStatus.待发货;
+                t.OrderStatus = AgentEnums.OrderDetailStatus.待发货;
                 t.Amount = t.Price*t.Quantity;
                 t.SkuName = skuList[t.SkuId];
+                remark += skuList[product.ColorId] + t.SkuName + "  ";
             });
 
+            orderMaster.StoreName = user.StoreList.FirstOrDefault(t => t.StoreId == orderMaster.StoreId)?.StoreName ??
+                                    string.Empty;
             orderMaster.Remark = (orderMaster.Remark ?? string.Empty).CutString(500);
             orderMaster.OrderStatus = AgentEnums.MasterOrderStatus.待支付;
             orderMaster.OrderId = orderId;
@@ -81,7 +86,7 @@ namespace QingFeng.Business
                     OrderId = orderId,
                     UserName = user.UserName,
                     Title = "添加订单",
-                    Content = string.Join(",", orderDetails.Select(t => $"{t.ProductName}-{t.SkuName}*{t.Quantity}")),
+                    Content = string.IsNullOrWhiteSpace(orderMaster.Remark) ? remark : orderMaster.Remark,
                     CreateDate = DateTime.Now
                 });
             }
@@ -96,15 +101,18 @@ namespace QingFeng.Business
         /// <param name="flowIds"></param>
         /// <param name="model"></param>
         /// <returns></returns>
-        public bool SendDeliverGoods(OrderMaster orderInfo, List<int> flowIds, LogisticsInfo model)
+        public bool SendDeliverGoods(UserInfo user, OrderMaster orderInfo, List<int> flowIds, LogisticsInfo model)
         {
             if (model == null || flowIds == null || !flowIds.Any())
             {
                 return false;
             }
 
+            model.OrderId = orderInfo.OrderId;
+            model.UpdateDate = DateTime.Now;
             model.CreateDate = DateTime.Now;
             model.FlowIds = string.Join(",", flowIds);
+            model.Status = 0;
 
             using (var trans = new TransactionScope())
             {
@@ -118,11 +126,19 @@ namespace QingFeng.Business
                     new
                     {
                         orderStatus =
-                        waitDeliverGoodsCount == 0
-                            ? AgentEnums.MasterOrderStatus.已支付
-                            : AgentEnums.MasterOrderStatus.进行中
+                            waitDeliverGoodsCount == 0
+                                ? AgentEnums.MasterOrderStatus.已完成
+                                : AgentEnums.MasterOrderStatus.进行中
                     }, new {orderInfo.OrderId});
-
+                _orderLogs.Insert(new OrderLogs()
+                {
+                    OrderId = orderInfo.OrderId,
+                    Title = "发货",
+                    Content = model.CompanyName + ",运单号:" + model.OddNumber,
+                    UserId = user.UserId,
+                    UserName = user.UserName,
+                    CreateDate = DateTime.Now
+                });
                 trans.Complete();
             }
             return true;
@@ -148,13 +164,13 @@ namespace QingFeng.Business
             return _orderMaster.Count(new {orderNo}) > 0;
         }
 
-        public IEnumerable<OrderMaster> SearchOrderList(int storeId, int orderStatus, DateTime beginDate,
+        public IEnumerable<OrderMaster> SearchOrderList(int userId, int storeId, int orderStatus, DateTime beginDate,
             DateTime endDate,
             string keyWords, int page,
             int pageSize, out int totalItem)
         {
             var list =
-                _orderMaster.SearchOrder(storeId, orderStatus, beginDate, endDate, keyWords, page, pageSize,
+                _orderMaster.SearchOrder(userId, storeId, orderStatus, beginDate, endDate, keyWords, page, pageSize,
                     out totalItem).ToList();
 
             if (!list.Any()) return list;

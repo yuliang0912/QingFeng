@@ -25,7 +25,7 @@ namespace QingFeng.WebArea.Controllers
             return View();
         }
 
-        public ActionResult OrderList(UserInfo user, int orderStatus = 0, string beginDateStr = "",
+        public ActionResult OrderList(UserInfo user, int storeId = 0, int orderStatus = 0, string beginDateStr = "",
             string endDateStr = "",
             string keyWords = "", int page = 1,
             int pageSize = 20)
@@ -43,21 +43,22 @@ namespace QingFeng.WebArea.Controllers
             endDate = endDate.AddDays(1).AddSeconds(-1);
 
             int totalItem;
-            var list = _orderService.SearchOrderList(user.StoreInfo.StoreId, orderStatus, beginDate, endDate, keyWords,
+            var list = _orderService.SearchOrderList(user.UserId, storeId, orderStatus, beginDate, endDate, keyWords,
                 page,
                 pageSize, out totalItem);
 
             ViewBag.ProductBase = _productService.GetProductBaseList(
-                    list.SelectMany(t => t.OrderDetails).Select(t => t.BaseId).ToArray())
+                list.SelectMany(t => t.OrderDetails).Select(t => t.BaseId).ToArray())
                 .ToDictionary(c => c.BaseId, c => c);
 
             ViewBag.PorductList = _productService.GetProduct(
-                    list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
+                list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
                 .ToDictionary(c => c.ProductId, c => c);
 
             ViewBag.beginDateStr = beginDateStr;
             ViewBag.endDateStr = endDateStr;
             ViewBag.keyWords = keyWords;
+            ViewBag.storeId = storeId;
 
             var data = new ApiPageList<OrderMaster>()
             {
@@ -75,11 +76,11 @@ namespace QingFeng.WebArea.Controllers
             return View();
         }
 
-        public ActionResult Products(string keyWords = "", int categoryId = 0, int page = 1, int pageSize = 20)
+        public ActionResult Products(string keyWords = "", int categoryId = 0, int page = 1, int pageSize = 10)
         {
             int totalItem;
 
-            var list = _productService.SearchBaseProduct(keyWords, categoryId, page, pageSize, out totalItem);
+            var list = _productService.SearchBaseProduct(keyWords, categoryId, 0, page, pageSize, out totalItem);
 
             ViewBag.categoryId = categoryId;
             ViewBag.keyWords = keyWords;
@@ -130,7 +131,7 @@ namespace QingFeng.WebArea.Controllers
 
         public ActionResult OrderDetail(UserInfo user, long orderId)
         {
-            var order = _orderService.Get(new {orderId, user.StoreInfo.StoreId});
+            var order = _orderService.Get(new {orderId, user.UserId});
             if (order == null)
             {
                 return Content("未找到指定的订单");
@@ -141,7 +142,18 @@ namespace QingFeng.WebArea.Controllers
             ViewBag.PorductList = _productService.GetProduct(order.OrderDetails.Select(t => t.ProductId).ToArray())
                 .ToDictionary(c => c.ProductId, c => c);
 
-            ViewBag.Logistics = _logisticsService.GetLogistics(orderId);
+            var orderLogistics = _logisticsService.GetLogistics(orderId);
+
+            foreach (var item in order.OrderDetails)
+            {
+                foreach (var logistics in orderLogistics)
+                {
+                    if (logistics.FlowIdList.Contains(item.FlowId))
+                    {
+                        item.LogisticsInfo = logistics;
+                    }
+                }
+            }
 
             ViewBag.OrderLogs = _orderLogsService.GetList(orderId);
 
@@ -161,9 +173,21 @@ namespace QingFeng.WebArea.Controllers
             {
                 return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "订单号已经存在"});
             }
+            if (user.StoreList.All(t => t.StoreId != order.StoreId))
+            {
+                return Json(new ApiResult<int>(4) {Ret = RetEum.ApplicationError, Message = "店铺信息错误"});
+            }
+
+            foreach (var item in order.OrderDetails)
+            {
+                var stock = _productStockService.Get(new {item.ProductId, item.SkuId});
+                if (stock == null || stock.StockNum < 1 || item.Quantity > stock.StockNum)
+                {
+                    return Json(new ApiResult<int>(5) {Ret = RetEum.ApplicationError, Message = "库存不足"});
+                }
+            }
 
             order.UserId = user.UserId;
-            order.StoreId = user.StoreInfo.StoreId;
 
             var result = _orderService.CreateOrder(user, order, order.OrderDetails.ToList());
 
@@ -211,13 +235,48 @@ namespace QingFeng.WebArea.Controllers
                 return Json(Enumerable.Empty<object>());
             }
 
-            var list = _productService.SearchBaseProduct(categoryId, keyWords).Select(t => new
+            var list = _productService.SearchBaseProduct(categoryId, 0, keyWords).Select(t => new
             {
                 baseId = t.BaseId,
                 baseNo = t.BaseNo
             });
             return Json(list);
         }
+
+        [HttpPost]
+        public JsonResult PayOrder(UserInfo user, long orderId)
+        {
+            var order = _orderService.Get(new {orderId, userId = user.UserId});
+
+            if (order == null)
+            {
+                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "未找到有效订单"});
+            }
+
+            if (order.OrderStatus != AgentEnums.MasterOrderStatus.待支付)
+            {
+                return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "只有待支付状态的订单才能继续支付"});
+            }
+
+            var result = _orderService.UpdateOrder(new {orderStatus = AgentEnums.MasterOrderStatus.已支付.GetHashCode()},
+                new {orderId});
+
+            if (result)
+            {
+                _orderLogsService.CreateLog(new OrderLogs()
+                {
+                    UserId = user.UserId,
+                    UserName = user.UserName,
+                    Title = "支付订单",
+                    Content = user.UserName + "已支付了订单,等待后台管理员审核",
+                    CreateDate = DateTime.Now,
+                    OrderId = orderId
+                });
+            }
+
+            return Json(result);
+        }
+
         #endregion
     }
 }

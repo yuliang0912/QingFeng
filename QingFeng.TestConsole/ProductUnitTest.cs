@@ -44,7 +44,7 @@ namespace QingFeng.TestConsole
             var keyWords = "0035";
             var categoryId = 1;
 
-            var list = ProductService.SearchBaseProduct(keyWords, categoryId, 1, 10, out totalItem);
+            var list = ProductService.SearchBaseProduct(keyWords, categoryId, 0, 1, 10, out totalItem);
 
             var result = new ApiPageList<ProductBase>()
             {
@@ -103,18 +103,19 @@ namespace QingFeng.TestConsole
         }
 
 
-        public static void CreateProductStockTest()
-        {
-            var productId = 10001;
-            var sizeSku = new List<KeyValuePair<int, string>>()
-            {
-                new KeyValuePair<int, string>(4, "37码"),
-                new KeyValuePair<int, string>(5, "38码"),
-                new KeyValuePair<int, string>(6, "39码"),
-                new KeyValuePair<int, string>(7, "41.5码"),
-            };
-            var result = ProductStockService.CreateProductStock(productId, sizeSku);
-            Console.WriteLine("创建产品库存测试结果:{0}", result);
-        }
+        //public static void CreateProductStockTest()
+        //{
+        //    var productId = 10001;
+        //    var sizeSku = new List<KeyValuePair<int, string>>()
+        //    {
+        //        new KeyValuePair<int, string>(4, "37码"),
+        //        new KeyValuePair<int, string>(5, "38码"),
+        //        new KeyValuePair<int, string>(6, "39码"),
+        //        new KeyValuePair<int, string>(7, "41.5码"),
+        //    };
+            
+        //    var result = ProductStockService.CreateProductStock(productId, sizeSku);
+        //    Console.WriteLine("创建产品库存测试结果:{0}", result);
+        //}
     }
 }

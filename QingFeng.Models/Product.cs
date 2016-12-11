@@ -22,6 +22,8 @@ namespace QingFeng.Models
 
         public int BaseId { get; set; }
 
+        public string BaseNo { get; set; }
+
         public string BaseName { get; set; }
 
         public string ProductNo { get; set; }

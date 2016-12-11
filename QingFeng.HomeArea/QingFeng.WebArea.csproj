@@ -244,6 +244,7 @@
     <Content Include="Content\img\a7.jpg" />
     <Content Include="Content\img\a8.jpg" />
     <Content Include="Content\img\a9.jpg" />
+    <Content Include="Content\img\alipay.png" />
     <Content Include="Content\img\bg.png" />
     <Content Include="Content\img\iconfont-logo.png" />
     <Content Include="Content\img\icons.png" />
@@ -551,15 +552,21 @@
     <Content Include="Views\Admin\CreateUser.cshtml" />
     <Content Include="Views\Admin\UserList.cshtml" />
     <Content Include="Views\Admin\EditUser.cshtml" />
-    <Content Include="Views\Admin\Products.cshtml" />
     <Content Include="Views\Admin\AddBaseProduct.cshtml" />
     <Content Include="Views\Admin\ColorList.cshtml" />
     <Content Include="Views\Admin\SizeList.cshtml" />
     <Content Include="Views\Admin\BaseProducts.cshtml" />
     <Content Include="Views\Admin\EditBaseProduct.cshtml" />
     <Content Include="Views\Product\SubProducts.cshtml" />
-    <Content Include="Views\Product\CreateProduct.cshtml" />
+    <Content Include="Views\Product\ProductManger.cshtml" />
     <Content Include="Views\Product\EditProduct.cshtml" />
+    <Content Include="Views\Admin\StoreManger.cshtml" />
+    <Content Include="Views\Product\CreateProduct.cshtml" />
+    <Content Include="Views\Admin\OrderList.cshtml" />
+    <Content Include="Views\Product\Products.cshtml" />
+    <Content Include="Views\Admin\OrderDetail.cshtml" />
+    <Content Include="Views\Admin\ProductStocks.cshtml" />
+    <Content Include="Views\Admin\ProductStockDetails.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

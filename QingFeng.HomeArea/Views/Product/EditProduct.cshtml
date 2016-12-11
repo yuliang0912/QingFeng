@@ -1,6 +1,7 @@
 ﻿
 @{
-    ViewBag.Title = "EditBaseProduct";
+    ViewBag.Title = "EditProduct";
+    var colorSku = ViewBag.ColorSku as List<KeyValuePair<int, string>>;
 }
 
 @model QingFeng.Models.Product
@@ -9,18 +10,21 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
+                <div class="ibox-title" style="text-align: left;min-height: 55px;">
+                    <label>编辑子商品:(@Model.ProductName)</label>
+                </div>
                 <div class="ibox-content">
                     <form class="form-horizontal m-t" id="signupForm">
                         <div class="form-group">
                             <label class="col-sm-1 control-label">*货号：</label>
                             <div class="col-sm-5">
-                                <input readonly="readonly" maxlength="120" value="@Model.ProductNo" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                                <input id="productNo" name="productNo" maxlength="120" value="@Model.ProductNo" class="form-control" type="text" aria-required="true" aria-invalid="true">
                             </div>
                         </div>
                         <div class="form-group">
                             <label class="col-sm-1 control-label">*货名：</label>
                             <div class="col-sm-5">
-                                <input id="baseName" name="baseName" maxlength="120" value="@Model.ProductName" class="form-control" type="text" aria-required="true" aria-invalid="true">
+                                <input id="productName" name="productName" maxlength="120" value="@Model.ProductName" class="form-control" type="text" aria-required="true" aria-invalid="true">
                             </div>
                         </div>
                         <div class="form-group">
@@ -36,9 +40,20 @@
                             </div>
                         </div>
                         <div class="form-group">
+                            <label class="col-sm-1 control-label">颜色：</label>
+                            <div class="col-sm-5">
+                                <select class="form-control m-b" id="skuId" name="skuId">
+                                    @foreach (var item in colorSku)
+                                    {
+                                        <option value="@item.Key" @(Model.ColorId == item.Key ? "selected" : string.Empty)>@item.Value</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
                             <div class="col-sm-5 col-sm-offset-3">
                                 <button class="btn btn-primary" id="submitBtn" type="submit">提交</button>
-                                <button class="btn btn-primary" onclick="location.href = '/product/createProduct?baseId=@Model.BaseId'; return false;" type="submit">返回</button>
+                                <button class="btn btn-primary" onclick="location.href = '/product/productManger?baseId=@Model.BaseId'; return false;" type="submit">返回</button>
                             </div>
                         </div>
                     </form>
@@ -65,11 +80,16 @@
         validClass: "help-block m-b-none"
     });
 
-    $(function () {
+    $(function() {
         var e = "<i class='fa fa-times-circle'></i> ";
         $("#signupForm").validate({
             rules: {
-                baseName: {
+                productNo: {
+                    required: true,
+                    maxlength: 32,
+                    minlength: 2
+                },
+                productName: {
                     required: true,
                     maxlength: 120,
                     minlength: 2
@@ -83,8 +103,7 @@
                     min: 0
                 },
                 categoryId: {
-                    required: true,
-                    range: ["1", "2"]
+                    required: true
                 }
             },
             messages: {
@@ -97,30 +116,41 @@
                     min: e + "采购价不能低于0元"
                 },
                 categoryId: {
-                    range: e + "请选择商品分类"
+                    range: e + "请选择商品颜色"
                 }
             },
-            submitHandler: function (form) {
+            submitHandler: function(form) {
                 $("#submitBtn").attr("disabled", true);
 
-                var baseName = $("#baseName").val().trim();
+                var productNo = $("#productNo").val().trim();
+                var productName = $("#productName").val().trim();
                 var originalPrice = $("#originalPrice").val().trim();
                 var actualPrice = $("#actualPrice").val().trim();
-                var categoryId = $("#categoryId").val();
+                var skuId = $("#skuId").val();
 
                 var productInfo = {
-                    baseId: '@Model.BaseId', baseName: baseName, originalPrice: originalPrice, actualPrice: actualPrice, categoryId: categoryId
+                    baseId: '@Model.BaseId', productNo: productNo,
+                    productId :'@Model.ProductId',
+                    productName: productName, originalPrice: originalPrice,
+                    actualPrice: actualPrice, colorId: skuId
                 };
 
-                $core.ajax.postJSON("/admin/EditBaseProduct", productInfo, function (data) {
+                $core.ajax.postJSON("/product/EditProduct", productInfo, function (data) {
                     if (data === 1) {
-                        layer.msg("商品编辑成功");
+                        layer.msg("商品修改成功", { success: function () { setTimeout(function () { location.reload() }, 1000) } });
+                        return;
                     }
                     else if (data === 0) {
-                        layer.msg("商品编辑失败");
+                        layer.msg("商品修改失败");
                     }
-                    else {
-                        layer.msg(this.message);
+                    else if (data === 2) {
+                        layer.msg("数据错误,未找到指定的产品");
+                    }
+                    else if (data === 3) {
+                        layer.msg("商品货号和货名不能为空");
+                    }
+                    else if (data === 4) {
+                        layer.tips("货号已存在", "#productNo");
                     }
                     $("#submitBtn").attr("disabled", false);
                 });

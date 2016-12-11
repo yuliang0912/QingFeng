@@ -22,12 +22,7 @@ namespace QingFeng.TestConsole
                 PassWord = "123456",
                 UserName = "admin",
                 NickName = "admin",
-                Avatar = string.Empty,
-                StoreInfo = new StoreInfo()
-                {
-                    StoreName = "my store",
-                    HomeUrl = string.Empty
-                }
+                Avatar = string.Empty
             };
 
             var result = UserService.RegisterUser(model);

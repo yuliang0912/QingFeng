@@ -23,7 +23,7 @@
                     }
                 },
                 error: errorFunc || function () {
-                    console && console.log("出错啦");
+                    layer.msg("请求数据失败.");
                 }
             });
         },
@@ -54,7 +54,7 @@
                 },
                 error: function () {
                     core.ajax.isPreventRequest = false;
-                    alert("数据请求失败，请重试。");
+                    layer.msg("请求数据失败.");
                 }
             });
         }
@@ -67,6 +67,22 @@
             alert("您使用的浏览器不支持此复制功能，请使用Ctrl+C或鼠标右键。");
         }
     };
+
+    core.changeUrlArg = function(url, arg, argVal) {
+        var pattern = arg + '=([^&]*)';
+        var replaceText = arg + '=' + argVal;
+        if (url.match(pattern)) {
+            var tmp = '/(' + arg + '=)([^&]*)/gi';
+            tmp = url.replace(eval(tmp), replaceText);
+            return tmp;
+        } else {
+            if (url.match('[\?]')) {
+                return url + '&' + replaceText;
+            } else {
+                return url + '?' + replaceText;
+            }
+        }
+    }
 
     window.$core = core;
 })(jQuery);

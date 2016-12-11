@@ -11,9 +11,26 @@
                     <label>商品管理</label>
                     <div class="ibox-tools" style="padding-right: 30px;">
                         <button type="button" onclick="location.href = '/admin/addBaseProduct'" class="btn btn-primary btn-success">添加商品</button>
+                        <button type="button" onclick="location.href = location.pathname " class="btn btn-primary btn-success">刷新商品</button>
                     </div>
                 </div>
                 <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-sm-2 m-b-xs">
+                            <select class="input-sm form-control input-s-sm inline" id="categoryId">
+                                <option value="0">请选择分类</option>
+                                <option value="1" @(ViewBag.categoryId == 1 ? "selected" : "")>男鞋</option>
+                                <option value="2" @(ViewBag.categoryId == 2 ? "selected" : "")>女鞋</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <div class="input-group">
+                                <input type="text" placeholder="商品名称或货号" id="keyWords" value="@(ViewBag.keyWords??string.Empty)" class="input-sm form-control"> <span class="input-group-btn">
+                                    <button type="button" class="btn btn-sm btn-primary" id="product-search">搜索</button>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -24,7 +41,8 @@
                                 <th>分类</th>
                                 <th>子产品数量</th>
                                 <th>添加时间</th>
-                                <th style="width: 250px">操作</th>
+                                <th>状态</th>
+                                <th style="width: 320px">操作</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -42,11 +60,13 @@
                                             <i class="fa fa-road"></i>
                                         </a>
                                     </td>
-                                    <td>@item.CreateDate.ToString("yyyy-MM-dd hh:mm:ss")</td>
+                                    <td>@item.CreateDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                                    <td>@(item.Status == 0 ? "正常" : "已删除")</td>
                                     <td data-base-id="@item.BaseId">
                                         <button type="button" onclick="location.href = '/admin/EditBaseProduct?baseId=@item.BaseId'" class="btn btn-primary btn-sm">编辑</button>
-                                        <button type="button" class="btn btn-primary btn-sm">删除</button>
-                                        <button type="button" onclick="location.href='/product/createProduct?baseId=@item.BaseId'" class="btn btn-primary btn-sm">管理子产品</button>
+                                        <button type="button" onclick="updateProductStatus(@item.BaseId, '@(item.Status == 0 ? "删除" : "恢复")')" class="btn btn-primary btn-sm">@(item.Status == 0 ? "删除" : "恢复")</button>
+                                        <button type="button" onclick="location.href = '/product/ProductManger?baseId=@item.BaseId'" class="btn btn-primary btn-sm">管理子产品</button>
+                                        <button type="button" onclick="location.href = '/product/createProduct?baseId=@item.BaseId'" class="btn btn-primary btn-sm">创建子产品</button>
                                     </td>
                                 </tr>
                             }
@@ -55,7 +75,7 @@
                         {
                             <tfoot>
                                 <tr align="center">
-                                    <td colspan="7" style="text-align: center;">
+                                    <td colspan="9" style="text-align: center;">
                                         <div id="pageDiv"></div>
                                     </td>
                                 </tr>
@@ -71,19 +91,11 @@
 <script>
     $(function() {
         $("#pageDiv").pager({
-            pageIndex: @(Model.Page), pageSize: @(Model.PageSize), recordCount: @(Model.TotalCount), buttonClickCallback: function (page) {
-                var url = location.href;
-                if (url.indexOf("?page=") > -1) {
-                    url = url.replace(/[?]page=[\d]*/i, '?page=' + page);
-                } else if(url.indexOf("&page=") > -1) {
-                    url = url.replace(/[&]page=[\d]*/i, '&page=' + page);
-                }else if (url.indexOf("?")>-1) {
-                    url = url + "&page=" + page;
-                }else{
-                    url = url + "?page=" + page;
-                }
-                location.href = url;
-
+            pageIndex: @(Model.Page),
+            pageSize: @(Model.PageSize),
+            recordCount: @(Model.TotalCount),
+            buttonClickCallback: function(page) {
+                location.href = $core.changeUrlArg(location.href, "page", page);
             }
         });
 
@@ -94,8 +106,30 @@
                 width: '800px',
                 height: "500px",
                 top: '50px',
-                left:'20%'
+                left: '20%'
             });
         });
-    })
+
+        $('#product-search').click(function () {
+            var categoryId = $('#categoryId').val();
+            var keyWords = $('#keyWords').val();
+
+            location.href = location.pathname + "?categoryId=" + categoryId + "&keyWords=" + keyWords;
+        });
+    });
+
+    function updateProductStatus(baseId, msg) {
+        var tips = msg === "删除"
+            ? "是否确定删除该产品以及该产品下的所有子产品?" :
+            "是否确认恢复该产品?";
+        layer.confirm(tips, function() {
+            $core.ajax.getJSON("/product/UpdateBaserProductStatus", { baseId: baseId, status: msg === "删除" ? 1 : 0 }, function(data) {
+                if (data === 1) {
+                    layer.msg("操作成功", { success: function() { setTimeout(function() { location.reload(); }, 1000) } });
+                } else {
+                    layer.msg("操作失败");
+                }
+            });
+        });
+    }
 </script>

@@ -17,7 +17,7 @@ namespace QingFeng.WebArea.Controllers
         private readonly ProductStockService _productStockService = new ProductStockService();
         private readonly SkuItemService _skuItemService = new SkuItemService();
 
-
+        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public ActionResult EditProduct(int productId)
         {
             var model = _productService.GetProduct(productId);
@@ -27,16 +27,65 @@ namespace QingFeng.WebArea.Controllers
                 return Content("未找到有效产品");
             }
 
+            var skuList = _skuItemService.GetList(AgentEnums.SkuType.Color);
+
+            ViewBag.ColorSku = skuList.Where(t => t.Status == 0)
+                .Select(t => new KeyValuePair<int, string>(t.SkuId, t.SkuName))
+                .ToList();
+
             return View(model);
         }
 
+        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public ActionResult SubProducts(int baseId)
         {
             var list = _productService.GetProductByBaseId(baseId);
             return View(list);
         }
 
-        [HttpGet, AdminAuthorize(AgentEnums.UserRole.AllUser)]
+        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        public ActionResult ProductManger(int baseId)
+        {
+            var baseProduct = _productService.GetProductBase(baseId);
+
+            if (baseProduct == null)
+            {
+                return Content("未找到有效产品");
+            }
+
+            baseProduct.SubProduct = _productService.GetProductByBaseId(baseId).ToList();
+
+            var skuIds = baseProduct.SubProduct.Select(t => t.ColorId).ToList();
+
+            var skuList = _skuItemService.GetList(AgentEnums.SkuType.Color);
+
+            ViewBag.ColorSku = skuList.Where(t => t.Status == 0 && !skuIds.Contains(t.SkuId))
+                .Select(t => new KeyValuePair<int, string>(t.SkuId, t.SkuName))
+                .ToList();
+
+            return View(baseProduct);
+        }
+
+        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        public ActionResult Products(string keyWords = "", int categoryId = 0, int page = 1, int pageSize = 20)
+        {
+            int totalItem;
+
+            var list = _productService.SearchBaseProduct(keyWords, categoryId, 0, page, pageSize, out totalItem);
+
+            ViewBag.categoryId = categoryId;
+            ViewBag.keyWords = keyWords;
+
+            return View(new ApiPageList<ProductBase>
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalItem,
+                PageList = list
+            });
+        }
+
+        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public ActionResult CreateProduct(int baseId)
         {
             var baseProduct = _productService.GetProductBase(baseId);
@@ -52,9 +101,39 @@ namespace QingFeng.WebArea.Controllers
                 .Select(t => new KeyValuePair<int, string>(t.SkuId, t.SkuName))
                 .ToList();
 
-            ViewBag.SubProducts = _productService.GetProductByBaseId(baseId).ToList();
-
             return View(baseProduct);
+        }
+
+        #region Ajax
+
+        [HttpPost, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        public JsonResult AddProduct(Product model)
+        {
+            return Json(_productService.CreateProduct(model));
+        }
+
+
+        [HttpPost, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        public JsonResult EditProduct(Product model)
+        {
+            return Json(_productService.EditProduct(model));
+        }
+
+        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        public JsonResult UpdateBaserProductStatus(int baseId, int status)
+        {
+            var result = _productService.UpdateBaseProductInfo(new {status}, new {baseId});
+            if (result && status == 1)
+            {
+                _productService.UpdateProductInfo(new {status}, new {baseId});
+            }
+            return Json(result);
+        }
+
+        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        public JsonResult UpdateProductStatus(int productId, int status)
+        {
+            return Json(_productService.UpdateProductInfo(new {status}, new {productId}));
         }
 
         /// <summary>
@@ -63,7 +142,7 @@ namespace QingFeng.WebArea.Controllers
         /// <param name="baseId"></param>
         /// <param name="colorSkuIds"></param>
         /// <returns></returns>
-        [HttpPost, AdminAuthorize(AgentEnums.UserRole.AllUser)]
+        [HttpPost, AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public JsonResult CreateProduct(int baseId, string colorSkuIds)
         {
             var baseProduct = _productService.GetProductBase(baseId);
@@ -133,12 +212,12 @@ namespace QingFeng.WebArea.Controllers
         }
 
         //搜索产品库
-        [AdminAuthorize(AgentEnums.UserRole.AllUser)]
+        [AdminAuthorize(AgentEnums.UserRole.StoreUser)]
         public JsonResult SearchProduct(int categoryId, string keyWords, int page, int pageSize)
         {
             int totalItem;
 
-            var list = _productService.SearchBaseProduct(keyWords, categoryId, page, pageSize, out totalItem);
+            var list = _productService.SearchBaseProduct(keyWords, categoryId, 0, page, pageSize, out totalItem);
 
             return Json(new ApiPageList<ProductBase>()
             {
@@ -148,5 +227,7 @@ namespace QingFeng.WebArea.Controllers
                 PageList = list
             });
         }
+
+        #endregion
     }
 }

@@ -39,7 +39,7 @@ namespace QingFeng.DataAccessLayer.Repository
             return true;
         }
 
-        public IEnumerable<OrderMaster> SearchOrder(int storeId, int orderStatus, DateTime beginDate, DateTime endDate,
+        public IEnumerable<OrderMaster> SearchOrder(int userId, int storeId, int orderStatus, DateTime beginDate, DateTime endDate,
             string keyWords,
             int page,
             int pageSize, out int totalItem)
@@ -50,6 +50,10 @@ namespace QingFeng.DataAccessLayer.Repository
 
             additional += "AND CreateDate Between @beginDate AND @endDate ";
 
+            if (userId > 0)
+            {
+                additional += $"AND userId = {userId} ";
+            }
             if (storeId > 0)
             {
                 additional += $"AND storeId = {storeId} ";

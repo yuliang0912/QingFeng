@@ -25,19 +25,19 @@
       <publishTime>11/25/2016 19:59:16</publishTime>
     </File>
     <File Include="bin/QingFeng.Business.dll">
-      <publishTime>12/06/2016 23:34:04</publishTime>
+      <publishTime>12/10/2016 21:30:54</publishTime>
     </File>
     <File Include="bin/QingFeng.Common.dll">
       <publishTime>12/06/2016 23:34:04</publishTime>
     </File>
     <File Include="bin/QingFeng.DataAccessLayer.dll">
-      <publishTime>12/06/2016 23:34:04</publishTime>
+      <publishTime>12/10/2016 21:30:53</publishTime>
     </File>
     <File Include="bin/QingFeng.Models.dll">
-      <publishTime>12/06/2016 23:34:04</publishTime>
+      <publishTime>12/10/2016 21:30:53</publishTime>
     </File>
     <File Include="bin/QingFeng.WebArea.dll">
-      <publishTime>12/06/2016 23:34:08</publishTime>
+      <publishTime>12/10/2016 21:30:56</publishTime>
     </File>
     <File Include="bin/roslyn/csc.exe">
       <publishTime>11/25/2016 19:59:15</publishTime>
@@ -268,7 +268,7 @@
       <publishTime>11/22/2016 22:19:43</publishTime>
     </File>
     <File Include="Content/css/bootstrap.min.css">
-      <publishTime>11/22/2016 22:19:43</publishTime>
+      <publishTime>12/10/2016 13:38:15</publishTime>
     </File>
     <File Include="Content/css/bootstrap.min14ed.css">
       <publishTime>11/22/2016 22:19:43</publishTime>
@@ -484,7 +484,7 @@
       <publishTime>11/22/2016 22:19:43</publishTime>
     </File>
     <File Include="Content/css/style.css">
-      <publishTime>12/06/2016 22:16:45</publishTime>
+      <publishTime>12/10/2016 13:38:05</publishTime>
     </File>
     <File Include="Content/css/style.min.css">
       <publishTime>11/22/2016 22:19:43</publishTime>
@@ -654,6 +654,9 @@
     <File Include="Content/img/a9.jpg">
       <publishTime>11/22/2016 22:19:43</publishTime>
     </File>
+    <File Include="Content/img/alipay.png">
+      <publishTime>12/10/2016 18:02:05</publishTime>
+    </File>
     <File Include="Content/img/bg.png">
       <publishTime>11/22/2016 22:19:43</publishTime>
     </File>
@@ -790,7 +793,7 @@
       <publishTime>11/22/2016 22:19:43</publishTime>
     </File>
     <File Include="Content/js/contabs.js">
-      <publishTime>12/05/2016 21:37:02</publishTime>
+      <publishTime>12/09/2016 00:03:48</publishTime>
     </File>
     <File Include="Content/js/contabs.min.js">
       <publishTime>11/22/2016 22:19:43</publishTime>
@@ -1288,7 +1291,7 @@
       <publishTime>11/22/2016 22:19:43</publishTime>
     </File>
     <File Include="Content/scripts/qingfeng.core.js">
-      <publishTime>12/06/2016 20:22:23</publishTime>
+      <publishTime>12/08/2016 22:27:30</publishTime>
     </File>
     <File Include="Content/scripts/require.js">
       <publishTime>11/22/2016 22:19:43</publishTime>
@@ -1375,52 +1378,67 @@
       <publishTime>11/23/2016 19:31:36</publishTime>
     </File>
     <File Include="Views/Admin/AddBaseProduct.cshtml">
-      <publishTime>12/05/2016 22:26:52</publishTime>
+      <publishTime>12/07/2016 22:47:40</publishTime>
     </File>
     <File Include="Views/Admin/BaseProducts.cshtml">
-      <publishTime>12/06/2016 20:55:33</publishTime>
+      <publishTime>12/10/2016 20:32:36</publishTime>
     </File>
     <File Include="Views/Admin/ColorList.cshtml">
       <publishTime>12/05/2016 21:26:34</publishTime>
     </File>
     <File Include="Views/Admin/CreateUser.cshtml">
-      <publishTime>12/04/2016 10:31:09</publishTime>
+      <publishTime>12/09/2016 22:06:10</publishTime>
     </File>
     <File Include="Views/Admin/EditBaseProduct.cshtml">
       <publishTime>12/06/2016 20:10:29</publishTime>
     </File>
     <File Include="Views/Admin/EditUser.cshtml">
-      <publishTime>12/04/2016 11:01:08</publishTime>
+      <publishTime>12/09/2016 22:07:25</publishTime>
     </File>
     <File Include="Views/Admin/Login.cshtml">
       <publishTime>11/23/2016 22:25:15</publishTime>
     </File>
+    <File Include="Views/Admin/OrderDetail.cshtml">
+      <publishTime>12/10/2016 15:38:41</publishTime>
+    </File>
+    <File Include="Views/Admin/OrderList.cshtml">
+      <publishTime>12/10/2016 15:35:06</publishTime>
+    </File>
     <File Include="Views/Admin/Products.cshtml">
       <publishTime>12/04/2016 11:07:53</publishTime>
+    </File>
+    <File Include="Views/Admin/ProductStockDetails.cshtml">
+      <publishTime>12/10/2016 20:10:37</publishTime>
+    </File>
+    <File Include="Views/Admin/ProductStocks.cshtml">
+      <publishTime>12/10/2016 19:21:19</publishTime>
     </File>
     <File Include="Views/Admin/SizeList.cshtml">
       <publishTime>12/05/2016 21:33:57</publishTime>
     </File>
+    <File Include="Views/Admin/StoreManger.cshtml">
+      <publishTime>12/07/2016 21:25:20</publishTime>
+    </File>
     <File Include="Views/Admin/UserList.cshtml">
-      <publishTime>12/06/2016 23:06:18</publishTime>
+      <publishTime>12/10/2016 19:05:19</publishTime>
     </File>
     <File Include="Views/Agent/AddOrder.cshtml">
-      <publishTime>12/04/2016 12:24:41</publishTime>
+      <publishTime>12/10/2016 00:13:32</publishTime>
     </File>
     <File Include="Views/Agent/OrderDetail.cshtml">
-      <publishTime>11/30/2016 23:18:56</publishTime>
+      <publishTime>12/10/2016 18:07:06</publishTime>
     </File>
     <File Include="Views/Agent/OrderList.cshtml">
-      <publishTime>12/03/2016 13:36:48</publishTime>
+      <publishTime>12/10/2016 17:02:59</publishTime>
     </File>
     <File Include="Views/Agent/Products.cshtml">
-      <publishTime>11/28/2016 23:29:06</publishTime>
+      <publishTime>12/09/2016 21:33:12</publishTime>
     </File>
     <File Include="Views/Agent/ProductStocks.cshtml">
-      <publishTime>12/01/2016 22:10:12</publishTime>
+      <publishTime>12/09/2016 21:36:50</publishTime>
     </File>
     <File Include="Views/Home/Index.cshtml">
-      <publishTime>12/06/2016 22:24:27</publishTime>
+      <publishTime>12/10/2016 19:33:24</publishTime>
     </File>
     <File Include="Views/Home/Login.cshtml">
       <publishTime>12/02/2016 22:14:57</publishTime>
@@ -1429,16 +1447,22 @@
       <publishTime>11/23/2016 19:18:23</publishTime>
     </File>
     <File Include="Views/Product/CreateProduct.cshtml">
-      <publishTime>12/06/2016 23:16:57</publishTime>
+      <publishTime>12/07/2016 22:48:50</publishTime>
     </File>
     <File Include="Views/Product/EditProduct.cshtml">
-      <publishTime>12/06/2016 23:16:43</publishTime>
+      <publishTime>12/07/2016 22:49:26</publishTime>
+    </File>
+    <File Include="Views/Product/ProductManger.cshtml">
+      <publishTime>12/10/2016 19:40:26</publishTime>
+    </File>
+    <File Include="Views/Product/Products.cshtml">
+      <publishTime>12/10/2016 18:20:35</publishTime>
     </File>
     <File Include="Views/Product/SubProducts.cshtml">
-      <publishTime>12/06/2016 20:05:08</publishTime>
+      <publishTime>12/07/2016 21:12:58</publishTime>
     </File>
     <File Include="Views/Shared/_Layout.cshtml">
-      <publishTime>12/06/2016 22:17:53</publishTime>
+      <publishTime>12/07/2016 23:22:01</publishTime>
     </File>
     <File Include="Views/Shared/_LayoutAgent.cshtml">
       <publishTime>12/05/2016 22:34:32</publishTime>
@@ -1450,7 +1474,7 @@
       <publishTime>11/23/2016 19:18:23</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>12/06/2016 23:34:09</publishTime>
+      <publishTime>12/09/2016 23:22:23</publishTime>
     </File>
   </ItemGroup>
 </Project>

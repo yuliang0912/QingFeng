@@ -33,14 +33,19 @@ namespace QingFeng.DataAccessLayer.Repository
             }
         }
 
-        public IEnumerable<Product> GetProductListByBaseIds(params int[] baseId)
+        public IEnumerable<Product> GetProductListByBaseIds(int status, params int[] baseId)
         {
             if (baseId == null || !baseId.Any())
             {
                 return new List<Product>();
             }
 
-            var additional = $"AND baseId IN ({string.Join(",", baseId)}) AND status = 0";
+            var additional = $"AND baseId IN ({string.Join(",", baseId)}) ";
+
+            if (status > -1)
+            {
+                additional += " AND status = " + status;
+            }
 
             Func<object, string> buildWhereSql =
                 (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional);

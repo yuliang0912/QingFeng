@@ -7,6 +7,9 @@
     <div class="row">
         <div class="col-sm-12">
             <div class="ibox float-e-margins">
+                <div class="ibox-title" style="text-align: left;min-height: 55px;">
+                    <label>创建用户</label>
+                </div>
                 <div class="ibox-content">
                     <form class="form-horizontal m-t" id="signupForm">
                         <div class="form-group">
@@ -31,18 +34,6 @@
                             <label class="col-sm-1 control-label">*确认密码：</label>
                             <div class="col-sm-5">
                                 <input id="confirm_password" name="confirm_password" class="form-control" type="password">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-1 control-label">店铺名：</label>
-                            <div class="col-sm-5">
-                                <input id="storeName" name="storeName" maxlength="50"  class="form-control" type="text">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-sm-1 control-label">店铺地址：</label>
-                            <div class="col-sm-5">
-                                <input id="homeUrl" name="homeUrl" maxlength="128"  class="form-control" type="text" aria-required="true" aria-invalid="false">
                             </div>
                         </div>
                         <div class="form-group">
@@ -116,22 +107,15 @@
                 var userName = $("#userName").val().trim();
                 var nickName = $("#nickName").val().trim();
                 var passWord = $("#passWord").val().trim();
-                var storeName = $("#storeName").val().trim();
-                var homeUrl = $("#homeUrl").val().trim();
+
 
                 var postInfo = {
-                    userName: userName, nickName: nickName, passWord: passWord, storeInfo: {
-                        storeName: storeName,
-                        homeUrl: homeUrl
-                    }
+                    userName: userName, nickName: nickName, passWord: passWord
                 };
 
                 $core.ajax.postJSON("/admin/AddStoreUser", postInfo, function (data) {
                     if (data === 1) {
-                        layer.msg("添加用户成功", {
-                            success: function () {
-                            }
-                        });
+                        layer.msg("添加用户成功", { success: function () { setTimeout(function () { location.reload() }, 1000); } });
                         return;
                     }
                     if (data === 0) {
@@ -139,8 +123,6 @@
                     }
                     else if (data === 2) {
                         layer.msg("用户名已经存在");
-                    } else if (data === 3) {
-                        layer.msg("店铺信息错误");
                     }
                     else {
                         layer.msg(this.message);

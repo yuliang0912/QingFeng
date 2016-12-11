@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using QingFeng.Common;
 using QingFeng.Common.Dapper;
 
@@ -6,6 +7,11 @@ namespace QingFeng.Models
 {
     public class UserInfo
     {
+        public UserInfo()
+        {
+            this.StoreList=new List<StoreInfo>();
+        }
+
         [IgnoreField]
         public int UserId { get; set; }
 
@@ -26,6 +32,6 @@ namespace QingFeng.Models
         public int Status { get; set; }
 
         [IgnoreField]
-        public StoreInfo StoreInfo { get; set; }
+        public List<StoreInfo> StoreList { get; set; }
     }
 }

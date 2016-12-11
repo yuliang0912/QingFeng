@@ -13,7 +13,7 @@ namespace QingFeng.WebArea.Controllers
     {
         private readonly UserService _userService = new UserService();
         // GET: Home
-        [AdminAuthorize(AgentEnums.UserRole.AllUser)]
+        [AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public ActionResult Index(UserInfo user)
         {
             return View();
@@ -40,20 +40,6 @@ namespace QingFeng.WebArea.Controllers
             }
             return Json(new {isPass, userRole = userInfo?.UserRole}, JsonRequestBehavior.AllowGet);
         }
-
-        //public JsonResult GetUserList(int page = 1, int pageSize = 10)
-        //{
-        //    int totalItem;
-        //    var list = _userService.GetPageList(page, pageSize, out totalItem);
-
-        //    return Json(new ApiPageList<UserInfo>()
-        //    {
-        //        Page = page,
-        //        PageSize = pageSize,
-        //        TotalCount = totalItem,
-        //        PageList = list
-        //    });
-        //}
 
 
         [AdminAuthorize(AgentEnums.UserRole.Administrator)]
