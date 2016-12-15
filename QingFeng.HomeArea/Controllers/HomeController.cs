@@ -34,7 +34,7 @@ namespace QingFeng.WebArea.Controllers
         {
             bool isPass;
             var userInfo = _userService.Login(loginName, passWord, out isPass);
-            if (userInfo.Status != 0)
+            if (userInfo != null && userInfo.Status != 0)
             {
                 return Json(new {isPass = 2, userRole = userInfo?.UserRole}, JsonRequestBehavior.AllowGet);
             }
