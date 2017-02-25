@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<!-- saved from url=(0024)http://www.findshoes.cn/ -->
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<title>Micro-ERP系统</title>
+
+<!-- Bootstrap -->
+<link href="./代理商价格_files/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="./代理商价格_files/font-awesome.min.css">
+
+<!--[if IE 7]>
+  <link rel="stylesheet" href="/static/css/font-awesome-ie7.min.css" />
+<![endif]-->
+<link rel="stylesheet" href="./代理商价格_files/ace.min.css">
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+<script type="text/javascript" src="./代理商价格_files/jquery.min.js.下载"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed --> 
+<script src="./代理商价格_files/bootstrap.min.js.下载"></script> 
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<style>
+    .table-responsive table thead tr th{text-align: center;}
+    .table-responsive table tfoot td a.active{background-color: #337ab7;color:#fff;}
+</style>
+<script type="text/javascript">
+    jQuery.pageReload = function(){
+        var url = $('#page-content').attr('data-cureent-url');
+        $.getPageContent({url : url});
+        return false;
+    };
+    jQuery.getPageContent = function(params){
+        var url  = params.url;
+        if (!url)
+        {
+            url = window.location.href;
+        }
+
+        $.ajax({
+            url : url,
+            dataType : 'html',
+            success : function(data){
+                var back_url = $('#page-content').attr('data-cureent-url');
+                if (!back_url)
+                {
+                    back_url = window.location.href;
+                }
+
+                back_url != url && $('#page-content').attr('data-back-url', back_url);
+
+                $('#page-content').attr('data-cureent-url', url);
+                $('#page-content').html(data)
+                url = '';
+                return false;
+            },
+            error : function() {
+                layer.alert('加载面页失败', {icon: 2});
+                return false;
+            }
+        });
+
+        $('#global-search').val('');
+
+        return false;
+    };
+
+    jQuery.etopConfirm = function(options) {
+        var defaults = {
+            'selector' : '.delete-modal',
+        };
+        var settings = $.extend(defaults, options);
+        $(settings.selector).popover({
+            html : true,
+            title : '系统提示',
+            content : function(){ 
+                var html = '您确认要把【' + $(this).data('name') + '】设为'+$(this).data('title')+'吗？';
+                html += '<div class="popover-footer"><button type="button" class="btn btn-primary btn-sm">确定</button>&nbsp;&nbsp;&nbsp;';
+                html += '<button type="button" class="btn btn-default btn-sm">取消</button></div>'
+                return html;
+            }
+        }).on('shown.bs.popover', function () {
+            var that = $(this);
+            var url = that.attr('href');
+            $('.popover-footer button.btn-primary').off('click').on('click', function(){
+                $.getJSON(that.attr('href') + '?action=submit', function(response){
+                    if (response.error == 0)
+                    {
+                        $.pageReload();
+                    }
+                    else
+                    {
+                        layer.alert(response.msg, {icon: 5});
+                    }
+                });
+            });
+        }).click(function(){return false;});
+    };
+
+    jQuery.showModal = function(options){
+        var defaults = {
+            beforeSubmit : function(formData, jqForm, options){
+                var l = formData.length;
+                for (var i=0; i < l; i++) {
+                   if (!formData[i].value) {
+                        layer.msg('所有资料都不能为空的哦!亲', {icon: 2});
+                        return false;
+                    }
+                }
+                return true;
+            },
+            success : function(response, status){
+                if (response.error == 0)
+                {
+                    $('#etop-modal').modal('hide');
+                    $('#etop-modal').off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
+                        $.pageReload();
+                    });
+                }
+                else
+                {
+                    layer.alert(response.msg, {icon: 5});
+                }
+            },
+            //formId : 'form',
+            selector : '.edit-modal,.add-modal',
+        };
+        var settings = $.extend(defaults, options);
+        $(settings.selector).off('click').on('click', function(){
+            //load内容到指定元素中
+            $("#etop-modal").load($(this).attr("href"), function(){
+                $("#etop-modal").modal("show");
+                if (settings.formId)
+                {
+                    $('#etop-modal').off('shown.bs.modal').on('shown.bs.modal', function (e) {
+                        $("#" + settings.formId).ajaxForm({
+                            beforeSubmit : settings.beforeSubmit,
+                            success : settings.success,
+                            dataType : 'json',
+                            timeout : 10000,
+                            error : function(){layer.alert('发送请求失败', {icon: 5});}
+                        });
+                    });
+                }
+                //modal_opener = this;
+            });
+            return false;
+        });
+    }
+</script>
+
+<link rel="stylesheet" href="./代理商价格_files/layer.css" id="layui_layer_skinlayercss"></head>
+<body class="navbar-fixed">
+<div class="navbar navbar-default navbar-fixed-top" id="navbar">
+    <div class="navbar-container" id="navbar-container">
+        <div class="navbar-header pull-left"> <a href="http://www.findshoes.cn/#" class="navbar-brand"> <small> <i class="icon-leaf"></i> Micro-ERP系统 </small> </a><!-- /.brand --> 
+        </div>
+        <!-- /.navbar-header -->
+        <div class="navbar-header pull-right" role="navigation">
+            <ul class="nav ace-nav">
+                <li class="light-blue"> <a data-toggle="dropdown" href="http://www.findshoes.cn/#" class="dropdown-toggle"> <img class="nav-user-photo" src="./代理商价格_files/user.jpg"> <span class="user-info"> <small>欢迎光临,</small> tony </span> <i class="icon-caret-down"></i> </a>
+                    <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                        <!-- 个人菜单 -->
+                        <li> <a href="http://www.findshoes.cn/logging/login" class="mylog"> <i class="icon-cog"></i> 登录日志 </a> </li>
+                        <li> <a href="http://www.findshoes.cn/logging/action" class="mylog"> <i class="icon-wrench"></i> 操作日志 </a> </li>
+                        <li> <a href="http://www.findshoes.cn/login/resetpassword" id="changepwd"> <i class="icon-user"></i> 修改密码 </a> </li>
+                        <li class="divider"></li>
+                        <li> <a href="http://www.findshoes.cn/login/logout"> <i class="icon-off"></i> 退出 </a> </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- /.ace-nav --> 
+        </div>
+        <!-- /.navbar-header --> 
+    </div>
+    <!-- /.container --> 
+</div>
+
+<div class="main-container" id="main-container">
+    <div class="main-container-inner"> <a class="menu-toggler" id="menu-toggler" href="http://www.findshoes.cn/#"> <span class="menu-text"></span> </a>
+        <div class="sidebar sidebar-fixed" id="sidebar">
+            <ul class="nav nav-list">
+                <li class="active"> <a href="http://www.findshoes.cn/"> <i class="icon-dashboard"></i> <span class="menu-text"> 控制台 </span> </a> </li>
+                                                        <li class="open">
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-reorder"></i>
+                                                <span class="menu-text">商品中心</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu" style="display: block;">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/goods/index">商品列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/goods/add">添加商品<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                            <a href="http://www.findshoes.cn/price/index">代理商价格<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                        </li>
+                        </ul>
+                                            </li>
+                                    <li>
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-hdd"></i>
+                                                <span class="menu-text">库存中心</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/stock/search">库存查询<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <a href="http://www.findshoes.cn/stock/import">导入库存<i class="icon-double-angle-right"></i></a>
+                                                                                                </li>
+                        </ul>
+                                            </li>
+                                    <li class="">
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-coffee"></i>
+                                                <span class="menu-text">订单中心</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu" style="display: none;">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/order/add">添加订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                        <a href="http://www.findshoes.cn/order/index">订单列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/exceptional">异常订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                    <a href="http://www.findshoes.cn/order/done">已完成订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/confirmed">待发货订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/assigned">进行中订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/unpay">待支付订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/canceled">已取消订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <a href="http://www.findshoes.cn/order/export">订单导出<i class="icon-double-angle-right"></i></a>
+                                                                                                </li>
+                        </ul>
+                                            </li>
+                                    <li>
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-list-ol"></i>
+                                                <span class="menu-text">分类管理</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/category/index">分类列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                            </li>
+                        </ul>
+                                            </li>
+                                    <li class="">
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-cogs"></i>
+                                                <span class="menu-text">人员管理</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu" style="display: none;">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/staff/index">员工列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                <a href="http://www.findshoes.cn/agent/index">代理商列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                </li>
+                        </ul>
+                                            </li>
+                                    <li class="">
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-credit-card"></i>
+                                                <span class="menu-text">财务中心</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu" style="display: none;">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/payment/listing">支付订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                        <a href="http://www.findshoes.cn/payment/export">导出支付流水<i class="icon-double-angle-right"></i></a>
+                                                                                                </li>
+                        </ul>
+                                            </li>
+                                    <li class="">
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-coffee"></i>
+                                                <span class="menu-text">系统配置</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu" style="display: none;">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/menu/index">菜单管理<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <a href="http://www.findshoes.cn/region/index">地区管理<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                            <a href="http://www.findshoes.cn/shop/index">店铺管理<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/config/index">配置管理<i class="icon-double-angle-right"></i></a>
+                                                                                                </li>
+                        </ul>
+                                            </li>
+                                        </ul>
+            <!-- /.nav-list -->
+            <div class="sidebar-collapse" id="sidebar-collapse"> <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i> </div>
+        </div>
+        <div class="main-content" id="main-content">
+            <div class="page-content" id="page-content" data-back-url="http://www.findshoes.cn/price/index?brand_id=1&amp;category_id=6&amp;keyword=&amp;user_id=82" data-cureent-url="http://www.findshoes.cn/price/index?brand_id=1&amp;category_id=6&amp;keyword=&amp;user_id=75"><style type="text/css">
+#order-table-list thead tr {background: none;}
+th{text-align: center;}
+#order-table-list td{vertical-align: middle;}
+</style>
+<div class="page-header">
+	<h1 class="form-inline"> 代理商价格列表 <small> <i class="icon-search"></i> 筛选: 
+		<div class="form-group">
+		<label class="sr-only" for="user_id">代理商</label>
+			<select name="user_id" id="user_id" class="form-control input-sm">
+									<option value="0">请选择代理商</option>
+																		<option value="82">F99-张滔滔</option>
+													<option value="81">F25</option>
+													<option value="80"> F20-小燕</option>
+													<option value="79">F11-M仔</option>
+													<option value="78">F23-资偲</option>
+													<option value="77">F09-曾健</option>
+													<option value="76">F08-茹梦</option>
+													<option value="75" selected="selected">F07-蛇仔</option>
+													<option value="74">F06-藤管</option>
+													<option value="73">L02-自营</option>
+													<option value="72">L01-自营</option>
+													<option value="71">F22-李强</option>
+													<option value="70">取消123</option>
+													<option value="69">K01-K02-K03</option>
+													<option value="68">F18-庄培鑫</option>
+													<option value="67">F08-星仔</option>
+													<option value="66">F21-蔡仪东</option>
+													<option value="56">F10-林进标</option>
+													<option value="45">F02-黄进杰</option>
+													<option value="44">F01-国庆</option>
+													<option value="42">F05-邓志杰</option>
+													<option value="40">F04-啊虾</option>
+													<option value="33">F14-少琼</option>
+													<option value="30">ftest</option>
+																		</select>
+		</div>
+		<div class="form-group">
+		<label class="sr-only" for="brand_id">品牌</label>
+			<select name="brand_id" id="brand_id" class="form-control input-sm">
+				<option value="0">品牌</option>
+												<option value="1" selected="selected">Locaste</option>
+											</select>
+		</div>
+		<div class="form-group">
+		<label class="sr-only" for="category_id">分类</label>
+			<select name="category_id" id="category_id" class="form-control input-sm">
+				<option value="0">分类</option>
+												<optgroup label="鞋">
+												<option value="6" selected="selected">休闲鞋</option>
+								<option value="7">正装鞋</option>
+								<option value="11">凉鞋</option>
+								<option value="12">户外鞋</option>
+								<option value="13">帆布鞋</option>
+								<option value="14">高尔夫鞋</option>
+								<option value="15">拖鞋</option>
+								<option value="16">长靴</option>
+								<option value="17">中短靴</option>
+								<option value="18">高跟鞋</option>
+								<option value="19">平底鞋</option>
+								<option value="20">运动鞋</option>
+								<option value="42">童鞋</option>
+								<option value="55">帆船鞋</option>
+								<option value="56">登山鞋</option>
+								<option value="57">户外运动鞋</option>
+												</optgroup>
+											</select>
+		</div>
+		<div class="form-group">
+		<label class="sr-only" for="order_keyword">关键字</label>
+			<input type="text" name="order_keyword" id="goods_keyword" value="" style="width:160px;" class="form-control input-sm" placeholder="商品名称或货号">
+		</div>
+		
+		<button type="button" class="btn btn-primary btn-sm " id="order-search">搜索</button>
+				<a href="http://www.findshoes.cn/price/distributorImport" class="btn btn-success btn-sm load-content"> <i class="glyphicon glyphicon-plus"></i> 导入价格</a>
+			 </small> 
+	</h1>
+</div>
+<!-- /.page-header -->
+<!-- PAGE CONTENT BEGINS -->
+		<div class="table-responsive">
+			<table class="table table-bordered" id="order-table-list">
+				<thead>
+					<tr>
+						<th rowspan="2" class="center">品名</th>
+						<th rowspan="2" class="center">货号</th>
+						<th rowspan="2" class="center">品牌</th>
+						<th rowspan="2" class="center">分类</th>
+						<th rowspan="2" class="center">性别</th>
+						<th colspan="5" class="center">spu</th>
+													<th rowspan="2" class="center">操作</th>
+											</tr>
+					<tr>
+						<th>颜色</th>
+						<th>价格</th>
+												<th>最低售价</th>
+						<th>供货价</th>
+						<th>毛利率</th>
+											</tr>
+				</thead>
+
+									<tbody><tr align="center">
+						<td rowspan="3" id="goods-name-9018">7-31SPW0036</td>
+						<td rowspan="3">7-31SPW0036</td>
+						<td rowspan="3">Locaste</td>
+						<td rowspan="3">休闲鞋</td>
+						<td rowspan="3">女</td>
+																		<td>7-31SPW0036A75</td>
+						<td>599.00</td>
+						<td>260</td>
+						<td>260.00</td>
+												<td>0%</td>
+																											<td rowspan="3">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9018" class="set-modal">设置</a>
+																</td>
+																									</tr><tr align="center">						<td>7-31SPW0036001</td>
+						<td>599.00</td>
+						<td>260</td>
+						<td>260.00</td>
+												<td>0%</td>
+																		</tr>
+																		<tr align="center">						<td>7-31SPW0036003</td>
+						<td>599.00</td>
+						<td>260</td>
+						<td>260.00</td>
+												<td>0%</td>
+																		</tr>
+																		
+					
+										<tr align="center">
+						<td rowspan="3" id="goods-name-9017">7-31SPW0031</td>
+						<td rowspan="3">7-31SPW0031</td>
+						<td rowspan="3">Locaste</td>
+						<td rowspan="3">休闲鞋</td>
+						<td rowspan="3">女</td>
+																		<td>7-31SPW0031334</td>
+						<td>599.00</td>
+						<td>260</td>
+						<td>260.00</td>
+												<td>0%</td>
+																											<td rowspan="3">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9017" class="set-modal">设置</a>
+																</td>
+																									</tr><tr align="center">						<td>7-31SPW0031125</td>
+						<td>599.00</td>
+						<td>260</td>
+						<td>260.00</td>
+												<td>0%</td>
+																		</tr>
+																		<tr align="center">						<td>7-31SPW00311F2</td>
+						<td>599.00</td>
+						<td>260</td>
+						<td>260.00</td>
+												<td>0%</td>
+																		</tr>
+																		
+					
+										<tr align="center">
+						<td rowspan="2" id="goods-name-9016">7-32SPW0120</td>
+						<td rowspan="2">7-32SPW0120</td>
+						<td rowspan="2">Locaste</td>
+						<td rowspan="2">休闲鞋</td>
+						<td rowspan="2">女</td>
+																		<td>7-32SPW0120007</td>
+						<td>799.00</td>
+						<td>350</td>
+						<td>350.00</td>
+												<td>0%</td>
+																											<td rowspan="2">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9016" class="set-modal">设置</a>
+																</td>
+																									</tr><tr align="center">						<td>7-32SPW012015J</td>
+						<td>799.00</td>
+						<td>350</td>
+						<td>350.00</td>
+												<td>0%</td>
+																		</tr>
+																		
+					
+										<tr align="center">
+						<td rowspan="2" id="goods-name-9015">7-32SPW0122</td>
+						<td rowspan="2">7-32SPW0122</td>
+						<td rowspan="2">Locaste</td>
+						<td rowspan="2">休闲鞋</td>
+						<td rowspan="2">女</td>
+																		<td>7-32SPW0122001</td>
+						<td>799.00</td>
+						<td>350</td>
+						<td>350.00</td>
+												<td>0%</td>
+																											<td rowspan="2">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9015" class="set-modal">设置</a>
+																</td>
+																									</tr><tr align="center">						<td>7-32SPW0122003</td>
+						<td>799.00</td>
+						<td>350</td>
+						<td>350.00</td>
+												<td>0%</td>
+																		</tr>
+																		
+					
+										<tr align="center">
+						<td rowspan="2" id="goods-name-9014">7-32SPW0123</td>
+						<td rowspan="2">7-32SPW0123</td>
+						<td rowspan="2">Locaste</td>
+						<td rowspan="2">休闲鞋</td>
+						<td rowspan="2">女</td>
+																		<td>7-32SPW012315J</td>
+						<td>799.00</td>
+						<td>350</td>
+						<td>350.00</td>
+												<td>0%</td>
+																											<td rowspan="2">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9014" class="set-modal">设置</a>
+																</td>
+																									</tr><tr align="center">						<td>7-32SPW0123007</td>
+						<td>799.00</td>
+						<td>350</td>
+						<td>350.00</td>
+												<td>0%</td>
+																		</tr>
+																		
+					
+										<tr align="center">
+						<td rowspan="2" id="goods-name-9013">7-32SPW0118</td>
+						<td rowspan="2">7-32SPW0118</td>
+						<td rowspan="2">Locaste</td>
+						<td rowspan="2">休闲鞋</td>
+						<td rowspan="2">女</td>
+																		<td>7-32SPW0118001</td>
+						<td>790.00</td>
+						<td>350</td>
+						<td>350.00</td>
+												<td>0%</td>
+																											<td rowspan="2">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9013" class="set-modal">设置</a>
+																</td>
+																									</tr><tr align="center">						<td>7-32SPW0118003</td>
+						<td>790.00</td>
+						<td>350</td>
+						<td>350.00</td>
+												<td>0%</td>
+																		</tr>
+																		
+					
+										<tr align="center">
+						<td rowspan="2" id="goods-name-9012">7-29SPW1032</td>
+						<td rowspan="2">7-29SPW1032</td>
+						<td rowspan="2">Locaste</td>
+						<td rowspan="2">休闲鞋</td>
+						<td rowspan="2">女</td>
+																		<td>7-29SPW103202H</td>
+						<td>680.00</td>
+						<td>290</td>
+						<td>290.00</td>
+												<td>0%</td>
+																											<td rowspan="2">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9012" class="set-modal">设置</a>
+																</td>
+																									</tr><tr align="center">						<td>7-29SPW103221G</td>
+						<td>680.00</td>
+						<td>290</td>
+						<td>290.00</td>
+												<td>0%</td>
+																		</tr>
+																		
+					
+										<tr align="center">
+						<td rowspan="4" id="goods-name-9010">7-25SRM2230</td>
+						<td rowspan="4">7-25SRM2230</td>
+						<td rowspan="4">Locaste</td>
+						<td rowspan="4">休闲鞋</td>
+						<td rowspan="4">男</td>
+																		<td>7-25SRM2230024</td>
+						<td>790.00</td>
+						<td>290</td>
+						<td>290.00</td>
+												<td>0%</td>
+																											<td rowspan="4">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9010" class="set-modal">设置</a>
+																</td>
+																									</tr><tr align="center">						<td>7-25SRM2230158</td>
+						<td>790.00</td>
+						<td>290</td>
+						<td>290.00</td>
+												<td>0%</td>
+																		</tr>
+																		<tr align="center">						<td>7-25SRM2230125</td>
+						<td>790.00</td>
+						<td>290</td>
+						<td>290.00</td>
+												<td>0%</td>
+																		</tr>
+																		<tr align="center">						<td>7-25SRM2230078</td>
+						<td>790.00</td>
+						<td>290</td>
+						<td>290.00</td>
+												<td>0%</td>
+																		</tr>
+																		
+					
+										<tr align="center">
+						<td rowspan="2" id="goods-name-9008">7-25SRM3013</td>
+						<td rowspan="2">7-25SRM3013</td>
+						<td rowspan="2">Locaste</td>
+						<td rowspan="2">休闲鞋</td>
+						<td rowspan="2">男</td>
+																		<td>7-25SRM3013007</td>
+						<td>790.00</td>
+						<td>290</td>
+						<td>290.00</td>
+												<td>0%</td>
+																											<td rowspan="2">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9008" class="set-modal">设置</a>
+																</td>
+																									</tr><tr align="center">						<td>7-25SRM3013125</td>
+						<td>790.00</td>
+						<td>290</td>
+						<td>290.00</td>
+												<td>0%</td>
+																		</tr>
+																		
+					
+										<tr align="center">
+						<td rowspan="2" id="goods-name-9007">7-30SPW0008</td>
+						<td rowspan="2">7-30SPW0008</td>
+						<td rowspan="2">Locaste</td>
+						<td rowspan="2">休闲鞋</td>
+						<td rowspan="2">女</td>
+																		<td>7-30SPW0008DB4</td>
+						<td>890.00</td>
+						<td>350</td>
+						<td>350.00</td>
+												<td>0%</td>
+																											<td rowspan="2">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9007" class="set-modal">设置</a>
+																</td>
+																									</tr><tr align="center">						<td>7-30SPW0008DG2</td>
+						<td>890.00</td>
+						<td>350</td>
+						<td>350.00</td>
+												<td>0%</td>
+																		</tr>
+																		
+					
+										<tr align="center">
+						<td rowspan="2" id="goods-name-9006">7-30SPW0027</td>
+						<td rowspan="2">7-30SPW0027</td>
+						<td rowspan="2">Locaste</td>
+						<td rowspan="2">休闲鞋</td>
+						<td rowspan="2">女</td>
+																		<td>7-30SPW002721G</td>
+						<td>680.00</td>
+						<td>290</td>
+						<td>290.00</td>
+												<td>0%</td>
+																											<td rowspan="2">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9006" class="set-modal">设置</a>
+																</td>
+																									</tr><tr align="center">						<td>7-30SPW002702H</td>
+						<td>680.00</td>
+						<td>290</td>
+						<td>290.00</td>
+												<td>0%</td>
+																		</tr>
+																		
+					
+										<tr align="center">
+						<td rowspan="2" id="goods-name-9005">7-31SPW0035</td>
+						<td rowspan="2">7-31SPW0035</td>
+						<td rowspan="2">Locaste</td>
+						<td rowspan="2">休闲鞋</td>
+						<td rowspan="2">女</td>
+																		<td>7-31SPW0035003</td>
+						<td>680.00</td>
+						<td>280</td>
+						<td>280.00</td>
+												<td>0%</td>
+																											<td rowspan="2">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9005" class="set-modal">设置</a>
+																</td>
+																									</tr><tr align="center">						<td>7-31SPW0035001</td>
+						<td>680.00</td>
+						<td>280</td>
+						<td>280.00</td>
+												<td>0%</td>
+																		</tr>
+																		
+					
+										<tr align="center">
+						<td rowspan="1" id="goods-name-9004">7-28SPW1072</td>
+						<td rowspan="1">7-28SPW1072</td>
+						<td rowspan="1">Locaste</td>
+						<td rowspan="1">休闲鞋</td>
+						<td rowspan="1">女</td>
+																		<td>7-28SPW1072LY2</td>
+						<td>429.00</td>
+						<td>250</td>
+						<td>250.00</td>
+												<td>0%</td>
+																											<td rowspan="1">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9004" class="set-modal">设置</a>
+																</td>
+																									
+					</tr>
+										<tr align="center">
+						<td rowspan="1" id="goods-name-9003">7-27SPW3000</td>
+						<td rowspan="1">7-27SPW3000</td>
+						<td rowspan="1">Locaste</td>
+						<td rowspan="1">休闲鞋</td>
+						<td rowspan="1">女</td>
+																		<td>7-27SPW3000DB4</td>
+						<td>550.00</td>
+						<td>250</td>
+						<td>250.00</td>
+												<td>0%</td>
+																											<td rowspan="1">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/9003" class="set-modal">设置</a>
+																</td>
+																									
+					</tr>
+										<tr align="center">
+						<td rowspan="1" id="goods-name-8998">7-29SPM2021</td>
+						<td rowspan="1">7-29SPM2021</td>
+						<td rowspan="1">Locaste</td>
+						<td rowspan="1">休闲鞋</td>
+						<td rowspan="1">男</td>
+																		<td>7-29SPM2021X96</td>
+						<td>599.00</td>
+						<td>250</td>
+						<td>250.00</td>
+												<td>0%</td>
+																											<td rowspan="1">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/8998" class="set-modal">设置</a>
+																</td>
+																									
+					</tr>
+										<tr align="center">
+						<td rowspan="2" id="goods-name-8978">7-28SPW1067</td>
+						<td rowspan="2">7-28SPW1067</td>
+						<td rowspan="2">Locaste</td>
+						<td rowspan="2">休闲鞋</td>
+						<td rowspan="2">女</td>
+																		<td>7-28SPW1067LP2</td>
+						<td>599.00</td>
+						<td>999</td>
+						<td>250.00</td>
+												<td>74.97%</td>
+																											<td rowspan="2">
+																	<a href="http://www.findshoes.cn/price/distributorSet/75/8978" class="set-modal">设置</a>
+																</td>
+																									</tr><tr align="center">						<td>7-28SPW1067LY2</td>
+						<td>599.00</td>
+						<td>999</td>
+						<td>250.00</td>
+												<td>74.97%</td>
+																		</tr>
+																		
+					
+															</tbody><tfoot>
+					<tr align="center">
+						<td colspan="11"><ul class="pagination"><li class="active"><a class="" href="http://www.findshoes.cn/#">1</a></li><li><a href="http://www.findshoes.cn/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=2">2</a></li><li><a href="http://www.findshoes.cn/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=3">3</a></li><li><a href="http://www.findshoes.cn/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=4">4</a></li><li><a href="http://www.findshoes.cn/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=2">下一页</a></li></ul></td>
+					</tr>
+					</tfoot>
+										
+			</table>
+		</div>
+		<!-- /.table-responsive --> 
+<!-- PAGE CONTENT ENDS -->  
+<script type="text/javascript">
+$(function() {
+	$.showModal({
+		formId : 'price-set-form', 
+		'selector' : '.add-modal,.set-modal',
+		success : function(response, status){
+			alert(response.msg);
+			if (response.error == 0)
+			{
+				$('#etop-modal').modal('hide');
+				$('#etop-modal').off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
+					$.pageReload();
+				});
+			}
+		},
+	});
+
+	$('#order-search').click(function(){
+		var brand_id = $('#brand_id').val() * 1;
+		var category_id = $('#category_id').val() *1;
+		var keyword = $('#goods_keyword').val();
+		var user_id = $('#user_id').val();
+
+		if (user_id <= 0)
+		{
+			alert('必须选择代理商');
+			return false;
+		}
+
+		var url = 'http://www.findshoes.cn/price/index';
+		var query_str = 'brand_id=' + brand_id;
+		query_str += '&category_id=' + category_id;
+		query_str += '&keyword=' + keyword;
+		query_str += '&user_id=' + user_id;
+
+		url = url + '?' + query_str;
+		$.getPageContent({url : url});
+
+	});
+});
+
+	$('.pagination a').click(function(){
+        var url = $(this).attr('href');
+        $.getPageContent({url : url});
+        return false;
+    });
+</script>
+
+</div>
+</div>
+    <!-- /.main-content --> 
+</div>
+<!-- /.main-container-inner --> 
+<!-- Modal 弹出层 -->
+<div class="modal fade" id="etop-modal" tabindex="-1" role="dialog" aria-labelledby="etop-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="关闭"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- /.main-container -->
+<script src="./代理商价格_files/ace-extra.min.js.下载"></script> 
+<script src="./代理商价格_files/ace-elements.min.js.下载"></script> 
+<script src="./代理商价格_files/ace.min.js.下载"></script>
+<script src="./代理商价格_files/layer.js.下载"></script>
+<script type="text/javascript" src="./代理商价格_files/jquery.form.js.下载"></script>
+<script type="text/javascript" src="./代理商价格_files/jquery.ztree.all-3.5.min.js.下载"></script>
+<script type="text/javascript">
+    $('.menu a,.mylog').click(function(){
+        var url = $(this).attr('href');
+        $.getPageContent({url : url});
+        return false;
+    });
+    $.showModal({selector : '#changepwd', formId : 'changepwd-form',});
+    $(document).bind("keydown",function(e){ 
+        var e = e || event,
+        keycode = e.which || e.keyCode;
+        if(keycode == 116)
+        { 
+            if (e.ctrlKey) return true;
+            $.pageReload();
+            return false;
+        } 
+    });
+
+    $('.supplier-login').off('click').on('click', function(){
+        var url = $(this).attr('href');
+        $.ajax({
+            url : url + '?action=dosubmit',
+            dataType : 'json',
+            success : function(response){
+                if (response.error == 0)
+                {
+                    var data = response.data;
+                    if (data.url)
+                    {
+                        window.open(data.url);
+                    }
+                }
+                else
+                {
+                    layer.alert(response.msg, {icon: 5});
+                }
+                return false;
+            },
+            error : function() {
+                layer.alert('加载面页失败', {icon: 2});
+                return false;
+            }
+        });
+
+        return false;
+    });
+</script>
+
+
+</div><div class="datetimepicker datetimepicker-dropdown-bottom-right dropdown-menu" style="left: 468px; z-index: 1060;"><div class="datetimepicker-minutes" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="minute">16:00</span><span class="minute">16:05</span><span class="minute">16:10</span><span class="minute">16:15</span><span class="minute">16:20</span><span class="minute">16:25</span><span class="minute active">16:30</span><span class="minute disabled">16:35</span><span class="minute disabled">16:40</span><span class="minute disabled">16:45</span><span class="minute disabled">16:50</span><span class="minute disabled">16:55</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-hours" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="hour">0:00</span><span class="hour">1:00</span><span class="hour">2:00</span><span class="hour">3:00</span><span class="hour">4:00</span><span class="hour">5:00</span><span class="hour">6:00</span><span class="hour">7:00</span><span class="hour">8:00</span><span class="hour">9:00</span><span class="hour">10:00</span><span class="hour">11:00</span><span class="hour">12:00</span><span class="hour">13:00</span><span class="hour">14:00</span><span class="hour">15:00</span><span class="hour active">16:00</span><span class="hour disabled">17:00</span><span class="hour disabled">18:00</span><span class="hour disabled">19:00</span><span class="hour disabled">20:00</span><span class="hour disabled">21:00</span><span class="hour disabled">22:00</span><span class="hour disabled">23:00</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-days" style="display: block;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr><tr><th class="dow">Su</th><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th></tr></thead><tbody><tr><td class="day old">29</td><td class="day old">30</td><td class="day old">31</td><td class="day">1</td><td class="day">2</td><td class="day">3</td><td class="day">4</td></tr><tr><td class="day">5</td><td class="day">6</td><td class="day">7</td><td class="day">8</td><td class="day">9</td><td class="day">10</td><td class="day">11</td></tr><tr><td class="day">12</td><td class="day">13</td><td class="day">14</td><td class="day">15</td><td class="day">16</td><td class="day">17</td><td class="day">18</td></tr><tr><td class="day">19</td><td class="day">20</td><td class="day">21</td><td class="day">22</td><td class="day">23</td><td class="day">24</td><td class="day active">25</td></tr><tr><td class="day disabled">26</td><td class="day disabled">27</td><td class="day disabled">28</td><td class="day new disabled">1</td><td class="day new disabled">2</td><td class="day new disabled">3</td><td class="day new disabled">4</td></tr><tr><td class="day new disabled">5</td><td class="day new disabled">6</td><td class="day new disabled">7</td><td class="day new disabled">8</td><td class="day new disabled">9</td><td class="day new disabled">10</td><td class="day new disabled">11</td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-months" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="month disabled">Jan</span><span class="month active disabled">Feb</span><span class="month disabled">Mar</span><span class="month disabled">Apr</span><span class="month disabled">May</span><span class="month disabled">Jun</span><span class="month disabled">Jul</span><span class="month disabled">Aug</span><span class="month disabled">Sep</span><span class="month disabled">Oct</span><span class="month disabled">Nov</span><span class="month disabled">Dec</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2010-2019</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="year old">2009</span><span class="year">2010</span><span class="year">2011</span><span class="year">2012</span><span class="year">2013</span><span class="year">2014</span><span class="year">2015</span><span class="year">2016</span><span class="year active">2017</span><span class="year disabled">2018</span><span class="year disabled">2019</span><span class="year old disabled">2020</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div></div><div class="datetimepicker datetimepicker-dropdown-bottom-right dropdown-menu" style="left: 600px; z-index: 1070;"><div class="datetimepicker-minutes" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="minute">16:00</span><span class="minute">16:05</span><span class="minute">16:10</span><span class="minute">16:15</span><span class="minute">16:20</span><span class="minute">16:25</span><span class="minute active">16:30</span><span class="minute disabled">16:35</span><span class="minute disabled">16:40</span><span class="minute disabled">16:45</span><span class="minute disabled">16:50</span><span class="minute disabled">16:55</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-hours" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="hour">0:00</span><span class="hour">1:00</span><span class="hour">2:00</span><span class="hour">3:00</span><span class="hour">4:00</span><span class="hour">5:00</span><span class="hour">6:00</span><span class="hour">7:00</span><span class="hour">8:00</span><span class="hour">9:00</span><span class="hour">10:00</span><span class="hour">11:00</span><span class="hour">12:00</span><span class="hour">13:00</span><span class="hour">14:00</span><span class="hour">15:00</span><span class="hour active">16:00</span><span class="hour disabled">17:00</span><span class="hour disabled">18:00</span><span class="hour disabled">19:00</span><span class="hour disabled">20:00</span><span class="hour disabled">21:00</span><span class="hour disabled">22:00</span><span class="hour disabled">23:00</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-days" style="display: block;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr><tr><th class="dow">Su</th><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th></tr></thead><tbody><tr><td class="day old">29</td><td class="day old">30</td><td class="day old">31</td><td class="day">1</td><td class="day">2</td><td class="day">3</td><td class="day">4</td></tr><tr><td class="day">5</td><td class="day">6</td><td class="day">7</td><td class="day">8</td><td class="day">9</td><td class="day">10</td><td class="day">11</td></tr><tr><td class="day">12</td><td class="day">13</td><td class="day">14</td><td class="day">15</td><td class="day">16</td><td class="day">17</td><td class="day">18</td></tr><tr><td class="day">19</td><td class="day">20</td><td class="day">21</td><td class="day">22</td><td class="day">23</td><td class="day">24</td><td class="day active">25</td></tr><tr><td class="day disabled">26</td><td class="day disabled">27</td><td class="day disabled">28</td><td class="day new disabled">1</td><td class="day new disabled">2</td><td class="day new disabled">3</td><td class="day new disabled">4</td></tr><tr><td class="day new disabled">5</td><td class="day new disabled">6</td><td class="day new disabled">7</td><td class="day new disabled">8</td><td class="day new disabled">9</td><td class="day new disabled">10</td><td class="day new disabled">11</td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-months" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="month disabled">Jan</span><span class="month active disabled">Feb</span><span class="month disabled">Mar</span><span class="month disabled">Apr</span><span class="month disabled">May</span><span class="month disabled">Jun</span><span class="month disabled">Jul</span><span class="month disabled">Aug</span><span class="month disabled">Sep</span><span class="month disabled">Oct</span><span class="month disabled">Nov</span><span class="month disabled">Dec</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2010-2019</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="year old">2009</span><span class="year">2010</span><span class="year">2011</span><span class="year">2012</span><span class="year">2013</span><span class="year">2014</span><span class="year">2015</span><span class="year">2016</span><span class="year active">2017</span><span class="year disabled">2018</span><span class="year disabled">2019</span><span class="year old disabled">2020</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div></div></body></html>

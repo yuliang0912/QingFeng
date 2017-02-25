@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<!-- saved from url=(0024)http://www.findshoes.cn/ -->
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<title>Micro-ERP系统</title>
+
+<!-- Bootstrap -->
+<link href="./异常订单_files/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="./异常订单_files/font-awesome.min.css">
+
+<!--[if IE 7]>
+  <link rel="stylesheet" href="/static/css/font-awesome-ie7.min.css" />
+<![endif]-->
+<link rel="stylesheet" href="./异常订单_files/ace.min.css">
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+<script type="text/javascript" src="./异常订单_files/jquery.min.js.下载"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed --> 
+<script src="./异常订单_files/bootstrap.min.js.下载"></script> 
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<style>
+    .table-responsive table thead tr th{text-align: center;}
+    .table-responsive table tfoot td a.active{background-color: #337ab7;color:#fff;}
+</style>
+<script type="text/javascript">
+    jQuery.pageReload = function(){
+        var url = $('#page-content').attr('data-cureent-url');
+        $.getPageContent({url : url});
+        return false;
+    };
+    jQuery.getPageContent = function(params){
+        var url  = params.url;
+        if (!url)
+        {
+            url = window.location.href;
+        }
+
+        $.ajax({
+            url : url,
+            dataType : 'html',
+            success : function(data){
+                var back_url = $('#page-content').attr('data-cureent-url');
+                if (!back_url)
+                {
+                    back_url = window.location.href;
+                }
+
+                back_url != url && $('#page-content').attr('data-back-url', back_url);
+
+                $('#page-content').attr('data-cureent-url', url);
+                $('#page-content').html(data)
+                url = '';
+                return false;
+            },
+            error : function() {
+                layer.alert('加载面页失败', {icon: 2});
+                return false;
+            }
+        });
+
+        $('#global-search').val('');
+
+        return false;
+    };
+
+    jQuery.etopConfirm = function(options) {
+        var defaults = {
+            'selector' : '.delete-modal',
+        };
+        var settings = $.extend(defaults, options);
+        $(settings.selector).popover({
+            html : true,
+            title : '系统提示',
+            content : function(){ 
+                var html = '您确认要把【' + $(this).data('name') + '】设为'+$(this).data('title')+'吗？';
+                html += '<div class="popover-footer"><button type="button" class="btn btn-primary btn-sm">确定</button>&nbsp;&nbsp;&nbsp;';
+                html += '<button type="button" class="btn btn-default btn-sm">取消</button></div>'
+                return html;
+            }
+        }).on('shown.bs.popover', function () {
+            var that = $(this);
+            var url = that.attr('href');
+            $('.popover-footer button.btn-primary').off('click').on('click', function(){
+                $.getJSON(that.attr('href') + '?action=submit', function(response){
+                    if (response.error == 0)
+                    {
+                        $.pageReload();
+                    }
+                    else
+                    {
+                        layer.alert(response.msg, {icon: 5});
+                    }
+                });
+            });
+        }).click(function(){return false;});
+    };
+
+    jQuery.showModal = function(options){
+        var defaults = {
+            beforeSubmit : function(formData, jqForm, options){
+                var l = formData.length;
+                for (var i=0; i < l; i++) {
+                   if (!formData[i].value) {
+                        layer.msg('所有资料都不能为空的哦!亲', {icon: 2});
+                        return false;
+                    }
+                }
+                return true;
+            },
+            success : function(response, status){
+                if (response.error == 0)
+                {
+                    $('#etop-modal').modal('hide');
+                    $('#etop-modal').off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
+                        $.pageReload();
+                    });
+                }
+                else
+                {
+                    layer.alert(response.msg, {icon: 5});
+                }
+            },
+            //formId : 'form',
+            selector : '.edit-modal,.add-modal',
+        };
+        var settings = $.extend(defaults, options);
+        $(settings.selector).off('click').on('click', function(){
+            //load内容到指定元素中
+            $("#etop-modal").load($(this).attr("href"), function(){
+                $("#etop-modal").modal("show");
+                if (settings.formId)
+                {
+                    $('#etop-modal').off('shown.bs.modal').on('shown.bs.modal', function (e) {
+                        $("#" + settings.formId).ajaxForm({
+                            beforeSubmit : settings.beforeSubmit,
+                            success : settings.success,
+                            dataType : 'json',
+                            timeout : 10000,
+                            error : function(){layer.alert('发送请求失败', {icon: 5});}
+                        });
+                    });
+                }
+                //modal_opener = this;
+            });
+            return false;
+        });
+    }
+</script>
+
+<link rel="stylesheet" href="./异常订单_files/layer.css" id="layui_layer_skinlayercss"></head>
+<body class="navbar-fixed">
+<div class="navbar navbar-default navbar-fixed-top" id="navbar">
+    <div class="navbar-container" id="navbar-container">
+        <div class="navbar-header pull-left"> <a href="http://www.findshoes.cn/#" class="navbar-brand"> <small> <i class="icon-leaf"></i> Micro-ERP系统 </small> </a><!-- /.brand --> 
+        </div>
+        <!-- /.navbar-header -->
+        <div class="navbar-header pull-right" role="navigation">
+            <ul class="nav ace-nav">
+                <li class="light-blue"> <a data-toggle="dropdown" href="http://www.findshoes.cn/#" class="dropdown-toggle"> <img class="nav-user-photo" src="./异常订单_files/user.jpg"> <span class="user-info"> <small>欢迎光临,</small> tony </span> <i class="icon-caret-down"></i> </a>
+                    <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                        <!-- 个人菜单 -->
+                        <li> <a href="http://www.findshoes.cn/logging/login" class="mylog"> <i class="icon-cog"></i> 登录日志 </a> </li>
+                        <li> <a href="http://www.findshoes.cn/logging/action" class="mylog"> <i class="icon-wrench"></i> 操作日志 </a> </li>
+                        <li> <a href="http://www.findshoes.cn/login/resetpassword" id="changepwd"> <i class="icon-user"></i> 修改密码 </a> </li>
+                        <li class="divider"></li>
+                        <li> <a href="http://www.findshoes.cn/login/logout"> <i class="icon-off"></i> 退出 </a> </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- /.ace-nav --> 
+        </div>
+        <!-- /.navbar-header --> 
+    </div>
+    <!-- /.container --> 
+</div>
+
+<div class="main-container" id="main-container">
+    <div class="main-container-inner"> <a class="menu-toggler" id="menu-toggler" href="http://www.findshoes.cn/#"> <span class="menu-text"></span> </a>
+        <div class="sidebar sidebar-fixed" id="sidebar">
+            <ul class="nav nav-list">
+                <li class="active"> <a href="http://www.findshoes.cn/"> <i class="icon-dashboard"></i> <span class="menu-text"> 控制台 </span> </a> </li>
+                                                        <li class="">
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-reorder"></i>
+                                                <span class="menu-text">商品中心</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu" style="display: none;">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/goods/index">商品列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/goods/add">添加商品<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                            <a href="http://www.findshoes.cn/price/index">代理商价格<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                        </li>
+                        </ul>
+                                            </li>
+                                    <li class="">
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-hdd"></i>
+                                                <span class="menu-text">库存中心</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu" style="display: none;">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/stock/search">库存查询<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <a href="http://www.findshoes.cn/stock/import">导入库存<i class="icon-double-angle-right"></i></a>
+                                                                                                </li>
+                        </ul>
+                                            </li>
+                                    <li class="open">
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-coffee"></i>
+                                                <span class="menu-text">订单中心</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu" style="display: block;">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/order/add">添加订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                        <a href="http://www.findshoes.cn/order/index">订单列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/exceptional">异常订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                    <a href="http://www.findshoes.cn/order/done">已完成订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/confirmed">待发货订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/assigned">进行中订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/unpay">待支付订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/canceled">已取消订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <a href="http://www.findshoes.cn/order/export">订单导出<i class="icon-double-angle-right"></i></a>
+                                                                                                </li>
+                        </ul>
+                                            </li>
+                                    <li>
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-list-ol"></i>
+                                                <span class="menu-text">分类管理</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/category/index">分类列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                            </li>
+                        </ul>
+                                            </li>
+                                    <li class="">
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-cogs"></i>
+                                                <span class="menu-text">人员管理</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu" style="display: none;">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/staff/index">员工列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                <a href="http://www.findshoes.cn/agent/index">代理商列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                </li>
+                        </ul>
+                                            </li>
+                                    <li class="">
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-credit-card"></i>
+                                                <span class="menu-text">财务中心</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu" style="display: none;">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/payment/listing">支付订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                        <a href="http://www.findshoes.cn/payment/export">导出支付流水<i class="icon-double-angle-right"></i></a>
+                                                                                                </li>
+                        </ul>
+                                            </li>
+                                    <li class="">
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-coffee"></i>
+                                                <span class="menu-text">系统配置</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu" style="display: none;">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/menu/index">菜单管理<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <a href="http://www.findshoes.cn/region/index">地区管理<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                            <a href="http://www.findshoes.cn/shop/index">店铺管理<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/config/index">配置管理<i class="icon-double-angle-right"></i></a>
+                                                                                                </li>
+                        </ul>
+                                            </li>
+                                        </ul>
+            <!-- /.nav-list -->
+            <div class="sidebar-collapse" id="sidebar-collapse"> <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i> </div>
+        </div>
+        <div class="main-content" id="main-content">
+            <div class="page-content" id="page-content" data-back-url="http://www.findshoes.cn/order/index" data-cureent-url="http://www.findshoes.cn/order/exceptional"><link href="./异常订单_files/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+<style type="text/css">
+#order-table-list thead tr {background: none;}
+th{text-align: center;}
+#order-table-list td{vertical-align: middle;}
+</style>
+<div class="page-header">
+    <h1 class="form-inline"> 异常订单<small> <i class="icon-search"></i> 筛选: 
+        <div class="form-group">
+        <label class="sr-only" for="shop_id">品牌</label>
+            <select name="shop_id" id="shop_id" class="form-control input-sm">
+                <option value="0">店铺</option>
+                                                <option value="16">E01</option>
+                                <option value="5">E02</option>
+                                <option value="34">E05</option>
+                                <option value="11">F01</option>
+                                <option value="10">F02</option>
+                                <option value="9">F04</option>
+                                <option value="22">F05</option>
+                                <option value="26">F06</option>
+                                <option value="27">F07</option>
+                                <option value="28">F08</option>
+                                <option value="29">F09</option>
+                                <option value="15">F10</option>
+                                <option value="31">F11</option>
+                                <option value="18">F14</option>
+                                <option value="17">F18</option>
+                                <option value="32">F20</option>
+                                <option value="23">F22</option>
+                                <option value="30">F23</option>
+                                <option value="33">F25</option>
+                                <option value="35">F99</option>
+                                <option value="20">G02</option>
+                                <option value="6">J01</option>
+                                <option value="7">J01+</option>
+                                <option value="21">J04</option>
+                                <option value="12">K01</option>
+                                <option value="13">K02</option>
+                                <option value="14">K03</option>
+                                <option value="24">L01</option>
+                                <option value="25">L02</option>
+                                <option value="3">L04</option>
+                                <option value="4">L05</option>
+                                <option value="19">S01</option>
+                                <option value="1">test</option>
+                                <option value="8">Y01</option>
+                                <option value="2">取消123</option>
+                                            </select>
+        </div>
+        <div class="form-group">
+        <label for="start_time">从</label>
+            <input type="text" id="start_time" style="width: 110px;" name="start_time" readonly="" value="" placeholder="请选择开始时间" class="form-control input-sm">
+        </div>
+        <div class="form-group">
+        <label for="end_time">到</label>
+            <input type="text" id="end_time" name="end_time" style="width: 110px;" readonly="" value="" placeholder="请选择结束时间" class="form-control input-sm">
+        </div>
+        <div class="form-group">
+        <label class="sr-only" for="brand_id">品牌</label>
+            <select name="brand_id" id="brand_id" class="form-control input-sm">
+                <option value="0">品牌</option>
+                                                <option value="1">Locaste</option>
+                                            </select>
+        </div>
+        <div class="form-group">
+        <label class="sr-only" for="order_keyword">关键字</label>
+            <input type="text" name="keyword" id="order_keyword" value="" style="width:190px;" placeholder="订单号,流水号,收货人或电话">
+        </div>
+        
+        <button type="button" class="btn btn-primary btn-sm " id="order-search">搜索</button>
+     </small> 
+            <a href="http://www.findshoes.cn/order/add" class="btn btn-info btn-sm pull-right order-create load-content"> <i class="glyphicon glyphicon-plus"></i> 添加订单</a>
+        </h1>
+</div>
+<div class="table-responsive">
+        <table class="table table-striped table-bordered table-hover" id="order-table-list">
+        <thead>
+            <tr>
+                <th rowspan="2">订单流水号</th>
+                <th rowspan="2">日期</th>
+                <th rowspan="2">店铺</th>
+                <th rowspan="2">订单号</th>
+                <th rowspan="2">收货人</th>
+                <th rowspan="2">电话</th>
+                <th colspan="6" style=" border-bottom-width:1px;">订单商品</th>
+                <th rowspan="2" width="80" class="last">订单状态</th>
+                <th rowspan="2" class="last">操作</th>
+            </tr>
+            <tr>
+                <th width="60">商品品牌</th>
+                <th width="100">商品货号</th>
+                <th width="150">商品颜色</th>
+                <th width="60">尺码</th>
+                                <th width="60">配货仓库</th>
+                <th>状态</th>
+            </tr>
+        </thead>
+                <tbody><tr align="center">
+            <td rowspan="1">748402208329</td>
+            <td rowspan="1">20.02.2017</td>
+            <td rowspan="1">J01</td>
+            <td rowspan="1">49498119484 </td>
+            <td rowspan="1"> 官娟</td>
+            <td rowspan="1"> 13368350007</td>
+                                                <td>Locaste</td>
+            <td>7-26SPW1021</td>
+            <td>7-26SPW102121G</td>
+            <td>37.5码                        </td><td>E-TOP(XH)</td>
+            <td><span style="color:#d9534f"><span style="color:#f00">无货待处理</span></span> 
+
+                                <a href="http://www.findshoes.cn/order/exceptionCancel/2400/2497" class="op-confirm" data-id="2497" data-name="7-26SPW1021" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单商品" data-original-title="" title="">取消</a>
+                                
+                            
+                        </td>
+
+                        
+            <td rowspan="1"><span style="color:#d9534f"><span style="color:#f00">异常</span></span></td>
+            <td rowspan="1" class="last">
+            <a href="http://www.findshoes.cn/order/note/2400" title="查看备注" class="green view-order-notes">备注</a>
+            <a href="http://www.findshoes.cn/order/view/2400" class="load-content">查看</a>
+
+            
+            
+            
+                        
+            
+                                    
+            
+            </td>
+            </tr>
+                                        <tr align="center">
+            <td rowspan="1">715002075356</td>
+            <td rowspan="1">07.02.2017</td>
+            <td rowspan="1">J01</td>
+            <td rowspan="1">48980329150</td>
+            <td rowspan="1">康祝汉</td>
+            <td rowspan="1">13799892685</td>
+                                                <td>Locaste</td>
+            <td>7-30SRM0015</td>
+            <td>7-30SRM0015176</td>
+            <td>40.5码                        </td><td>E-TOP(PUR)</td>
+            <td><span style="color:#d9534f"><span style="color:#f00">无货待处理</span></span> 
+
+                                <a href="http://www.findshoes.cn/order/exceptionCancel/2176/2263" class="op-confirm" data-id="2263" data-name="7-30SRM0015" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单商品" data-original-title="" title="">取消</a>
+                                
+                            
+                        </td>
+
+                        
+            <td rowspan="1"><span style="color:#d9534f"><span style="color:#f00">异常</span></span></td>
+            <td rowspan="1" class="last">
+            <a href="http://www.findshoes.cn/order/note/2176" title="查看备注" class="green view-order-notes">备注</a>
+            <a href="http://www.findshoes.cn/order/view/2176" class="load-content">查看</a>
+
+            
+            
+            
+                        
+            
+                                    
+            
+            </td>
+            </tr>
+                                            </tbody></table>
+</div>
+<div class="modal fade" id="system-confirm-modal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="edit-model-label">系统确认</h4>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer" style="text-align:center;">
+                <input type="hidden" name="action" value="dosubmit">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="submit" class="btn btn-primary" id="do-save">保存</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+$(function(){
+    $.getScript("/static/js/datetimepicker/bootstrap-datetimepicker.js", function(){
+        $("#start_time").datetimepicker({format: 'yyyy-mm-dd hh:ii', language : 'zh-CN', 'endDate' : '2017-02-25 16:42', minView: "hour", autoclose : 1, bootcssVer : 3,}).on('changeDate', function(ev){
+            $('#end_time').datetimepicker('setStartDate', $('#start_time').val());
+        });
+        
+        $("#end_time").datetimepicker({format: 'yyyy-mm-dd hh:ii', language : 'zh-CN', 'endDate' : '2017-02-25 16:42', minView: "hour", autoclose : 1,  bootcssVer : 3,});
+    });
+
+    $('#order-search').click(function(){
+        var shop_id = $('#shop_id').val() * 1;
+        var start_time = $('#start_time').val();
+        var end_time = $('#end_time').val();
+        var brand_id = $('#brand_id').val() * 1;
+        var supplier_id = $('#supplier_id').val() *1;
+        var keyword = $('#order_keyword').val();
+
+        if (shop_id <= 0 && start_time == '' && end_time == '' && brand_id <= 0 && supplier_id <= 0 && keyword == '')
+        {
+            alert('请选择或输入要筛选的条件！');
+            return false;
+        }
+
+        var url = 'http://www.findshoes.cn/order/exceptional';
+        url += '?shop_id=' + shop_id;
+        url += '&start_time=' + start_time;
+        url += '&end_time=' + end_time;
+        url += '&brand_id=' + brand_id;
+        url += '&supplier_id=' + supplier_id;
+        url += '&keyword=' + encodeURI(keyword);
+        url += '&status=44';
+
+        $.getPageContent({url : url});
+        $('#global-search').val(keyword);
+
+    }); 
+
+    $.showModal({
+        'selector' : '.order-address-update',
+        'formId' : 'address-form',
+    });
+
+    $.showModal({
+        'selector' : '.view-order-notes,.set-despatched'
+    });
+    
+    $("[data-toggle='tooltip']").tooltip({html: true});
+    $.etopConfirm({selector:'.order-canceled,.order-finished,.order-paid,.op-confirm'});
+
+    $('.load-content,.pagination a').off('click').on('click', function(e){
+        var url = $(this).attr('href');
+        keycode = e.which || e.keyCode;
+        if(e.ctrlKey)
+        { 
+            if (e.button == 0)
+            {
+                window.open(url);
+                return false;
+            }
+            
+        } 
+
+        $.getPageContent({url : url});
+        return false;
+    });
+
+
+
+    $('.set-error').click(function(){
+        var that = $(this);
+        $('#system-confirm-modal .modal-body').html('<div class="modal-body">\
+                <div class="form-group">\
+                    <label for="note">请输入错误原因</label>\
+                    <textarea class="form-control" rows="3" id="note" name="note"></textarea>\
+                 </div>\
+            </div>');
+        $('#system-confirm-modal').modal('show');
+        $('#system-confirm-modal').on('shown.bs.modal', function (e) {
+            $('#do-save').off('click').on('click', function(){
+                var note = $('#note').val();
+                if (note == '')
+                {
+                    alert('请输入错误原因');
+                    return false;
+                }
+
+                $.ajax({
+                    url : that.attr('href'),
+                    dataType : 'json',
+                    type : 'POST',
+                    data : {'action' : 'dosubmit', 'note' : note},
+                    success : function(data){
+                        if (data.error == 0)
+                        {
+                            $('#system-confirm-modal').modal('hide');
+                            //$('#system-confirm-modal .modal-body').html('');
+                            alert('设置成功');
+                            $.pageReload();
+                        }
+                        else
+                        {
+                            alert(data.msg);
+                        }
+                        
+                    },
+                    error : function() {
+                        alert('Update failed');
+                        return false;
+                    }
+                });
+            });
+        });
+
+        return false;
+    });
+
+    /*$('.set-despatched').click(function(){
+        var that = $(this);
+        $('#system-confirm-modal .modal-body').html('<div class="form-group">\
+                    <label for="shipping_code">Please enter logistics tracking number.</label>\
+                    <input type="text" class="form-control" id="shipping_code" name="shipping_code" value="" placeholder="Tracking number">\
+                 </div>');
+        $('#system-confirm-modal').modal('show');
+        $('#system-confirm-modal').on('shown.bs.modal', function (e) {
+            $('#do-save').off('click').on('click', function(){
+                var shipping_code = $('#shipping_code').val();
+                if (shipping_code == '')
+                {
+                    alert('请输入错误原因');
+                    return false;
+                }
+
+                $.ajax({
+                    url : that.attr('href'),
+                    dataType : 'json',
+                    type : 'POST',
+                    data : {'action' : 'dosubmit', 'shipping_code' : shipping_code},
+                    success : function(data){
+                        if (data.error == 0)
+                        {
+                            $('#system-confirm-modal').modal('hide');
+                            //$('#system-confirm-modal .modal-body').html('');
+                            alert('设置成功');
+                            $.pageReload();
+                        }
+                        else
+                        {
+                            alert(data.msg);
+                        }
+                        
+                    },
+                    error : function() {
+                        alert('Update failed');
+                        return false;
+                    }
+                });
+            });
+        });
+
+        return false;
+    });*/
+
+    $('#system-confirm-modal').on('hidden.bs.modal', function (e) {
+        $('#system-confirm-modal .modal-body').html('');
+    });
+
+})
+</script> 
+</div>
+</div>
+    <!-- /.main-content --> 
+</div>
+<!-- /.main-container-inner --> 
+<!-- Modal 弹出层 -->
+<div class="modal fade" id="etop-modal" tabindex="-1" role="dialog" aria-labelledby="etop-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="关闭"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- /.main-container -->
+<script src="./异常订单_files/ace-extra.min.js.下载"></script> 
+<script src="./异常订单_files/ace-elements.min.js.下载"></script> 
+<script src="./异常订单_files/ace.min.js.下载"></script>
+<script src="./异常订单_files/layer.js.下载"></script>
+<script type="text/javascript" src="./异常订单_files/jquery.form.js.下载"></script>
+<script type="text/javascript" src="./异常订单_files/jquery.ztree.all-3.5.min.js.下载"></script>
+<script type="text/javascript">
+    $('.menu a,.mylog').click(function(){
+        var url = $(this).attr('href');
+        $.getPageContent({url : url});
+        return false;
+    });
+    $.showModal({selector : '#changepwd', formId : 'changepwd-form',});
+    $(document).bind("keydown",function(e){ 
+        var e = e || event,
+        keycode = e.which || e.keyCode;
+        if(keycode == 116)
+        { 
+            if (e.ctrlKey) return true;
+            $.pageReload();
+            return false;
+        } 
+    });
+
+    $('.supplier-login').off('click').on('click', function(){
+        var url = $(this).attr('href');
+        $.ajax({
+            url : url + '?action=dosubmit',
+            dataType : 'json',
+            success : function(response){
+                if (response.error == 0)
+                {
+                    var data = response.data;
+                    if (data.url)
+                    {
+                        window.open(data.url);
+                    }
+                }
+                else
+                {
+                    layer.alert(response.msg, {icon: 5});
+                }
+                return false;
+            },
+            error : function() {
+                layer.alert('加载面页失败', {icon: 2});
+                return false;
+            }
+        });
+
+        return false;
+    });
+</script>
+
+
+</div><div class="datetimepicker datetimepicker-dropdown-bottom-right dropdown-menu" style="left: 468px; z-index: 1060;"><div class="datetimepicker-minutes" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="minute">16:00</span><span class="minute">16:05</span><span class="minute">16:10</span><span class="minute">16:15</span><span class="minute">16:20</span><span class="minute">16:25</span><span class="minute active">16:30</span><span class="minute disabled">16:35</span><span class="minute disabled">16:40</span><span class="minute disabled">16:45</span><span class="minute disabled">16:50</span><span class="minute disabled">16:55</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-hours" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="hour">0:00</span><span class="hour">1:00</span><span class="hour">2:00</span><span class="hour">3:00</span><span class="hour">4:00</span><span class="hour">5:00</span><span class="hour">6:00</span><span class="hour">7:00</span><span class="hour">8:00</span><span class="hour">9:00</span><span class="hour">10:00</span><span class="hour">11:00</span><span class="hour">12:00</span><span class="hour">13:00</span><span class="hour">14:00</span><span class="hour">15:00</span><span class="hour active">16:00</span><span class="hour disabled">17:00</span><span class="hour disabled">18:00</span><span class="hour disabled">19:00</span><span class="hour disabled">20:00</span><span class="hour disabled">21:00</span><span class="hour disabled">22:00</span><span class="hour disabled">23:00</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-days" style="display: block;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr><tr><th class="dow">Su</th><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th></tr></thead><tbody><tr><td class="day old">29</td><td class="day old">30</td><td class="day old">31</td><td class="day">1</td><td class="day">2</td><td class="day">3</td><td class="day">4</td></tr><tr><td class="day">5</td><td class="day">6</td><td class="day">7</td><td class="day">8</td><td class="day">9</td><td class="day">10</td><td class="day">11</td></tr><tr><td class="day">12</td><td class="day">13</td><td class="day">14</td><td class="day">15</td><td class="day">16</td><td class="day">17</td><td class="day">18</td></tr><tr><td class="day">19</td><td class="day">20</td><td class="day">21</td><td class="day">22</td><td class="day">23</td><td class="day">24</td><td class="day active">25</td></tr><tr><td class="day disabled">26</td><td class="day disabled">27</td><td class="day disabled">28</td><td class="day new disabled">1</td><td class="day new disabled">2</td><td class="day new disabled">3</td><td class="day new disabled">4</td></tr><tr><td class="day new disabled">5</td><td class="day new disabled">6</td><td class="day new disabled">7</td><td class="day new disabled">8</td><td class="day new disabled">9</td><td class="day new disabled">10</td><td class="day new disabled">11</td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-months" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="month disabled">Jan</span><span class="month active disabled">Feb</span><span class="month disabled">Mar</span><span class="month disabled">Apr</span><span class="month disabled">May</span><span class="month disabled">Jun</span><span class="month disabled">Jul</span><span class="month disabled">Aug</span><span class="month disabled">Sep</span><span class="month disabled">Oct</span><span class="month disabled">Nov</span><span class="month disabled">Dec</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2010-2019</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="year old">2009</span><span class="year">2010</span><span class="year">2011</span><span class="year">2012</span><span class="year">2013</span><span class="year">2014</span><span class="year">2015</span><span class="year">2016</span><span class="year active">2017</span><span class="year disabled">2018</span><span class="year disabled">2019</span><span class="year old disabled">2020</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div></div><div class="datetimepicker datetimepicker-dropdown-bottom-right dropdown-menu" style="left: 600px; z-index: 1070;"><div class="datetimepicker-minutes" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="minute">16:00</span><span class="minute">16:05</span><span class="minute">16:10</span><span class="minute">16:15</span><span class="minute">16:20</span><span class="minute">16:25</span><span class="minute active">16:30</span><span class="minute disabled">16:35</span><span class="minute disabled">16:40</span><span class="minute disabled">16:45</span><span class="minute disabled">16:50</span><span class="minute disabled">16:55</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-hours" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="hour">0:00</span><span class="hour">1:00</span><span class="hour">2:00</span><span class="hour">3:00</span><span class="hour">4:00</span><span class="hour">5:00</span><span class="hour">6:00</span><span class="hour">7:00</span><span class="hour">8:00</span><span class="hour">9:00</span><span class="hour">10:00</span><span class="hour">11:00</span><span class="hour">12:00</span><span class="hour">13:00</span><span class="hour">14:00</span><span class="hour">15:00</span><span class="hour active">16:00</span><span class="hour disabled">17:00</span><span class="hour disabled">18:00</span><span class="hour disabled">19:00</span><span class="hour disabled">20:00</span><span class="hour disabled">21:00</span><span class="hour disabled">22:00</span><span class="hour disabled">23:00</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-days" style="display: block;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr><tr><th class="dow">Su</th><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th></tr></thead><tbody><tr><td class="day old">29</td><td class="day old">30</td><td class="day old">31</td><td class="day">1</td><td class="day">2</td><td class="day">3</td><td class="day">4</td></tr><tr><td class="day">5</td><td class="day">6</td><td class="day">7</td><td class="day">8</td><td class="day">9</td><td class="day">10</td><td class="day">11</td></tr><tr><td class="day">12</td><td class="day">13</td><td class="day">14</td><td class="day">15</td><td class="day">16</td><td class="day">17</td><td class="day">18</td></tr><tr><td class="day">19</td><td class="day">20</td><td class="day">21</td><td class="day">22</td><td class="day">23</td><td class="day">24</td><td class="day active">25</td></tr><tr><td class="day disabled">26</td><td class="day disabled">27</td><td class="day disabled">28</td><td class="day new disabled">1</td><td class="day new disabled">2</td><td class="day new disabled">3</td><td class="day new disabled">4</td></tr><tr><td class="day new disabled">5</td><td class="day new disabled">6</td><td class="day new disabled">7</td><td class="day new disabled">8</td><td class="day new disabled">9</td><td class="day new disabled">10</td><td class="day new disabled">11</td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-months" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="month disabled">Jan</span><span class="month active disabled">Feb</span><span class="month disabled">Mar</span><span class="month disabled">Apr</span><span class="month disabled">May</span><span class="month disabled">Jun</span><span class="month disabled">Jul</span><span class="month disabled">Aug</span><span class="month disabled">Sep</span><span class="month disabled">Oct</span><span class="month disabled">Nov</span><span class="month disabled">Dec</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2010-2019</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="year old">2009</span><span class="year">2010</span><span class="year">2011</span><span class="year">2012</span><span class="year">2013</span><span class="year">2014</span><span class="year">2015</span><span class="year">2016</span><span class="year active">2017</span><span class="year disabled">2018</span><span class="year disabled">2019</span><span class="year old disabled">2020</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div></div><div class="datetimepicker datetimepicker-dropdown-bottom-right dropdown-menu" style="left: 468px; z-index: 1080;"><div class="datetimepicker-minutes" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="minute">16:00</span><span class="minute">16:05</span><span class="minute">16:10</span><span class="minute">16:15</span><span class="minute">16:20</span><span class="minute">16:25</span><span class="minute">16:30</span><span class="minute">16:35</span><span class="minute active">16:40</span><span class="minute disabled">16:45</span><span class="minute disabled">16:50</span><span class="minute disabled">16:55</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-hours" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="hour">0:00</span><span class="hour">1:00</span><span class="hour">2:00</span><span class="hour">3:00</span><span class="hour">4:00</span><span class="hour">5:00</span><span class="hour">6:00</span><span class="hour">7:00</span><span class="hour">8:00</span><span class="hour">9:00</span><span class="hour">10:00</span><span class="hour">11:00</span><span class="hour">12:00</span><span class="hour">13:00</span><span class="hour">14:00</span><span class="hour">15:00</span><span class="hour active">16:00</span><span class="hour disabled">17:00</span><span class="hour disabled">18:00</span><span class="hour disabled">19:00</span><span class="hour disabled">20:00</span><span class="hour disabled">21:00</span><span class="hour disabled">22:00</span><span class="hour disabled">23:00</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-days" style="display: block;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr><tr><th class="dow">Su</th><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th></tr></thead><tbody><tr><td class="day old">29</td><td class="day old">30</td><td class="day old">31</td><td class="day">1</td><td class="day">2</td><td class="day">3</td><td class="day">4</td></tr><tr><td class="day">5</td><td class="day">6</td><td class="day">7</td><td class="day">8</td><td class="day">9</td><td class="day">10</td><td class="day">11</td></tr><tr><td class="day">12</td><td class="day">13</td><td class="day">14</td><td class="day">15</td><td class="day">16</td><td class="day">17</td><td class="day">18</td></tr><tr><td class="day">19</td><td class="day">20</td><td class="day">21</td><td class="day">22</td><td class="day">23</td><td class="day">24</td><td class="day active">25</td></tr><tr><td class="day disabled">26</td><td class="day disabled">27</td><td class="day disabled">28</td><td class="day new disabled">1</td><td class="day new disabled">2</td><td class="day new disabled">3</td><td class="day new disabled">4</td></tr><tr><td class="day new disabled">5</td><td class="day new disabled">6</td><td class="day new disabled">7</td><td class="day new disabled">8</td><td class="day new disabled">9</td><td class="day new disabled">10</td><td class="day new disabled">11</td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-months" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="month disabled">Jan</span><span class="month active disabled">Feb</span><span class="month disabled">Mar</span><span class="month disabled">Apr</span><span class="month disabled">May</span><span class="month disabled">Jun</span><span class="month disabled">Jul</span><span class="month disabled">Aug</span><span class="month disabled">Sep</span><span class="month disabled">Oct</span><span class="month disabled">Nov</span><span class="month disabled">Dec</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2010-2019</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="year old">2009</span><span class="year">2010</span><span class="year">2011</span><span class="year">2012</span><span class="year">2013</span><span class="year">2014</span><span class="year">2015</span><span class="year">2016</span><span class="year active">2017</span><span class="year disabled">2018</span><span class="year disabled">2019</span><span class="year old disabled">2020</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div></div><div class="datetimepicker datetimepicker-dropdown-bottom-right dropdown-menu" style="left: 600px; z-index: 1090;"><div class="datetimepicker-minutes" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="minute">16:00</span><span class="minute">16:05</span><span class="minute">16:10</span><span class="minute">16:15</span><span class="minute">16:20</span><span class="minute">16:25</span><span class="minute">16:30</span><span class="minute">16:35</span><span class="minute active">16:40</span><span class="minute disabled">16:45</span><span class="minute disabled">16:50</span><span class="minute disabled">16:55</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-hours" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="hour">0:00</span><span class="hour">1:00</span><span class="hour">2:00</span><span class="hour">3:00</span><span class="hour">4:00</span><span class="hour">5:00</span><span class="hour">6:00</span><span class="hour">7:00</span><span class="hour">8:00</span><span class="hour">9:00</span><span class="hour">10:00</span><span class="hour">11:00</span><span class="hour">12:00</span><span class="hour">13:00</span><span class="hour">14:00</span><span class="hour">15:00</span><span class="hour active">16:00</span><span class="hour disabled">17:00</span><span class="hour disabled">18:00</span><span class="hour disabled">19:00</span><span class="hour disabled">20:00</span><span class="hour disabled">21:00</span><span class="hour disabled">22:00</span><span class="hour disabled">23:00</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-days" style="display: block;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr><tr><th class="dow">Su</th><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th></tr></thead><tbody><tr><td class="day old">29</td><td class="day old">30</td><td class="day old">31</td><td class="day">1</td><td class="day">2</td><td class="day">3</td><td class="day">4</td></tr><tr><td class="day">5</td><td class="day">6</td><td class="day">7</td><td class="day">8</td><td class="day">9</td><td class="day">10</td><td class="day">11</td></tr><tr><td class="day">12</td><td class="day">13</td><td class="day">14</td><td class="day">15</td><td class="day">16</td><td class="day">17</td><td class="day">18</td></tr><tr><td class="day">19</td><td class="day">20</td><td class="day">21</td><td class="day">22</td><td class="day">23</td><td class="day">24</td><td class="day active">25</td></tr><tr><td class="day disabled">26</td><td class="day disabled">27</td><td class="day disabled">28</td><td class="day new disabled">1</td><td class="day new disabled">2</td><td class="day new disabled">3</td><td class="day new disabled">4</td></tr><tr><td class="day new disabled">5</td><td class="day new disabled">6</td><td class="day new disabled">7</td><td class="day new disabled">8</td><td class="day new disabled">9</td><td class="day new disabled">10</td><td class="day new disabled">11</td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-months" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="month disabled">Jan</span><span class="month active disabled">Feb</span><span class="month disabled">Mar</span><span class="month disabled">Apr</span><span class="month disabled">May</span><span class="month disabled">Jun</span><span class="month disabled">Jul</span><span class="month disabled">Aug</span><span class="month disabled">Sep</span><span class="month disabled">Oct</span><span class="month disabled">Nov</span><span class="month disabled">Dec</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2010-2019</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="year old">2009</span><span class="year">2010</span><span class="year">2011</span><span class="year">2012</span><span class="year">2013</span><span class="year">2014</span><span class="year">2015</span><span class="year">2016</span><span class="year active">2017</span><span class="year disabled">2018</span><span class="year disabled">2019</span><span class="year old disabled">2020</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div></div><div class="datetimepicker datetimepicker-dropdown-bottom-right dropdown-menu" style="left: 468px; z-index: 1100;"><div class="datetimepicker-minutes" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="minute">16:00</span><span class="minute">16:05</span><span class="minute">16:10</span><span class="minute">16:15</span><span class="minute">16:20</span><span class="minute">16:25</span><span class="minute">16:30</span><span class="minute">16:35</span><span class="minute active">16:40</span><span class="minute disabled">16:45</span><span class="minute disabled">16:50</span><span class="minute disabled">16:55</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-hours" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="hour">0:00</span><span class="hour">1:00</span><span class="hour">2:00</span><span class="hour">3:00</span><span class="hour">4:00</span><span class="hour">5:00</span><span class="hour">6:00</span><span class="hour">7:00</span><span class="hour">8:00</span><span class="hour">9:00</span><span class="hour">10:00</span><span class="hour">11:00</span><span class="hour">12:00</span><span class="hour">13:00</span><span class="hour">14:00</span><span class="hour">15:00</span><span class="hour active">16:00</span><span class="hour disabled">17:00</span><span class="hour disabled">18:00</span><span class="hour disabled">19:00</span><span class="hour disabled">20:00</span><span class="hour disabled">21:00</span><span class="hour disabled">22:00</span><span class="hour disabled">23:00</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-days" style="display: block;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr><tr><th class="dow">Su</th><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th></tr></thead><tbody><tr><td class="day old">29</td><td class="day old">30</td><td class="day old">31</td><td class="day">1</td><td class="day">2</td><td class="day">3</td><td class="day">4</td></tr><tr><td class="day">5</td><td class="day">6</td><td class="day">7</td><td class="day">8</td><td class="day">9</td><td class="day">10</td><td class="day">11</td></tr><tr><td class="day">12</td><td class="day">13</td><td class="day">14</td><td class="day">15</td><td class="day">16</td><td class="day">17</td><td class="day">18</td></tr><tr><td class="day">19</td><td class="day">20</td><td class="day">21</td><td class="day">22</td><td class="day">23</td><td class="day">24</td><td class="day active">25</td></tr><tr><td class="day disabled">26</td><td class="day disabled">27</td><td class="day disabled">28</td><td class="day new disabled">1</td><td class="day new disabled">2</td><td class="day new disabled">3</td><td class="day new disabled">4</td></tr><tr><td class="day new disabled">5</td><td class="day new disabled">6</td><td class="day new disabled">7</td><td class="day new disabled">8</td><td class="day new disabled">9</td><td class="day new disabled">10</td><td class="day new disabled">11</td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-months" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="month disabled">Jan</span><span class="month active disabled">Feb</span><span class="month disabled">Mar</span><span class="month disabled">Apr</span><span class="month disabled">May</span><span class="month disabled">Jun</span><span class="month disabled">Jul</span><span class="month disabled">Aug</span><span class="month disabled">Sep</span><span class="month disabled">Oct</span><span class="month disabled">Nov</span><span class="month disabled">Dec</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2010-2019</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="year old">2009</span><span class="year">2010</span><span class="year">2011</span><span class="year">2012</span><span class="year">2013</span><span class="year">2014</span><span class="year">2015</span><span class="year">2016</span><span class="year active">2017</span><span class="year disabled">2018</span><span class="year disabled">2019</span><span class="year old disabled">2020</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div></div><div class="datetimepicker datetimepicker-dropdown-bottom-right dropdown-menu" style="left: 600px; z-index: 1110;"><div class="datetimepicker-minutes" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="minute">16:00</span><span class="minute">16:05</span><span class="minute">16:10</span><span class="minute">16:15</span><span class="minute">16:20</span><span class="minute">16:25</span><span class="minute">16:30</span><span class="minute">16:35</span><span class="minute active">16:40</span><span class="minute disabled">16:45</span><span class="minute disabled">16:50</span><span class="minute disabled">16:55</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-hours" style="display: none;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">25 February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="hour">0:00</span><span class="hour">1:00</span><span class="hour">2:00</span><span class="hour">3:00</span><span class="hour">4:00</span><span class="hour">5:00</span><span class="hour">6:00</span><span class="hour">7:00</span><span class="hour">8:00</span><span class="hour">9:00</span><span class="hour">10:00</span><span class="hour">11:00</span><span class="hour">12:00</span><span class="hour">13:00</span><span class="hour">14:00</span><span class="hour">15:00</span><span class="hour active">16:00</span><span class="hour disabled">17:00</span><span class="hour disabled">18:00</span><span class="hour disabled">19:00</span><span class="hour disabled">20:00</span><span class="hour disabled">21:00</span><span class="hour disabled">22:00</span><span class="hour disabled">23:00</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-days" style="display: block;"><table class=" table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">February 2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr><tr><th class="dow">Su</th><th class="dow">Mo</th><th class="dow">Tu</th><th class="dow">We</th><th class="dow">Th</th><th class="dow">Fr</th><th class="dow">Sa</th></tr></thead><tbody><tr><td class="day old">29</td><td class="day old">30</td><td class="day old">31</td><td class="day">1</td><td class="day">2</td><td class="day">3</td><td class="day">4</td></tr><tr><td class="day">5</td><td class="day">6</td><td class="day">7</td><td class="day">8</td><td class="day">9</td><td class="day">10</td><td class="day">11</td></tr><tr><td class="day">12</td><td class="day">13</td><td class="day">14</td><td class="day">15</td><td class="day">16</td><td class="day">17</td><td class="day">18</td></tr><tr><td class="day">19</td><td class="day">20</td><td class="day">21</td><td class="day">22</td><td class="day">23</td><td class="day">24</td><td class="day active">25</td></tr><tr><td class="day disabled">26</td><td class="day disabled">27</td><td class="day disabled">28</td><td class="day new disabled">1</td><td class="day new disabled">2</td><td class="day new disabled">3</td><td class="day new disabled">4</td></tr><tr><td class="day new disabled">5</td><td class="day new disabled">6</td><td class="day new disabled">7</td><td class="day new disabled">8</td><td class="day new disabled">9</td><td class="day new disabled">10</td><td class="day new disabled">11</td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-months" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2017</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="month disabled">Jan</span><span class="month active disabled">Feb</span><span class="month disabled">Mar</span><span class="month disabled">Apr</span><span class="month disabled">May</span><span class="month disabled">Jun</span><span class="month disabled">Jul</span><span class="month disabled">Aug</span><span class="month disabled">Sep</span><span class="month disabled">Oct</span><span class="month disabled">Nov</span><span class="month disabled">Dec</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div><div class="datetimepicker-years" style="display: none;"><table class="table-condensed"><thead><tr><th class="prev" style="visibility: visible;"><span class="glyphicon glyphicon-arrow-left"></span> </th><th colspan="5" class="switch">2010-2019</th><th class="next" style="visibility: hidden;"><span class="glyphicon glyphicon-arrow-right"></span> </th></tr></thead><tbody><tr><td colspan="7"><span class="year old">2009</span><span class="year">2010</span><span class="year">2011</span><span class="year">2012</span><span class="year">2013</span><span class="year">2014</span><span class="year">2015</span><span class="year">2016</span><span class="year active">2017</span><span class="year disabled">2018</span><span class="year disabled">2019</span><span class="year old disabled">2020</span></td></tr></tbody><tfoot><tr><th colspan="7" class="today" style="display: none;">Today</th></tr></tfoot></table></div></div></body></html>
