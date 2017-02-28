@@ -15,9 +15,26 @@ namespace QingFeng.Common
 
         public enum UserRole
         {
+            /// <summary>
+            /// 超级管理员
+            /// </summary>
             Administrator = 1,
+            /// <summary>
+            /// 员工
+            /// </summary>
+            Staff = 2,
+            /// <summary>
+            /// 分销商
+            /// </summary>
             StoreUser = 2,
-            AllUser = 3,
+            /// <summary>
+            /// 自营
+            /// </summary>
+            SelfSupport = 3,
+            /// <summary>
+            /// 所有人
+            /// </summary>
+            AllUser = 4,
         }
 
         public enum Category
@@ -87,6 +104,25 @@ namespace QingFeng.Common
             /// 已取消
             /// </summary>
             已取消 = 3,
+            /// <summary>
+            /// 无货标记
+            /// </summary>
+            无货标记 = 4,
+        }
+
+        public enum ShopTypeEnum
+        {
+            淘宝 = 1,
+            天猫 = 2,
+            天猫国际 = 3,
+            京东 = 4,
+            京东国际 = 5,
+            当当 = 6,
+            唯品会 = 7,
+            聚美优品 = 8,
+            一号店 = 9,
+            工商银行 = 10,
+            苏宁 = 11,
         }
     }
 }

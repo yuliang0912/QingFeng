@@ -20,13 +20,16 @@ namespace QingFeng.Common.Utilities
                 var constructor = typeof(T).GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, new Type[0], null);
                 if (constructor == null)
                 {
-                    throw new Exception($"类型“{typeof (T).FullName}”不存在无参构私有造函数。");
+                    throw new Exception(string.Format("类型“{0}”不存在无参构私有造函数。", typeof(T).FullName));
                 }
 
                 Instance = constructor.Invoke(null) as T;
             }
         }
 
-        public static T Instance => SingleHolder.Instance;
+        public static T Instance
+        {
+            get { return SingleHolder.Instance; }
+        }
     }
 }

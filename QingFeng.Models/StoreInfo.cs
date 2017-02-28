@@ -1,5 +1,6 @@
 ﻿using System;
 using QingFeng.Common.Dapper;
+using QingFeng.Common;
 
 namespace QingFeng.Models
 {
@@ -10,7 +11,11 @@ namespace QingFeng.Models
 
         public string StoreName { get; set; }
 
+        public AgentEnums.ShopTypeEnum ShopType { get; set; }
+
         public int MasterUserId { get; set; }
+
+        public string MasterUserName { get; set; }
 
         public string HomeUrl { get; set; }
 
