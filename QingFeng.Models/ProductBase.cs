@@ -18,20 +18,11 @@ namespace QingFeng.Models
 
         public string BaseName { get; set; }
 
-        public decimal OriginalPrice { get; set; }
-
-        public decimal ActualPrice { get; set; }
-
         public string BaseNo { get; set; }
-
-        public string ImgList { get; set; }
-
-        public string Intro { get; set; }
 
         public DateTime CreateDate { get; set; }
 
         public AgentEnums.Category CategoryId { get; set; }
-
 
         public int CreateUserId { get; set; }
 

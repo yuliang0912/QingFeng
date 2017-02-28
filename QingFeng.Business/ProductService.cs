@@ -33,14 +33,9 @@ namespace QingFeng.Business
             {
                 return 3;
             }
-            if (model.ColorId < 1)
-            {
-                return 4;
-            }
 
             model.BaseNo = baseInfo.BaseNo;
             model.BaseName = baseInfo.BaseName;
-            model.ImgList = string.Empty;
             model.CreateDate = DateTime.Now;
 
             return _productRepository.Insert(model) > 0 ? 1 : 0;
@@ -61,10 +56,6 @@ namespace QingFeng.Business
             {
                 return 4;
             }
-            if (model.ColorId < 1)
-            {
-                return 5;
-            }
             if (model.OriginalPrice < 0 || model.ActualPrice < 0)
             {
                 return 6;
@@ -75,57 +66,6 @@ namespace QingFeng.Business
                     new {model.ProductId})? 1: 0;
         }
 
-        public int CreateProduct(int baseId, List<int> colorList)
-        {
-            var colorSku = _skuItemRepository.GetListByIds(colorList.ToArray())
-                .Select(t => new KeyValuePair<int, string>(t.SkuId, t.SkuName));
-
-            if (!colorSku.Any())
-            {
-                return 0;
-            }
-
-            var baseInfo = _productBaseRepository.Get(new {baseId});
-            if (baseInfo == null)
-            {
-                return 0;
-            }
-
-            var productList = _productRepository.GetList(new {baseId}).ToList();
-
-            var addCount = 0;
-            foreach (var sku in colorSku.OrderBy(t => t.Key))
-            {
-                if (!productList.Exists(t => t.ColorId == sku.Key))
-                {
-                    var product = new Product()
-                    {
-                        BaseId = baseInfo.BaseId,
-                        BaseNo = baseInfo.BaseNo,
-                        BaseName = baseInfo.BaseName,
-                        OriginalPrice = baseInfo.OriginalPrice,
-                        ActualPrice = baseInfo.ActualPrice,
-                        ImgList = baseInfo.ImgList,
-                        ColorId = sku.Key,
-                        ProductName = baseInfo.BaseName + "-" + sku.Value,
-                        ProductNo = baseInfo.BaseNo + "-" + StringExtensions.FillZeroNumber(sku.Key, 3),
-                        CreateDate = DateTime.Now
-                    };
-
-                    if (_productRepository.Insert(product, true) > 0)
-                    {
-                        addCount++;
-                    }
-                    System.Threading.Thread.Sleep(50);
-                }
-                else
-                {
-                    _productRepository.Update(new {status = 0}, new {baseId, colorId = sku.Key});
-                }
-            }
-            return addCount;
-        }
-
         public bool UpdateProductBaseInfo(object model, object condition)
         {
             return _productBaseRepository.Update(model, condition);
@@ -133,8 +73,6 @@ namespace QingFeng.Business
 
         public bool CreateBaseProduct(ProductBase model)
         {
-            model.Intro = (model.Intro ?? string.Empty).CutString(600);
-            model.ImgList = model.ImgList ?? string.Empty;
             model.CreateDate = DateTime.Now;
             return _productBaseRepository.Insert(model) > 0;
         }
