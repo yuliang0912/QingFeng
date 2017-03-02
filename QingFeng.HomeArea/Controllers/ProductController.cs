@@ -137,31 +137,6 @@ namespace QingFeng.WebArea.Controllers
         }
 
         /// <summary>
-        /// 根据颜色自动创建子商品
-        /// </summary>
-        /// <param name="baseId"></param>
-        /// <param name="colorSkuIds"></param>
-        /// <returns></returns>
-        [HttpPost, AdminAuthorize(AgentEnums.UserRole.Administrator)]
-        public JsonResult CreateProduct(int baseId, string colorSkuIds)
-        {
-            var baseProduct = _productService.GetProductBase(baseId);
-
-            if (null == baseProduct)
-            {
-                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "未找到商品"});
-            }
-            if (string.IsNullOrWhiteSpace(colorSkuIds))
-            {
-                return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "颜色SKU必须指定一个"});
-            }
-            var colorList = colorSkuIds.Split(',').Select(int.Parse).ToList();
-            var result = _productService.CreateProduct(baseId, colorList);
-
-            return Json(new ApiResult<int>(result));
-        }
-
-        /// <summary>
         /// 获取产品库存
         /// </summary>
         /// <param name="baseNo"></param>

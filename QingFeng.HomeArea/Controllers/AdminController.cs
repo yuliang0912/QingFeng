@@ -298,8 +298,6 @@ namespace QingFeng.WebArea.Controllers
             var result = _productService.UpdateProductBaseInfo(new
             {
                 model.BaseName,
-                model.OriginalPrice,
-                model.ActualPrice,
                 categoryId = model.CategoryId.GetHashCode()
             }, new {baseProduct.BaseId});
 

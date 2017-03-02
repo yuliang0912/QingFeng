@@ -48,11 +48,27 @@
       <HintPath>..\packages\Dapper.1.50.1\lib\net45\Dapper.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="LinqToExcel, Version=1.11.0.0, Culture=neutral, PublicKeyToken=9c8ea65a58f03f1f, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqToExcel.1.11.0\lib\LinqToExcel.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp">
       <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Remotion, Version=1.13.52.2, Culture=neutral, PublicKeyToken=0669cf0452175907, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqToExcel.1.11.0\lib\Remotion.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Remotion.Data.Linq, Version=1.13.52.2, Culture=neutral, PublicKeyToken=0669cf0452175907, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqToExcel.1.11.0\lib\Remotion.Data.Linq.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Remotion.Interfaces, Version=1.13.52.2, Culture=neutral, PublicKeyToken=0669cf0452175907, processorArchitecture=MSIL">
+      <HintPath>..\packages\LinqToExcel.1.11.0\lib\Remotion.Interfaces.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions">
@@ -126,8 +142,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\404.html" />
-    <Content Include="Content\500.html" />
     <Content Include="Content\agent\css\ace.min.css" />
     <Content Include="Content\agent\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\agent\css\bootstrap.min.css" />
@@ -148,21 +162,6 @@
     <Content Include="Content\agent\js\jquery.ztree.all-3.5.min.js" />
     <Content Include="Content\agent\js\layer.js" />
     <Content Include="Content\agent\js\postcode.js" />
-    <Content Include="Content\agile_board.html" />
-    <Content Include="Content\article.html" />
-    <Content Include="Content\badges_labels.html" />
-    <Content Include="Content\basic_gallery.html" />
-    <Content Include="Content\blog.html" />
-    <Content Include="Content\blueimp.html" />
-    <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
-    <Content Include="Content\buttons.html" />
-    <Content Include="Content\calendar.html" />
-    <Content Include="Content\carousel.html" />
-    <Content Include="Content\chat_view.html" />
-    <Content Include="Content\clients.html" />
-    <Content Include="Content\code_editor.html" />
-    <Content Include="Content\contacts.html" />
     <Content Include="Content\css\animate.min.css" />
     <Content Include="Content\css\bootstrap.min.css" />
     <Content Include="Content\css\bootstrap.min14ed.css" />
@@ -234,40 +233,8 @@
     <Content Include="Content\css\plugins\webuploader\webuploader.css" />
     <Content Include="Content\css\style.css" />
     <Content Include="Content\css\style.min.css" />
-    <Content Include="Content\css_animation.html" />
-    <Content Include="Content\diff.html" />
-    <Content Include="Content\draggable_panels.html" />
-    <Content Include="Content\empty_page.html" />
-    <Content Include="Content\faq.html" />
-    <Content Include="Content\favicon.ico" />
-    <Content Include="Content\file_manager.html" />
-    <Content Include="Content\fontawesome.html" />
     <Content Include="Content\fonts\fontawesome-webfont93e3.svg" />
     <Content Include="Content\fonts\glyphicons-halflings-regular.svg" />
-    <Content Include="Content\form_advanced.html" />
-    <Content Include="Content\form_avatar.html" />
-    <Content Include="Content\form_basic.html" />
-    <Content Include="Content\form_builder.html" />
-    <Content Include="Content\form_editors.html" />
-    <Content Include="Content\form_file_upload.html" />
-    <Content Include="Content\form_markdown.html" />
-    <Content Include="Content\form_simditor.html" />
-    <Content Include="Content\form_validate.html" />
-    <Content Include="Content\form_webuploader.html" />
-    <Content Include="Content\form_wizard.html" />
-    <Content Include="Content\forum_main.html" />
-    <Content Include="Content\forum_post.html" />
-    <Content Include="Content\glyphicons.html" />
-    <Content Include="Content\graph_echarts.html" />
-    <Content Include="Content\graph_flot.html" />
-    <Content Include="Content\graph_metrics.html" />
-    <Content Include="Content\graph_morris.html" />
-    <Content Include="Content\graph_peity.html" />
-    <Content Include="Content\graph_rickshaw.html" />
-    <Content Include="Content\graph_sparkline.html" />
-    <Content Include="Content\grid_options.html" />
-    <Content Include="Content\iconfont.html" />
-    <Content Include="Content\icons.html" />
     <Content Include="Content\img\a1.jpg" />
     <Content Include="Content\img\a2.jpg" />
     <Content Include="Content\img\a3.jpg" />
@@ -309,20 +276,6 @@
     <Content Include="Content\img\success.png" />
     <Content Include="Content\img\user.png" />
     <Content Include="Content\img\wenku_logo.png" />
-    <Content Include="Content\index-2.html" />
-    <Content Include="Content\index.html" />
-    <Content Include="Content\index_3.html" />
-    <Content Include="Content\index_4.html" />
-    <Content Include="Content\index_v1.html" />
-    <Content Include="Content\index_v148b2.html" />
-    <Content Include="Content\index_v2.html" />
-    <Content Include="Content\index_v3.html" />
-    <Content Include="Content\index_v4.html" />
-    <Content Include="Content\index_v5.html" />
-    <Content Include="Content\invoice.html" />
-    <Content Include="Content\invoice_print.html" />
-    <Content Include="Content\javascript%3b.html" />
-    <Content Include="Content\jstree.html" />
     <Content Include="Content\js\bootstrap.min.js" />
     <Content Include="Content\js\contabs.js" />
     <Content Include="Content\js\contabs.min.js" />
@@ -456,8 +409,6 @@
     <Content Include="Content\js\plugins\webuploader\index.html" />
     <Content Include="Content\js\plugins\webuploader\webuploader.min.js" />
     <Content Include="Content\js\welcome.min.js" />
-    <Content Include="Content\layer.html" />
-    <Content Include="Content\layerdate.html" />
     <Content Include="Content\layer\layer.js" />
     <Content Include="Content\layer\skin\default\icon-ext.png" />
     <Content Include="Content\layer\skin\default\icon.png" />
@@ -465,53 +416,15 @@
     <Content Include="Content\layer\skin\default\loading-1.gif" />
     <Content Include="Content\layer\skin\default\loading-2.gif" />
     <Content Include="Content\layer\skin\layer.css" />
-    <Content Include="Content\layouts.html" />
-    <Content Include="Content\lockscreen.html" />
-    <Content Include="Content\login.html" />
-    <Content Include="Content\login_v2.html" />
-    <Content Include="Content\mailbox.html" />
-    <Content Include="Content\mail_compose.html" />
-    <Content Include="Content\mail_detail.html" />
-    <Content Include="Content\modal_window.html" />
-    <Content Include="Content\nestable_list.html" />
-    <Content Include="Content\notifications.html" />
-    <Content Include="Content\pin_board.html" />
     <Content Include="Content\plugins\fullavatareditor\scripts\fullAvatarEditor.js" />
     <Content Include="Content\plugins\fullavatareditor\scripts\jQuery.Cookie.js" />
     <Content Include="Content\plugins\fullavatareditor\scripts\swfobject.js" />
     <Content Include="Content\plugins\fullavatareditor\scripts\test.js" />
-    <Content Include="Content\plyr.html" />
-    <Content Include="Content\profile.html" />
-    <Content Include="Content\projects.html" />
-    <Content Include="Content\project_detail.html" />
-    <Content Include="Content\register.html" />
     <Content Include="Content\scripts\jquery.min.js" />
     <Content Include="Content\scripts\knockout-3.0.1.js" />
     <Content Include="Content\scripts\qingfeng.core.js" />
     <Content Include="Content\scripts\require.js" />
     <Content Include="Content\scripts\underscore-min.js" />
-    <Content Include="Content\search_results.html" />
-    <Content Include="Content\Site.css" />
-    <Content Include="Content\social_feed.html" />
-    <Content Include="Content\spinners.html" />
-    <Content Include="Content\suggest.html" />
-    <Content Include="Content\sweetalert.html" />
-    <Content Include="Content\table_basic.html" />
-    <Content Include="Content\table_bootstrap.html" />
-    <Content Include="Content\table_data_tables.html" />
-    <Content Include="Content\table_foo_table.html" />
-    <Content Include="Content\table_jqgrid.html" />
-    <Content Include="Content\tabs_panels.html" />
-    <Content Include="Content\teams_board.html" />
-    <Content Include="Content\timeline.html" />
-    <Content Include="Content\timeline_v2.html" />
-    <Content Include="Content\toastr_notifications.html" />
-    <Content Include="Content\tree_view.html" />
-    <Content Include="Content\tree_view_v2.html" />
-    <Content Include="Content\typography.html" />
-    <Content Include="Content\validation.html" />
-    <Content Include="Content\webim.html" />
-    <Content Include="Content\widgets.html" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Web.config">
@@ -525,6 +438,7 @@
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Fillter\AdminAuthorize.cs" />
     <Compile Include="FormsAuth\FormsAuthenticationService.cs" />
     <Compile Include="FormsAuth\FormsAuthenticationWrapper.cs" />
@@ -559,7 +473,6 @@
     <Content Include="Content\fonts\glyphicons-halflings-regulard41d.eot" />
     <Content Include="Content\js\plugins\layer\laydate-v1.1.zip" />
     <Content Include="Content\js\plugins\layer\laydate-v1.1\layDate官网.url" />
-    <Content Include="Content\GET" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Register.cshtml" />
@@ -580,6 +493,7 @@
     <Content Include="Content\agent\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Content\agent\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\agent\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Content\upload\test.csv" />
     <None Include="Properties\PublishProfiles\my_publish.pubxml" />
     <None Include="Properties\PublishProfiles\www.qingfeng.com.pubxml" />
     <Content Include="Views\Admin\CreateUser.cshtml" />
@@ -633,13 +547,13 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>51099</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:51099/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>True</UseCustomServer>
+          <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>http://www.qingfeng.com</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
