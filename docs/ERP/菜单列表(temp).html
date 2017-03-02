@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<!-- saved from url=(0032)http://www.findshoes.cn/menu/add -->
+<html lang="zh-CN"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+<title>Micro-ERP系统</title>
+
+<!-- Bootstrap -->
+<link href="./菜单列表(temp)_files/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="./菜单列表(temp)_files/font-awesome.min.css">
+
+<!--[if IE 7]>
+  <link rel="stylesheet" href="/static/css/font-awesome-ie7.min.css" />
+<![endif]-->
+<link rel="stylesheet" href="./菜单列表(temp)_files/ace.min.css">
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+<script type="text/javascript" src="./菜单列表(temp)_files/jquery.min.js.下载"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed --> 
+<script src="./菜单列表(temp)_files/bootstrap.min.js.下载"></script> 
+
+<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+<!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+<style>
+    .table-responsive table thead tr th{text-align: center;}
+    .table-responsive table tfoot td a.active{background-color: #337ab7;color:#fff;}
+</style>
+<script type="text/javascript">
+    jQuery.pageReload = function(){
+        var url = $('#page-content').attr('data-cureent-url');
+        $.getPageContent({url : url});
+        return false;
+    };
+    jQuery.getPageContent = function(params){
+        var url  = params.url;
+        if (!url)
+        {
+            url = window.location.href;
+        }
+
+        $.ajax({
+            url : url,
+            dataType : 'html',
+            success : function(data){
+                var back_url = $('#page-content').attr('data-cureent-url');
+                if (!back_url)
+                {
+                    back_url = window.location.href;
+                }
+
+                back_url != url && $('#page-content').attr('data-back-url', back_url);
+
+                $('#page-content').attr('data-cureent-url', url);
+                $('#page-content').html(data)
+                url = '';
+                return false;
+            },
+            error : function() {
+                layer.alert('加载面页失败', {icon: 2});
+                return false;
+            }
+        });
+
+        $('#global-search').val('');
+
+        return false;
+    };
+
+    jQuery.etopConfirm = function(options) {
+        var defaults = {
+            'selector' : '.delete-modal',
+        };
+        var settings = $.extend(defaults, options);
+        $(settings.selector).popover({
+            html : true,
+            title : '系统提示',
+            content : function(){ 
+                var html = '您确认要把【' + $(this).data('name') + '】设为'+$(this).data('title')+'吗？';
+                html += '<div class="popover-footer"><button type="button" class="btn btn-primary btn-sm">确定</button>&nbsp;&nbsp;&nbsp;';
+                html += '<button type="button" class="btn btn-default btn-sm">取消</button></div>'
+                return html;
+            }
+        }).on('shown.bs.popover', function () {
+            var that = $(this);
+            var url = that.attr('href');
+            $('.popover-footer button.btn-primary').off('click').on('click', function(){
+                $.getJSON(that.attr('href') + '?action=submit', function(response){
+                    if (response.error == 0)
+                    {
+                        $.pageReload();
+                    }
+                    else
+                    {
+                        layer.alert(response.msg, {icon: 5});
+                    }
+                });
+            });
+        }).click(function(){return false;});
+    };
+
+    jQuery.showModal = function(options){
+        var defaults = {
+            beforeSubmit : function(formData, jqForm, options){
+                var l = formData.length;
+                for (var i=0; i < l; i++) {
+                   if (!formData[i].value) {
+                        layer.msg('所有资料都不能为空的哦!亲', {icon: 2});
+                        return false;
+                    }
+                }
+                return true;
+            },
+            success : function(response, status){
+                if (response.error == 0)
+                {
+                    $('#etop-modal').modal('hide');
+                    $('#etop-modal').off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
+                        $.pageReload();
+                    });
+                }
+                else
+                {
+                    layer.alert(response.msg, {icon: 5});
+                }
+            },
+            //formId : 'form',
+            selector : '.edit-modal,.add-modal',
+        };
+        var settings = $.extend(defaults, options);
+        $(settings.selector).off('click').on('click', function(){
+            //load内容到指定元素中
+            $("#etop-modal").load($(this).attr("href"), function(){
+                $("#etop-modal").modal("show");
+                if (settings.formId)
+                {
+                    $('#etop-modal').off('shown.bs.modal').on('shown.bs.modal', function (e) {
+                        $("#" + settings.formId).ajaxForm({
+                            beforeSubmit : settings.beforeSubmit,
+                            success : settings.success,
+                            dataType : 'json',
+                            timeout : 10000,
+                            error : function(){layer.alert('发送请求失败', {icon: 5});}
+                        });
+                    });
+                }
+                //modal_opener = this;
+            });
+            return false;
+        });
+    }
+</script>
+
+<link rel="stylesheet" href="./菜单列表(temp)_files/layer.css" id="layui_layer_skinlayercss"></head>
+<body class="navbar-fixed">
+<div class="navbar navbar-default navbar-fixed-top" id="navbar">
+    <div class="navbar-container" id="navbar-container">
+        <div class="navbar-header pull-left"> <a href="http://www.findshoes.cn/menu/add#" class="navbar-brand"> <small> <i class="icon-leaf"></i> Micro-ERP系统 </small> </a><!-- /.brand --> 
+        </div>
+        <!-- /.navbar-header -->
+        <div class="navbar-header pull-right" role="navigation">
+            <ul class="nav ace-nav">
+                <li class="light-blue"> <a data-toggle="dropdown" href="http://www.findshoes.cn/menu/add#" class="dropdown-toggle"> <img class="nav-user-photo" src="./菜单列表(temp)_files/user.jpg"> <span class="user-info"> <small>欢迎光临,</small> tony </span> <i class="icon-caret-down"></i> </a>
+                    <ul class="user-menu pull-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close">
+                        <!-- 个人菜单 -->
+                        <li> <a href="http://www.findshoes.cn/logging/login" class="mylog"> <i class="icon-cog"></i> 登录日志 </a> </li>
+                        <li> <a href="http://www.findshoes.cn/logging/action" class="mylog"> <i class="icon-wrench"></i> 操作日志 </a> </li>
+                        <li> <a href="http://www.findshoes.cn/login/resetpassword" id="changepwd"> <i class="icon-user"></i> 修改密码 </a> </li>
+                        <li class="divider"></li>
+                        <li> <a href="http://www.findshoes.cn/login/logout"> <i class="icon-off"></i> 退出 </a> </li>
+                    </ul>
+                </li>
+            </ul>
+            <!-- /.ace-nav --> 
+        </div>
+        <!-- /.navbar-header --> 
+    </div>
+    <!-- /.container --> 
+</div>
+
+<div class="main-container" id="main-container">
+    <div class="main-container-inner"> <a class="menu-toggler" id="menu-toggler" href="http://www.findshoes.cn/menu/add#"> <span class="menu-text"></span> </a>
+        <div class="sidebar sidebar-fixed" id="sidebar">
+            <ul class="nav nav-list">
+                <li class="active"> <a href="http://www.findshoes.cn/"> <i class="icon-dashboard"></i> <span class="menu-text"> 控制台 </span> </a> </li>
+                                                        <li>
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-reorder"></i>
+                                                <span class="menu-text">商品中心</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/goods/index">商品列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/goods/add">添加商品<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                            <a href="http://www.findshoes.cn/price/index">代理商价格<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                        </li>
+                        </ul>
+                                            </li>
+                                    <li>
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-hdd"></i>
+                                                <span class="menu-text">库存中心</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/stock/search">库存查询<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        <a href="http://www.findshoes.cn/stock/import">导入库存<i class="icon-double-angle-right"></i></a>
+                                                                                                </li>
+                        </ul>
+                                            </li>
+                                    <li>
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-coffee"></i>
+                                                <span class="menu-text">订单中心</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/order/add">添加订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                        <a href="http://www.findshoes.cn/order/index">订单列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/exceptional">异常订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                    <a href="http://www.findshoes.cn/order/done">已完成订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/confirmed">待发货订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/assigned">进行中订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/unpay">待支付订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/order/canceled">已取消订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    <a href="http://www.findshoes.cn/order/export">订单导出<i class="icon-double-angle-right"></i></a>
+                                                                                                </li>
+                        </ul>
+                                            </li>
+                                    <li>
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-list-ol"></i>
+                                                <span class="menu-text">分类管理</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/category/index">分类列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                            </li>
+                        </ul>
+                                            </li>
+                                    <li>
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-cogs"></i>
+                                                <span class="menu-text">人员管理</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/staff/index">员工列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                <a href="http://www.findshoes.cn/agent/index">代理商列表<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                </li>
+                        </ul>
+                                            </li>
+                                    <li>
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-credit-card"></i>
+                                                <span class="menu-text">财务中心</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/payment/listing">支付订单<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                        <a href="http://www.findshoes.cn/payment/export">导出支付流水<i class="icon-double-angle-right"></i></a>
+                                                                                                </li>
+                        </ul>
+                                            </li>
+                                    <li class="open">
+                        <a hrfe="#" class="dropdown-toggle">
+                        <!-- 图标 -->
+                                                    <i class="icon-coffee"></i>
+                                                <span class="menu-text">系统配置</span> <b class="arrow icon-angle-down"></b> </a>
+                                                <ul class="submenu" style="display: block;">
+                            <li class="menu">
+                                                                                                            <a href="http://www.findshoes.cn/menu/index">菜单管理<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            <a href="http://www.findshoes.cn/region/index">地区管理<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                                                                                                                                                                                                                            <a href="http://www.findshoes.cn/shop/index">店铺管理<i class="icon-double-angle-right"></i></a>
+                                                                                                                                                <a href="http://www.findshoes.cn/config/index">配置管理<i class="icon-double-angle-right"></i></a>
+                                                                                                </li>
+                        </ul>
+                                            </li>
+                                        </ul>
+            <!-- /.nav-list -->
+            <div class="sidebar-collapse" id="sidebar-collapse"> <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i> </div>
+        </div>
+        <div class="main-content" id="main-content">
+            <div class="page-content" id="page-content" data-back-url="http://www.findshoes.cn/menu/add" data-cureent-url="http://www.findshoes.cn/menu/index"><link href="./菜单列表(temp)_files/zTreeStyle.css" rel="stylesheet">
+<div class="page-header">
+    <h1 class="form-inline"> 菜单列表 
+            <a href="http://www.findshoes.cn/menu/add" class="btn btn-info btn-sm pull-right add-modal"> <i class="glyphicon glyphicon-plus"></i> 添加菜单</a>
+        </h1>
+</div>
+<ul id="tree" class="ztree" style="width:500px; overflow:auto; margin:0px auto;"><li id="tree_1" class="level0" tabindex="0" hidefocus="true" treenode=""><span id="tree_1_switch" title="" class="button level0 switch roots_close" treenode_switch=""></span><a id="tree_1_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="系统配置"><span id="tree_1_ico" title="" treenode_ico="" class="button ico_close" style=""></span><span id="tree_1_span">系统配置</span></a></li><li id="tree_20" class="level0" tabindex="0" hidefocus="true" treenode=""><span id="tree_20_switch" title="" class="button level0 switch center_close" treenode_switch=""></span><a id="tree_20_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="人员管理"><span id="tree_20_ico" title="" treenode_ico="" class="button ico_close" style=""></span><span id="tree_20_span">人员管理</span></a></li><li id="tree_31" class="level0" tabindex="0" hidefocus="true" treenode=""><span id="tree_31_switch" title="" class="button level0 switch center_close" treenode_switch=""></span><a id="tree_31_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="商品中心"><span id="tree_31_ico" title="" treenode_ico="" class="button ico_close" style=""></span><span id="tree_31_span">商品中心</span></a></li><li id="tree_40" class="level0" tabindex="0" hidefocus="true" treenode=""><span id="tree_40_switch" title="" class="button level0 switch center_close" treenode_switch=""></span><a id="tree_40_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="分类管理"><span id="tree_40_ico" title="" treenode_ico="" class="button ico_close" style=""></span><span id="tree_40_span">分类管理</span></a></li><li id="tree_45" class="level0" tabindex="0" hidefocus="true" treenode=""><span id="tree_45_switch" title="" class="button level0 switch center_close" treenode_switch=""></span><a id="tree_45_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="库存中心"><span id="tree_45_ico" title="" treenode_ico="" class="button ico_close" style=""></span><span id="tree_45_span">库存中心</span></a></li><li id="tree_54" class="level0" tabindex="0" hidefocus="true" treenode=""><span id="tree_54_switch" title="" class="button level0 switch center_close" treenode_switch=""></span><a id="tree_54_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="订单中心"><span id="tree_54_ico" title="" treenode_ico="" class="button ico_close" style=""></span><span id="tree_54_span">订单中心</span></a></li><li id="tree_76" class="level0" tabindex="0" hidefocus="true" treenode=""><span id="tree_76_switch" title="" class="button level0 switch bottom_close" treenode_switch=""></span><a id="tree_76_a" class="level0" treenode_a="" onclick="" target="_blank" style="" title="财务中心"><span id="tree_76_ico" title="" treenode_ico="" class="button ico_close" style=""></span><span id="tree_76_span">财务中心</span></a></li></ul>
+
+ <!-- 弹出框 -->
+<div class="modal small fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true" name="0">×</button>
+            <h3 id="myModalLabel">删除信息</h3>
+        </div>
+        <div class="modal-body">
+            <p class="error-text"><i class="fa fa-warning modal-icon"></i></p><div id="deltitle">您确定要删除该菜单吗？</div><p></p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-default" data-dismiss="modal" aria-hidden="true" name="0">取消</button>
+            <button class="btn btn-danger gb" data-dismiss="modal" name="1">确定</button>
+        </div>
+        <!-- 获取ID 和 树ID-->
+        <div id="getid" style="display:none;"></div>
+        <div id="tree_id" style="display:none;"></div>
+      </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="./菜单列表(temp)_files/jquery.ztree.all-3.5.min.js.下载"></script>
+<script type="text/javascript">
+$(function() {  
+    var zNodes = [{"id":"100001","pId":0,"dependId":0,"relatedId":0,"dependName":"","relatedName":"","name":"\u7cfb\u7edf\u914d\u7f6e","children":[{"id":"201","pId":"100001","dependId":"198","relatedId":"0","name":"\u5220\u9664\u5730\u533a","dependName":"\u5730\u533a\u7ba1\u7406","relatedName":""},{"id":"200","pId":"100001","dependId":"198","relatedId":"0","name":"\u7f16\u8f91\u5730\u533a","dependName":"\u5730\u533a\u7ba1\u7406","relatedName":""},{"id":"199","pId":"100001","dependId":"198","relatedId":"0","name":"\u6dfb\u52a0\u5730\u533a","dependName":"\u5730\u533a\u7ba1\u7406","relatedName":""},{"id":"198","pId":"100001","dependId":"0","relatedId":"0","name":"\u5730\u533a\u7ba1\u7406","dependName":"","relatedName":""},{"id":"197","pId":"100001","dependId":"0","relatedId":"189","name":"\u641c\u7d22\u5206\u9500\u5546","dependName":"","relatedName":"\u5e97\u94fa\u7ba1\u7406"},{"id":"192","pId":"100001","dependId":"189","relatedId":"0","name":"\u5220\u9664\u5e97\u94fa","dependName":"\u5e97\u94fa\u7ba1\u7406","relatedName":""},{"id":"191","pId":"100001","dependId":"0","relatedId":"0","name":"\u7f16\u8f91\u5e97\u94fa","dependName":"","relatedName":""},{"id":"190","pId":"100001","dependId":"189","relatedId":"0","name":"\u6dfb\u52a0\u5e97\u94fa","dependName":"\u5e97\u94fa\u7ba1\u7406","relatedName":""},{"id":"189","pId":"100001","dependId":"0","relatedId":"0","name":"\u5e97\u94fa\u7ba1\u7406","dependName":"","relatedName":""},{"id":"175","pId":"100001","dependId":"158","relatedId":"0","name":"\u914d\u7f6e\u7cfb\u7edf\u6570\u636e","dependName":"\u914d\u7f6e\u7ba1\u7406","relatedName":""},{"id":"174","pId":"100001","dependId":"158","relatedId":"0","name":"\u7f16\u8f91\u7cfb\u7edf\u914d\u7f6e","dependName":"\u914d\u7f6e\u7ba1\u7406","relatedName":""},{"id":"173","pId":"100001","dependId":"158","relatedId":"0","name":"\u5220\u9664\u7cfb\u7edf\u914d\u7f6e","dependName":"\u914d\u7f6e\u7ba1\u7406","relatedName":""},{"id":"172","pId":"100001","dependId":"158","relatedId":"0","name":"\u6dfb\u52a0\u7cfb\u7edf\u914d\u7f6e","dependName":"\u914d\u7f6e\u7ba1\u7406","relatedName":""},{"id":"171","pId":"100001","dependId":"159","relatedId":"0","name":"\u5220\u9664\u83dc\u5355","dependName":"\u83dc\u5355\u7ba1\u7406","relatedName":""},{"id":"170","pId":"100001","dependId":"159","relatedId":"0","name":"\u7f16\u8f91\u83dc\u5355","dependName":"\u83dc\u5355\u7ba1\u7406","relatedName":""},{"id":"169","pId":"100001","dependId":"159","relatedId":"0","name":"\u6dfb\u52a0\u83dc\u5355","dependName":"\u83dc\u5355\u7ba1\u7406","relatedName":""},{"id":"159","pId":"100001","dependId":"0","relatedId":"0","name":"\u83dc\u5355\u7ba1\u7406","dependName":"","relatedName":""},{"id":"158","pId":"100001","dependId":"0","relatedId":"0","name":"\u914d\u7f6e\u7ba1\u7406","dependName":"","relatedName":""}]},{"id":"100002","pId":0,"dependId":0,"relatedId":0,"dependName":"","relatedName":"","name":"\u4eba\u5458\u7ba1\u7406","children":[{"id":"188","pId":"100002","dependId":"179","relatedId":"0","name":"\u5220\u9664\u4ee3\u7406\u5546","dependName":"\u4ee3\u7406\u5546\u5217\u8868","relatedName":""},{"id":"187","pId":"100002","dependId":"179","relatedId":"0","name":"\u91cd\u7f6e\u4ee3\u7406\u5546\u5bc6\u7801","dependName":"\u4ee3\u7406\u5546\u5217\u8868","relatedName":""},{"id":"186","pId":"100002","dependId":"179","relatedId":"0","name":"\u7f16\u8f91\u4ee3\u7406\u5546","dependName":"\u4ee3\u7406\u5546\u5217\u8868","relatedName":""},{"id":"185","pId":"100002","dependId":"179","relatedId":"0","name":"\u6dfb\u52a0\u4ee3\u7406\u5546","dependName":"\u4ee3\u7406\u5546\u5217\u8868","relatedName":""},{"id":"179","pId":"100002","dependId":"0","relatedId":"0","name":"\u4ee3\u7406\u5546\u5217\u8868","dependName":"","relatedName":""},{"id":"178","pId":"100002","dependId":"166","relatedId":"0","name":"\u5220\u9664\u5458\u5de5","dependName":"\u5458\u5de5\u5217\u8868","relatedName":""},{"id":"177","pId":"100002","dependId":"166","relatedId":"0","name":"\u7f16\u8f91\u5458\u5de5","dependName":"\u5458\u5de5\u5217\u8868","relatedName":""},{"id":"176","pId":"100002","dependId":"166","relatedId":"0","name":"\u6dfb\u52a0\u5458\u5de5","dependName":"\u5458\u5de5\u5217\u8868","relatedName":""},{"id":"167","pId":"100002","dependId":"166","relatedId":"0","name":"\u8bbe\u7f6e\u6743\u9650","dependName":"\u5458\u5de5\u5217\u8868","relatedName":""},{"id":"166","pId":"100002","dependId":"0","relatedId":"0","name":"\u5458\u5de5\u5217\u8868","dependName":"","relatedName":""}]},{"id":"100003","pId":0,"dependId":0,"relatedId":0,"dependName":"","relatedName":"","name":"\u5546\u54c1\u4e2d\u5fc3","children":[{"id":"205","pId":"100003","dependId":"202","relatedId":"0","name":"\u4ee3\u7406\u5546\u5bfc\u5165","dependName":"\u4ee3\u7406\u5546\u4ef7\u683c","relatedName":""},{"id":"204","pId":"100003","dependId":"202","relatedId":"0","name":"\u8bbe\u7f6e\u4ee3\u7406\u5546\u4ef7\u683c","dependName":"\u4ee3\u7406\u5546\u4ef7\u683c","relatedName":""},{"id":"202","pId":"100003","dependId":"0","relatedId":"0","name":"\u4ee3\u7406\u5546\u4ef7\u683c","dependName":"","relatedName":""},{"id":"184","pId":"100003","dependId":"180","relatedId":"0","name":"\u67e5\u770b\u5546\u54c1","dependName":"\u5546\u54c1\u5217\u8868","relatedName":""},{"id":"183","pId":"100003","dependId":"0","relatedId":"180","name":"\u5546\u54c1\u4e0a\u4e0b\u67b6","dependName":"","relatedName":"\u5546\u54c1\u5217\u8868"},{"id":"182","pId":"100003","dependId":"0","relatedId":"180","name":"\u7f16\u8f91\u5546\u54c1","dependName":"","relatedName":"\u5546\u54c1\u5217\u8868"},{"id":"181","pId":"100003","dependId":"0","relatedId":"180","name":"\u6dfb\u52a0\u5546\u54c1","dependName":"","relatedName":"\u5546\u54c1\u5217\u8868"},{"id":"180","pId":"100003","dependId":"0","relatedId":"0","name":"\u5546\u54c1\u5217\u8868","dependName":"","relatedName":""}]},{"id":"100004","pId":0,"dependId":0,"relatedId":0,"dependName":"","relatedName":"","name":"\u5206\u7c7b\u7ba1\u7406","children":[{"id":"196","pId":"100004","dependId":"193","relatedId":"0","name":"\u5220\u9664\u5206\u7c7b","dependName":"\u5206\u7c7b\u5217\u8868","relatedName":""},{"id":"195","pId":"100004","dependId":"193","relatedId":"0","name":"\u7f16\u8f91\u5206\u7c7b","dependName":"\u5206\u7c7b\u5217\u8868","relatedName":""},{"id":"194","pId":"100004","dependId":"193","relatedId":"0","name":"\u6dfb\u52a0\u5206\u7c7b","dependName":"\u5206\u7c7b\u5217\u8868","relatedName":""},{"id":"193","pId":"100004","dependId":"0","relatedId":"0","name":"\u5206\u7c7b\u5217\u8868","dependName":"","relatedName":""}]},{"id":"100005","pId":0,"dependId":0,"relatedId":0,"dependName":"","relatedName":"","name":"\u5e93\u5b58\u4e2d\u5fc3","children":[{"id":"226","pId":"100005","dependId":"0","relatedId":"225","name":"\u4e0b\u8f7d\u5e93\u5b58\u6a21\u677f","dependName":"","relatedName":"\u5bfc\u5165\u5e93\u5b58"},{"id":"225","pId":"100005","dependId":"0","relatedId":"0","name":"\u5bfc\u5165\u5e93\u5b58","dependName":"","relatedName":""},{"id":"212","pId":"100005","dependId":"203","relatedId":"0","name":"\u7f16\u8f91\u5e93\u5b58","dependName":"\u5e93\u5b58\u67e5\u8be2","relatedName":""},{"id":"209","pId":"100005","dependId":"0","relatedId":"203","name":"\u641c\u7d20\u5c3a\u7801","dependName":"","relatedName":"\u5e93\u5b58\u67e5\u8be2"},{"id":"208","pId":"100005","dependId":"0","relatedId":"203","name":"\u83b7\u53d6\u989c\u8272","dependName":"","relatedName":"\u5e93\u5b58\u67e5\u8be2"},{"id":"207","pId":"100005","dependId":"0","relatedId":"203","name":"\u641c\u7d20\u5546\u54c1","dependName":"","relatedName":"\u5e93\u5b58\u67e5\u8be2"},{"id":"206","pId":"100005","dependId":"203","relatedId":"0","name":"\u6dfb\u52a0\u5e93\u5b58","dependName":"\u5e93\u5b58\u67e5\u8be2","relatedName":""},{"id":"203","pId":"100005","dependId":"0","relatedId":"0","name":"\u5e93\u5b58\u67e5\u8be2","dependName":"","relatedName":""}]},{"id":"100006","pId":0,"dependId":0,"relatedId":0,"dependName":"","relatedName":"","name":"\u8ba2\u5355\u4e2d\u5fc3","children":[{"id":"238","pId":"100006","dependId":"214","relatedId":"0","name":"\u8ba2\u5355\u5bfc\u51fa","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"234","pId":"100006","dependId":"214","relatedId":"0","name":"\u8ba2\u5355\u5b8c\u6210","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"233","pId":"100006","dependId":"214","relatedId":"0","name":"\u53d1\u8d27","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"230","pId":"100006","dependId":"214","relatedId":"0","name":"\u53d6\u6d88\u8ba2\u5355","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"229","pId":"100006","dependId":"214","relatedId":"0","name":"\u5f02\u5e38\u53d6\u6d88","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"228","pId":"100006","dependId":"214","relatedId":"0","name":"\u65e0\u8d27\u6807\u8bb0","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"227","pId":"100006","dependId":"214","relatedId":"0","name":"\u4fee\u6539\u5730\u5740","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"224","pId":"100006","dependId":"214","relatedId":"0","name":"\u67e5\u770b\u8ba2\u5355","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"223","pId":"100006","dependId":"222","relatedId":"0","name":"\u6dfb\u52a0\u5907\u6ce8","dependName":"\u67e5\u770b\u5907\u6ce8","relatedName":""},{"id":"222","pId":"100006","dependId":"214","relatedId":"0","name":"\u67e5\u770b\u5907\u6ce8","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"221","pId":"100006","dependId":"214","relatedId":"0","name":"\u5df2\u53d6\u6d88\u8ba2\u5355","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"220","pId":"100006","dependId":"214","relatedId":"0","name":"\u5f85\u652f\u4ed8\u8ba2\u5355","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"219","pId":"100006","dependId":"214","relatedId":"0","name":"\u8fdb\u884c\u4e2d\u8ba2\u5355","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"218","pId":"100006","dependId":"214","relatedId":"0","name":"\u5f85\u53d1\u8d27\u8ba2\u5355","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"217","pId":"100006","dependId":"214","relatedId":"0","name":"\u5df2\u5b8c\u6210\u8ba2\u5355","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"216","pId":"100006","dependId":"214","relatedId":"0","name":"\u5f85\u5ba1\u6838\u8ba2\u5355","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"215","pId":"100006","dependId":"214","relatedId":"0","name":"\u5f02\u5e38\u8ba2\u5355","dependName":"\u8ba2\u5355\u5217\u8868","relatedName":""},{"id":"214","pId":"100006","dependId":"0","relatedId":"0","name":"\u8ba2\u5355\u5217\u8868","dependName":"","relatedName":""},{"id":"213","pId":"100006","dependId":"0","relatedId":"210","name":"\u83b7\u53d6\u5c3a\u7801\u4fe1\u606f","dependName":"","relatedName":"\u6dfb\u52a0\u8ba2\u5355"},{"id":"211","pId":"100006","dependId":"0","relatedId":"210","name":"\u5546\u54c1\u641c\u7d22","dependName":"","relatedName":"\u6dfb\u52a0\u8ba2\u5355"},{"id":"210","pId":"100006","dependId":"0","relatedId":"0","name":"\u6dfb\u52a0\u8ba2\u5355","dependName":"","relatedName":""}]},{"id":"100007","pId":0,"dependId":0,"relatedId":0,"dependName":"","relatedName":"","name":"\u8d22\u52a1\u4e2d\u5fc3","children":[{"id":"239","pId":"100007","dependId":"0","relatedId":"0","name":"\u5bfc\u51fa\u652f\u4ed8\u6d41\u6c34","dependName":"","relatedName":""},{"id":"237","pId":"100007","dependId":"235","relatedId":"0","name":"\u8d22\u52a1\u5ba1\u6838","dependName":"\u652f\u4ed8\u8ba2\u5355","relatedName":""},{"id":"236","pId":"100007","dependId":"235","relatedId":"0","name":"\u652f\u4ed8\u8be6\u60c5","dependName":"\u652f\u4ed8\u8ba2\u5355","relatedName":""},{"id":"235","pId":"100007","dependId":"0","relatedId":"0","name":"\u652f\u4ed8\u8ba2\u5355","dependName":"","relatedName":""}]}];
+    var setting = {
+            view: {
+                addHoverDom: addHoverDom,
+                removeHoverDom: removeHoverDom,
+                selectedMulti: false,
+                txtSelectedEnable: false
+            },
+            data: {
+                simpleData: {
+                    enable: true
+                }
+            },
+            callback: {
+                beforeClick: function(){return false;},
+            }
+        };
+
+        var newCount = 1;
+        function addHoverDom(treeId, treeNode) {
+            var sObj = $("#" + treeNode.tId + "_span");
+            $('#getid').html(treeNode.id);
+            $('#tree_id').html(treeNode.tId);
+            var tid = $('#tree_id').html();
+            // $('#'+tid+'_a').attr('tilte',treeNode.dependName+treeNode.relatedName);
+
+            if (treeNode.editNameFlag || sObj.next('.tree-btn').length>0) return;
+            var str = '';
+                        if(treeNode.pId > 100000)
+            {
+                str += '';
+            }
+            else{
+                str += '<span class="tree-btn tree_add" id="add-btn-' + treeNode.tId + '" title="添加下属部门"><a href="http://www.findshoes.cn/menu/add/'+ treeNode.id +'"><i class="glyphicon glyphicon-plus"></i></a></span>';
+            }
+                                    if (treeNode.id != 1 && treeNode.pId != null)
+            {
+                str += '<span class="tree-btn tree_edit" id="edit-btn-' + treeNode.tId + '" title="编辑部门"><a href="http://www.findshoes.cn/menu/edit/'+ treeNode.id + '"><i class="glyphicon glyphicon-pencil"></a></i></span>';
+            }
+            
+                        if (treeNode.id != 1 && (! treeNode.isParent || (treeNode.isParent && treeNode.children == 'undefined'))){
+                str += '<span class="tree-btn tree_delete" id="delete-btn-' + treeNode.tId + '" title="删除部门"><a href="#myModal" role="button" data-toggle="modal" ><i class="glyphicon glyphicon-remove"></a></i></span>';
+            }
+                        if (treeNode.dependId != 0){
+                str += '<span class="menu label label-success" id="depend-' + treeNode.tId + '" title="'+treeNode.dependName+'">'+treeNode.dependName+'</span>';
+            }
+
+            if (treeNode.relatedId != 0){
+                str += '<span class="menu label label-warning" id="related-' + treeNode.tId + '" title="'+treeNode.relatedName+'">'+treeNode.relatedName+'</span>';
+            }
+            
+            sObj.after(str);
+            $.showModal({
+            formId : 'menu-form',
+            beforeSubmit : function(formData, jqForm, options){
+                return true;
+            },
+            selector : '.tree_add a, .tree_edit a'
+            });
+        };
+        function removeHoverDom(treeId, treeNode) {
+            $("#add-btn-"+treeNode.tId).unbind().remove();
+            $("#edit-btn-"+treeNode.tId).unbind().remove();
+            $("#delete-btn-"+treeNode.tId).unbind().remove();
+            $("#depend-"+treeNode.tId).unbind().remove();
+            $("#related-"+treeNode.tId).unbind().remove();
+        };
+        
+        $(document).ready(function(){
+            $.fn.zTree.init($("#tree"), setting, zNodes);
+        });
+
+        $('.gb').click(function(){
+            var id = $('#getid').html();
+            var tree_id = $('#tree_id').html();
+            $.getJSON('http://www.findshoes.cn/menu/delete'+'/'+id, function(response){
+                if (response.error == 0 || response.error == '999')
+                {
+                    $('#'+tree_id+'_span').remove();
+                    $('#'+tree_id+'_ico').remove();
+                    $('#'+tree_id+'_a').remove();
+                    $('#'+tree_id+'_switch').remove();
+                }
+                else
+                {
+                    alert(response.msg);
+                    return false;
+                }
+                
+            });
+        })
+
+        $.showModal({
+            formId : 'menu-form',
+            beforeSubmit : function(formData, jqForm, options){
+                return true;
+            },
+            success : function(response, status){
+                if (response.error == 0)
+                {
+                    $('#etop-modal').modal('hide');
+                    $('#etop-modal').on('hidden.bs.modal', function (e) {
+                        $.pageReload();
+                    });
+                }
+                else
+                {
+                    if (response.error == 9)
+                    {
+                        var data = response.data;
+                        var msg = '';
+                        for(key in data)
+                        {
+                            msg += data[key] + '\r\n';
+                        }
+                        alert(msg);
+                    }
+                    else
+                    {
+                        alert(response.msg);
+                    }
+                }
+
+                return false;
+            },
+        });
+     
+});
+
+
+</script> 
+</div>
+</div>
+    <!-- /.main-content --> 
+</div>
+<!-- /.main-container-inner --> 
+<!-- Modal 弹出层 -->
+<div class="modal fade" id="etop-modal" tabindex="-1" role="dialog" aria-labelledby="etop-modal-label">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="关闭"><span aria-hidden="true">×</span></button>
+        <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+      </div>
+      <div class="modal-body">
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- /.main-container -->
+<script src="./菜单列表(temp)_files/ace-extra.min.js.下载"></script> 
+<script src="./菜单列表(temp)_files/ace-elements.min.js.下载"></script> 
+<script src="./菜单列表(temp)_files/ace.min.js.下载"></script>
+<script src="./菜单列表(temp)_files/layer.js.下载"></script>
+<script type="text/javascript" src="./菜单列表(temp)_files/jquery.form.js.下载"></script>
+<script type="text/javascript" src="./菜单列表(temp)_files/jquery.ztree.all-3.5.min.js.下载"></script>
+<script type="text/javascript">
+    $('.menu a,.mylog').click(function(){
+        var url = $(this).attr('href');
+        $.getPageContent({url : url});
+        return false;
+    });
+    $.showModal({selector : '#changepwd', formId : 'changepwd-form',});
+    $(document).bind("keydown",function(e){ 
+        var e = e || event,
+        keycode = e.which || e.keyCode;
+        if(keycode == 116)
+        { 
+            if (e.ctrlKey) return true;
+            $.pageReload();
+            return false;
+        } 
+    });
+
+    $('.supplier-login').off('click').on('click', function(){
+        var url = $(this).attr('href');
+        $.ajax({
+            url : url + '?action=dosubmit',
+            dataType : 'json',
+            success : function(response){
+                if (response.error == 0)
+                {
+                    var data = response.data;
+                    if (data.url)
+                    {
+                        window.open(data.url);
+                    }
+                }
+                else
+                {
+                    layer.alert(response.msg, {icon: 5});
+                }
+                return false;
+            },
+            error : function() {
+                layer.alert('加载面页失败', {icon: 2});
+                return false;
+            }
+        });
+
+        return false;
+    });
+</script>
+
+
+</div></body></html>
