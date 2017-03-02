@@ -52,9 +52,6 @@ namespace QingFeng.Business
                 t.BaseName = baseProductList[product.BaseId].BaseName;
                 t.ProductNo = product.ProductNo;
                 t.ProductName = product.ProductName;
-                t.ImgUrl = string.IsNullOrWhiteSpace(product.ImgList)
-                    ? string.Empty
-                    : product.ImgList.Split(',').First();
                 t.Price = product.ActualPrice;
                 t.OrderId = orderId;
                 t.OrderNo = orderMaster.OrderNo;
@@ -62,7 +59,7 @@ namespace QingFeng.Business
                 t.OrderStatus = AgentEnums.OrderDetailStatus.待发货;
                 t.Amount = t.Price*t.Quantity;
                 t.SkuName = skuList[t.SkuId];
-                remark += skuList[product.ColorId] + t.SkuName + "  ";
+                remark += t.SkuName + "  ";
             });
 
             orderMaster.StoreName = user.StoreList.FirstOrDefault(t => t.StoreId == orderMaster.StoreId)?.StoreName ??
