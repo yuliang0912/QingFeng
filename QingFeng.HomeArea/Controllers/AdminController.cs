@@ -178,7 +178,7 @@ namespace QingFeng.WebArea.Controllers
                 {
                     if (productStocks[item.BaseId].ContainsKey(item.ProductId))
                     {
-                        item.StockNum = productStocks[item.BaseId][item.ProductId].Sum(t => t.StockNum);
+                        //item.StockNum = productStocks[item.BaseId][item.ProductId].Sum(t => t.StockNum);
                     }
                 }
             }

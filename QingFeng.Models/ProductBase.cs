@@ -24,6 +24,10 @@ namespace QingFeng.Models
 
         public AgentEnums.Category CategoryId { get; set; }
 
+        public AgentEnums.Brand BrandId { get; set; }
+
+        public AgentEnums.Sex SexId { get; set; }
+
         public int CreateUserId { get; set; }
 
         public int Status { get; set; }

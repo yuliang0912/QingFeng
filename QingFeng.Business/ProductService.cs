@@ -62,7 +62,7 @@ namespace QingFeng.Business
             }
 
             return _productRepository.Update(
-                    new {model.ProductNo, model.ProductName, model.OriginalPrice, model.ActualPrice, model.ColorId},
+                    new {model.ProductNo, model.ProductName, model.OriginalPrice, model.ActualPrice},
                     new {model.ProductId})? 1: 0;
         }
 

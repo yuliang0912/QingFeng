@@ -41,6 +41,33 @@ namespace QingFeng.Common.Dapper
         }
 
 
+        /// <summary>Insert data into table.
+        /// </summary>
+        /// <param name="connection"></param>
+        /// <param name="data"></param>
+        /// <param name="table"></param>
+        /// <param name="transaction"></param>
+        /// <param name="commandTimeout"></param>
+        /// <returns></returns>
+        public static int ReplaceInsert(this IDbConnection connection, dynamic data, string table,
+            IDbTransaction transaction = null, int? commandTimeout = null, bool isReturnIncrementId = false)
+        {
+            var obj = data as object;
+            var properties = GetProperties(obj);
+            var columns = string.Join(",", properties);
+            var values = string.Join(",", properties.Select(p => "@" + p));
+            var sql = $"replace into {table} ({columns}) values ({values});";
+
+            if (isReturnIncrementId)
+            {
+                sql += "SELECT LAST_INSERT_ID()";
+                return connection.ExecuteScalar<int>(sql, obj, transaction, commandTimeout);
+            }
+
+            return connection.Execute(sql, obj, transaction, commandTimeout);
+        }
+
+
         /// <summary>Updata data for table with a specified condition.
         /// </summary>
         /// <param name="connection"></param>

@@ -46,5 +46,17 @@ namespace QingFeng.DataAccessLayer.Repository
             }
             return count > 0;
         }
+
+        public bool BatchInsert(List<ProductStock> list)
+        {
+            using (var connection = GetWriteConnection)
+            {
+                foreach (var item in list)
+                {
+                    connection.Insert(item, TableName);
+                }
+            }
+            return true;
+        }
     }
 }

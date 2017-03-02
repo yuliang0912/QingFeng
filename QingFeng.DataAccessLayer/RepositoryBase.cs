@@ -89,6 +89,20 @@ namespace QingFeng.DataAccessLayer
         }
 
         /// <summary>
+        /// 新增数据
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="isReturnIncrementId"></param>
+        /// <returns></returns>
+        public virtual int ReplaceInsert(object model, bool isReturnIncrementId = false)
+        {
+            using (var connection = GetWriteConnection)
+            {
+                return connection.ReplaceInsert(model, _tableName, isReturnIncrementId: isReturnIncrementId);
+            }
+        }
+
+        /// <summary>
         /// 更新数据
         /// </summary>
         /// <param name="model"></param>

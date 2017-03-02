@@ -37,19 +37,50 @@ namespace QingFeng.Common
             AllUser = 4,
         }
 
+        /// <summary>
+        /// 分类
+        /// </summary>
         public enum Category
         {
-            /// <summary>
-            /// 男士
-            /// </summary>
-            男鞋 = 1,
-
-            /// <summary>
-            /// 女士
-            /// </summary>
-            女鞋 = 2
+            休闲鞋 = 1,
+            正装鞋 = 2,
+            凉鞋 = 3,
+            户外鞋 = 4,
+            帆布鞋 = 5,
+            高尔夫鞋 = 6,
+            拖鞋 = 7,
+            长靴 = 8,
+            中短靴 = 9,
+            高跟鞋 = 10,
+            平底鞋 = 11,
+            运动鞋 = 12,
+            童鞋 = 13,
+            帆船鞋 = 14,
+            登山鞋 = 14,
+            户外运动鞋 = 16
         }
 
+        /// <summary>
+        /// 性别
+        /// </summary>
+        public enum Sex
+        {
+            男 = 1,
+            女 = 2,
+            通用 = 3
+        }
+
+        /// <summary>
+        /// 品牌
+        /// </summary>
+        public enum Brand
+        {
+            Locaste = 1
+        }
+
+        /// <summary>
+        /// 主订单状态
+        /// </summary>
         public enum MasterOrderStatus
         {
             /// <summary>
@@ -88,6 +119,9 @@ namespace QingFeng.Common
             已完成 = 7
         }
 
+        /// <summary>
+        /// 子订单状态
+        /// </summary>
         public enum OrderDetailStatus
         {
             /// <summary>

@@ -142,6 +142,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="ContentV2\css\ace.min.css" />
+    <Content Include="ContentV2\css\bootstrap.min.css" />
+    <Content Include="ContentV2\css\font-awesome-ie7.min.css" />
+    <Content Include="ContentV2\css\font-awesome.min.css" />
+    <Content Include="ContentV2\css\layer.css" />
+    <Content Include="ContentV2\css\zTreeStyle.css" />
+    <Content Include="ContentV2\fonts\fontawesome-webfont93e3.svg" />
+    <Content Include="ContentV2\fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="ContentV2\images\user.jpg" />
     <Content Include="Content\agent\css\ace.min.css" />
     <Content Include="Content\agent\css\bootstrap-datetimepicker.min.css" />
     <Content Include="Content\agent\css\bootstrap.min.css" />
@@ -436,6 +445,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\AgentController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\GoodsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\TestController.cs" />
@@ -494,6 +504,25 @@
     <Content Include="Content\agent\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Content\agent\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Content\upload\test.csv" />
+    <Content Include="ContentV2\fonts\fontawesome-webfont.woff" />
+    <Content Include="ContentV2\fonts\fontawesome-webfont93e3.eot" />
+    <Content Include="ContentV2\fonts\fontawesome-webfont93e3.ttf" />
+    <Content Include="ContentV2\fonts\fontawesome-webfont93e3.woff" />
+    <Content Include="ContentV2\fonts\fontawesome-webfont93e3.woff2" />
+    <Content Include="ContentV2\fonts\fontawesome-webfontd41d.eot" />
+    <Content Include="ContentV2\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="ContentV2\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="ContentV2\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="ContentV2\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="ContentV2\fonts\glyphicons-halflings-regulard41d.eot" />
+    <Content Include="ContentV2\js\ace-elements.min.js" />
+    <Content Include="ContentV2\js\ace-extra.min.js" />
+    <Content Include="ContentV2\js\ace.min.js" />
+    <Content Include="ContentV2\js\bootstrap.min.js" />
+    <Content Include="ContentV2\js\jquery.form.js" />
+    <Content Include="ContentV2\js\jquery.min.js" />
+    <Content Include="ContentV2\js\jquery.ztree.all-3.5.min.js" />
+    <Content Include="ContentV2\js\layer.js" />
     <None Include="Properties\PublishProfiles\my_publish.pubxml" />
     <None Include="Properties\PublishProfiles\www.qingfeng.com.pubxml" />
     <Content Include="Views\Admin\CreateUser.cshtml" />
@@ -514,6 +543,9 @@
     <Content Include="Views\Admin\OrderDetail.cshtml" />
     <Content Include="Views\Admin\ProductStocks.cshtml" />
     <Content Include="Views\Admin\ProductStockDetails.cshtml" />
+    <Content Include="Views\Shared\_LayoutAgentV2.cshtml" />
+    <Content Include="Views\Goods\Index.cshtml" />
+    <Content Include="Views\Goods\Add.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -547,13 +579,13 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>51099</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:51099/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
-          <UseCustomServer>False</UseCustomServer>
+          <UseCustomServer>True</UseCustomServer>
           <CustomServerUrl>http://www.qingfeng.com</CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>

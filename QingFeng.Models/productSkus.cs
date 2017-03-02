@@ -1,4 +1,6 @@
-﻿namespace QingFeng.Models
+﻿using System;
+
+namespace QingFeng.Models
 {
     public class ProductSkus
     {
@@ -9,5 +11,9 @@
         public int BaseId { get; set; }
 
         public int ProductId { get; set; }
+
+        public int Status { get; set; }
+
+        public DateTime UpdateDate { get; set; }
     }
 }

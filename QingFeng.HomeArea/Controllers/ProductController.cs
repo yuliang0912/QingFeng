@@ -48,20 +48,20 @@ namespace QingFeng.WebArea.Controllers
         {
             var baseProduct = _productService.GetProductBase(baseId);
 
-            if (baseProduct == null)
-            {
-                return Content("未找到有效产品");
-            }
+            //if (baseProduct == null)
+            //{
+            //    return Content("未找到有效产品");
+            //}
 
-            baseProduct.SubProduct = _productService.GetProductByBaseId(baseId).ToList();
+            //baseProduct.SubProduct = _productService.GetProductByBaseId(baseId).ToList();
 
-            var skuIds = baseProduct.SubProduct.Select(t => t.ColorId).ToList();
+            //var skuIds = baseProduct.SubProduct.Select(t => t.ColorId).ToList();
 
-            var skuList = _skuItemService.GetList(AgentEnums.SkuType.Color);
+            //var skuList = _skuItemService.GetList(AgentEnums.SkuType.Color);
 
-            ViewBag.ColorSku = skuList.Where(t => t.Status == 0 && !skuIds.Contains(t.SkuId))
-                .Select(t => new KeyValuePair<int, string>(t.SkuId, t.SkuName))
-                .ToList();
+            //ViewBag.ColorSku = skuList.Where(t => t.Status == 0 && !skuIds.Contains(t.SkuId))
+            //    .Select(t => new KeyValuePair<int, string>(t.SkuId, t.SkuName))
+            //    .ToList();
 
             return View(baseProduct);
         }

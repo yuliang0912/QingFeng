@@ -32,18 +32,6 @@ namespace QingFeng.Models
 
         public decimal ActualPrice { get; set; }
 
-        public int ColorId { get; set; }
-
-        /// <summary>
-        /// 库存(所有尺码的)
-        /// </summary>
-        public int StockNum { get; set; }
-
-        /// <summary>
-        /// 销量
-        /// </summary>
-        public int SalesVolume { get; set; }
-
         public DateTime CreateDate { get; set; }
 
         /// <summary>
