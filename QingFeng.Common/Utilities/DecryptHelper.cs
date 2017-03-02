@@ -143,5 +143,34 @@ namespace QingFeng.Common.Utilities
             Encoding enc = Activator.CreateInstance<TEncoding>();
             return enc.GetBytes(str);
         }
+
+        /// <summary>
+        /// 不可逆加密
+        /// </summary>
+        /// <typeparam name="Algorithm">加密HASH算法</typeparam>
+        /// <param name="str">字符编码</param>
+        /// <returns></returns>
+        public static string EncryptOneWay<Algorithm>(this string str)
+            where Algorithm : HashAlgorithm
+        {
+            return str.EncryptOneWay<Algorithm, UTF8Encoding>();
+        }
+
+        /// <summary>
+        /// 不可逆加密
+        /// </summary>
+        /// <typeparam name="Algorithm">加密HASH算法</typeparam>
+        /// <typeparam name="StringEncoding">字符编码</typeparam>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static string EncryptOneWay<Algorithm, StringEncoding>(this string str)
+            where Algorithm : HashAlgorithm
+            where StringEncoding : Encoding
+        {
+            Encoding enco = Activator.CreateInstance<StringEncoding>();
+            byte[] inputBye = enco.GetBytes(str);
+            byte[] bytes = Activator.CreateInstance<Algorithm>().ComputeHash(inputBye);
+            return System.BitConverter.ToString(bytes).Replace("-", ""); ;
+        }
     }
 }
