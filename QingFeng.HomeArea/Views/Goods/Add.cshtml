@@ -1,0 +1,549 @@
+﻿
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+}
+@using QingFeng.Common
+@model List<QingFeng.Models.SkuItem>
+
+<style type="text/css">
+    #goods .inner-goods-content {
+        border: 1px solid #e3e3e3;
+        border-radius: 1px;
+    }
+
+    .block-title {
+        font-size: 14px;
+    }
+
+    .red-star {
+        color: red;
+    }
+
+    .gray-words {
+        color: gray;
+        font-size: 10px;
+    }
+
+    .main-controller {
+        background-color: #f5f5f5;
+        border: 1px solid #e3e3e3;
+        border-radius: 4px;
+    }
+
+    .float-body .form-group {
+        width: 50%;
+        float: left;
+    }
+
+    .botton-group {
+        margin: 8px 0px;
+        text-align: center;
+    }
+
+    .clear-fix {
+        clear: both;
+    }
+
+    .color_input, .price_input {
+        width: 100%;
+    }
+</style>
+<div class="page-header">
+    <h1 class="form-inline">
+        商品基本信息
+        <a href="http://www.qingfeng.com/goods/index" data-url="http://www.qingfeng.com/goods/index" class="btn btn-info btn-sm pull-right back-to-list"> <i class="glyphicon glyphicon-circle-arrow-left"></i> 返回列表</a>
+    </h1>
+</div>
+
+<!-- /.page-header -->
+<form class="form-horizontal" role="form" id="goods-form" method="post" action="http://www.qingfeng.com/goods/add">
+    <div class="page-content" id="page-content">
+        <div class="base-info">
+            <p class="block-title"><span class="red-star">*</span> 基础信息：<span class="gray-words">为保证物品的正确性，请认真填写！</span></p>
+            <div class="main-controller">
+                <div class="modal-body float-body">
+                    <div id="base-content">
+                        <div class="form-group">
+                            <label for="goods_name" class="col-sm-3 control-label"><span class="red-star">*</span>商品名称</label>
+                            <div class="col-sm-6">
+                                <input type="text" required="" class="form-control" id="goods_name" name="goods_name" value="" placeholder="请输入商品名称">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="goods_sn" class="col-sm-3 control-label"><span class="red-star">*</span>商品货号</label>
+                            <div class="col-sm-6">
+                                <input type="text" required="" class="form-control" id="goods_sn" name="goods_sn" value="" placeholder="请输入商品货号">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="brand_id" class="col-sm-3 control-label"><span class="red-star">*</span>所属品牌</label>
+                            <div class="col-sm-6">
+                                <select name="brand_id" id="brand_id" class="form-control">
+                                    <option value="">请选择品牌</option>
+                                    @foreach (var item in Enum.GetValues(typeof(AgentEnums.Brand)))
+                                    {
+                                        <option value="@item.GetHashCode()">@item.ToString()</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="category_id" class="col-sm-3 control-label"><span class="red-star">*</span>所属分类</label>
+                            <div class="col-sm-6">
+                                <select name="category_id" id="category_id" class="form-control">
+                                    <option value="">请选择商品分类</option>
+                                    <optgroup label="鞋">
+                                        @foreach (var item in Enum.GetValues(typeof(AgentEnums.Category)))
+                                        {
+                                            <option value="@item.GetHashCode()" data-tab="0">@item.ToString()</option>
+                                        }
+                                    </optgroup>
+                                </select>
+                                <input type="hidden" id="category_tab" name="category_tab" value="">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender" class="col-sm-3 control-label"><span class="red-star">*</span>性别</label>
+                            <div class="col-sm-6">
+                                <select name="gender" id="gender" class="form-control">
+                                    <option value="">请选择性别</option>
+                                    @foreach (var item in Enum.GetValues(typeof(AgentEnums.Sex)))
+                                    {
+                                        <option value="@item.GetHashCode()">@item.ToString()</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clear-fix"></div>
+                </div>
+            </div>
+        </div>
+        <!-- /.base-info -->
+        <br>
+        <div id="goods">
+            <p class="block-title" align="left"><span class="red-star">*</span> 商品规格</p>
+            <div class="page-content inner-goods-content" style="padding:10px 14px 8px;">
+                <div class="color-info">
+                    <p class="block-title" align="left">配置颜色：<span class="gray-words">为保证物品的正确性，请选择最接近的颜色！</span></p>
+                    <div class="main-controller">
+                        <div class="modal-body" id="color-group">
+                            <div class="form-group">
+                                <!-- checkbox中value里面的数字必须要下方ID中-后面的数值对应 -->
+                                <label class="col-sm-1 control-label"><span class="red-star">*</span><input type="checkbox" class="color-checkbox" value="1234"></label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="color_input" required="" id="color-1234" name="goods_color[]" value="" placeholder="请填写商品颜色">
+                                </div>
+                                <label class="col-sm-1 control-label"><span class="red-star">*</span>价格</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="price_input" required="" pattern="^[0-9]+|[0-9]+\.[0-9]+$" title="请填写整数" id="price-1234" name="goods_price[]" value="" placeholder="请填写价格">
+                                </div>
+                                <label class="col-sm-1 control-label"><span class="red-star">*</span>最低售价</label>
+                                <div class="col-sm-3">
+                                    <input type="text" class="cost_input" required="" pattern="^[0-9]+|[0-9]+\.[0-9]+$" title="请填写整数" id="cost-1234" name="goods_cost[]" value="" placeholder="请填写最低售价">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.color-info -->
+                <br>
+                <div class="size-info" style="display:block;">
+
+                    <p class="block-title" align="left">配置尺码：<span class="gray-words">为保证物品的正确性，请认真选择相应的尺码信息！</span></p>
+                    <hr style="margin-top:5px;margin-bottom:5px;">
+                    <div class="main-controller" id="size_content">
+                        <!-- 加载尺码内容 -->
+                        <div class="modal-body">
+                            <!-- 选中统计 用于全选按钮 -->
+                            @foreach (var item in Model)
+                            {
+                                <span class="col-md-2">
+                                    <input type="checkbox" class="size_checkbox" name="goods_size[@(item.SkuId)]" id="size-@(item.SkuId)" value="@item.SkuName" data-sid="@item.SkuId" data-name="@item.SkuName">
+                                    <lable for="size-@(item.SkuId)">@(item.SkuName)码</lable>
+                                </span>
+                            }
+                            <span class="col-md-2"><input type="checkbox" id="checkAll"><lable for="checkAll"> 全选 </lable></span>
+                            <div class="clear-fix"></div>
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                        $('#size_content').delegate('.size_checkbox', 'click', function () {
+                            var value_id = $(this).val();
+                            //颜色选中结果，颜色和价格(二维数组)
+                            var result = color_chekcbox_status();
+                            //选中的尺码数
+                            var size = size_checkbox();
+
+                            update_table(result, size);
+                        });
+
+                        /**
+                         * 遍历选中的尺码
+                        **/
+                        function size_checkbox() {
+                            var arr = [];
+                            $("input[class*=size_checkbox]").each(function (a, b) {
+                                var sub = [];
+                                if (b.checked) {
+                                    sub.push($(b).val());//0尺码
+                                    sub.push($(b).data('sid'));
+                                    arr.push(sub);
+                                }
+                            });
+                            return arr;
+                        }
+                    </script>
+                </div>
+                <!-- /.size-info -->
+                <br>
+                <div class="sales-info">
+                    <p class="block-title" align="left">商品销售规格：<span class="gray-words">该类目下：颜色分类、尺码，请全选或全不选，如果只选一部分则无法保存对应的价格和库存</span></p>
+                    <div class="main-controller">
+                        <div class="modal-body">
+                            <table class="table table-striped table-bordered table-hover">
+                                <thead>
+                                    <tr>
+                                        <th class="center">颜色</th>
+                                        <th class="center" id="size-th">尺码</th>
+                                        <th class="center">价格</th>
+                                        <th class="center">最低售价</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="sales">
+                                    <!-- 表格内容 -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.sales-info -->
+                <br>
+            </div>
+        </div>
+        <!-- /#goods -->
+        <div class="botton-group">
+            <input type="hidden" name="action" value="dosubmit">
+            <a type="button" class="btn btn-default" href="http://www.qingfeng.com/">后退</a>
+            <button type="button" class="btn btn-primary">提交</button>
+        </div>
+        <!-- /.botton-group -->
+    </div>
+
+</form>
+<!-- /#goods-form -->
+<script type="text/javascript">
+    /**
+     * 选中颜色checkbox，验证input
+    **/
+    $('#color-group').delegate('.color-checkbox', 'click', function () {
+        //value值
+        var value = $(this).val();
+        //颜色
+        var color = $('#color-' + value).val();
+        //价格
+        var price = $('#price-' + value).val();
+        //最低售价
+        var cost = $('#cost-' + value).val();
+
+        if (this.checked) {
+            if (color == '' || color == undefined || color == null) {
+                layer.msg('请先填写颜色！', { icon: 2 });
+                $(this).prop("checked", false);
+                return false;
+            }
+            if (price == '' || price == undefined || price == null) {
+                layer.msg('请先填写价格！', { icon: 2 });
+                $(this).prop("checked", false);
+                return false;
+            }
+            if (cost == '' || cost == undefined || cost == null) {
+                layer.msg('请先填写最低售价！', { icon: 2 });
+                $(this).prop("checked", false);
+                return false;
+            }
+            var reg = /^[1-9]{1}[0-9]{0,10}[.]{0,1}[0-9]{0,2}$/;
+            if (!reg.test(price) || !reg.test(cost)) {
+                layer.msg('请填写合法的价格哦!亲', { icon: 2 });
+                $(this).prop("checked", false);
+                return false;
+            }
+
+            //检查下级颜色元素组(如不存在next元素)
+            if ($(this).parent().parent().next('.form-group').length == 0) {
+
+                //验证通过（增加下一条）
+                var time = new Date().getTime();
+                var new_color = '<div class="form-group"> <label class="col-sm-1 control-label">';
+                new_color += '<input type="checkbox" class="color-checkbox" value="' + time + '" /></label><div class="col-sm-3">';
+                new_color += '<input type="text" class="form-control color_input" id="color-' + time + '"name="goods_color[]" value="" placeholder="请填写商品颜色"></div>';
+                new_color += '<label class="col-sm-1 control-label">价格</label><div class="col-sm-3"><input class="price_input" type="text" pattern="^[0-9]+|[0-9]+\.[0-9]+$" title="请填写整数" class="form-control" id="price-' + time + '" name="goods_price[]" value="" placeholder="请填写价格"></div>'
+                new_color += '<label class="col-sm-1 control-label">最低售价</label><div class="col-sm-3">';
+                new_color += '<input type="text" class="cost_input" required pattern="^[0-9]+|[0-9]+\.[0-9]+$" title="请填写整数" class="form-control" id="cost-' + time + '" name="goods_cost[]" value="" placeholder="请填写最低售价"></div>';
+                var oContent = this.parentNode;
+                $('#color-group').append(new_color);
+            }
+
+            //颜色选中结果，颜色(一维数组)
+            var result = color_chekcbox_status();
+            //选中的尺码数
+            var size = size_checkbox();
+            //更新下方表格
+            update_table(result, size);
+        } else {
+            var result = color_chekcbox_status();
+            var size = size_checkbox();
+            if (result.length <= 0) {
+                //清空表格
+                $('#sales').empty();
+            } else {
+                //更新下方表格
+                update_table(result, size);
+            }
+        }
+    }).delegate('.color_input', 'blur', function () {
+        var per_str = $(this).val();
+        var regx = /[@@#\$%\^&\*()`~?\+=><]+/g;
+        var str = per_str.replace(regx, '');
+        $(this).val(str);
+
+        var result = color_chekcbox_status();
+        var size_arr = size_checkbox();
+        update_table(result, size_arr);
+
+    }).delegate('.price_input', 'blur', function () {
+        var per_price = $(this).val();
+        if (per_price == '') { return false; }
+        var price = parseFloat(per_price);
+        $(this).val(price);
+        var result = color_chekcbox_status();
+        var size_arr = size_checkbox();
+        update_table(result, size_arr);
+    }).delegate('.cost_input', 'blur', function () {
+        var per_cost = $(this).val();
+        if (per_cost == '') { return false; }
+        var cost = parseFloat(per_cost);
+        $(this).val(cost);
+        var result = color_chekcbox_status();
+        var size_arr = size_checkbox();
+        update_table(result, size_arr);
+    });
+
+    //ajax提交
+    $('.btn-primary').click(function () {
+        var size_arr = size_checkbox();
+        var color_arr = color_chekcbox_status();
+
+        if (size_arr.length <= 0) {
+            layer.alert('请选择尺码', { icon: 5 });
+            return false;
+        }
+        if (color_arr.length <= 0) {
+            layer.alert('请填写颜色', { icon: 5 });
+            return false;
+        }
+
+        var table_color_length = $('#sales').find("input[name*=table_color]").length;
+        if (table_color_length <= 0) {
+            layer.alert('请选择条件生成商品销售规格！', { icon: 5 });
+            return false;
+        }
+
+        var url = $('#goods-form').attr('action');
+        var goods_name = $('#goods_name').val();
+        var goods_sn = $('#goods_sn').val();
+        var brand_id = $('#brand_id').val();
+        var category_id = $('#category_id').val();
+        var gender = $('#gender').val();
+
+        //color table
+        var color = get_json_str('table_color');
+
+        //cost table
+        var lowest = get_json_str('table_cost');
+
+        //price table
+        var price = get_json_str('goods_price');
+
+        //sid table
+        var sid = get_json_str('table_sid');
+
+        //name table
+        var size = get_json_str('table_size');
+
+        //尺码个数
+        var size_count = size_arr.length > 0 ? size_arr.length : 0;
+
+
+        var data = {
+            baseNo: goods_sn,
+            baseName: goods_name,
+            brandId: brand_id,
+            categoryId: category_id,
+            sex: gender,
+            subProduct: []
+        }
+
+        var sizeInfoList = $.map(size, function(m, i) {
+            return {
+                sizeId: sid[i],
+                sizeName: m,
+                sizePrice: price[i]
+            }
+        });
+
+        function getSizeList(index) {
+            return $.grep(sizeInfoList, function (n, i) {
+                return i >= index * size_count && i < (index + 1) * size_count;
+            });
+        }
+
+        data.subProduct = $.map(color, function (item, i) {
+            return {
+                color: item,
+                lowestPrice: lowest[i],
+                sizeList: getSizeList(i)
+            }
+        });
+
+        $.ajax({
+            type: 'POST',
+            url: url,
+            data: data,
+            dataType: 'json',
+            //timeout : 10000,
+            success: function (response, status) {
+                if (response.errcode === 0) {
+                    layer.msg('添加成功！', { icon: 1 });
+                    var url = 'http://www.qingfeng.com/goods/index';
+                    $.getPageContent({ url: url });
+                    return false;
+                } else {
+                    layer.alert(response.message, { icon: 5 });
+                }
+            },
+            error: function () { layer.alert('发送请求失败', { icon: 5 }); }
+        });
+        return false;
+    });
+
+    $('.load-view').click(function () {
+        var loading = layer.load(2, { time: 10 * 1000 });
+        var url = $(this).data('url');
+        $.getPageContent({ url: url });
+        layer.close(loading);
+        return false;
+    });
+
+    $('.back-to-list').off('click').on('click', function () {
+        var url = $('#page-content').attr('data-back-url');
+        if (!url) {
+            url = $(this).attr('href');
+        }
+
+        $.getPageContent({ url: url });
+        return false;
+    });
+
+    /**
+     * 绑定全选按钮
+    **/
+    $('#size_content').delegate('#checkAll', 'click', function (e) {
+        var check_style = this.checked;
+        $('input[class="size_checkbox"]').prop('checked', check_style);
+        var size_flag = true;
+        if (typeof ($('#size_flag').val()) != 'undefined') {
+            if ($('#size_flag').val() == 0) {
+                size_flag = false;
+            }
+        }
+        var result = color_chekcbox_status();
+        var size_arr = size_checkbox();
+        update_table(result, size_arr, size_flag);
+    });
+
+</script>
+
+<script type="text/javascript">
+    /**
+     * 获取json数组 （二维 , 限于添加商品中使用）
+    **/
+    function get_json_str(table_name) {
+        var result = [];
+        $("#sales input[name*='" + table_name + "']").each(function () {
+            result.push($(this).val())
+        });
+        return result;
+    }
+
+    /**
+     * 检查颜色选中情况,返回选中颜色和价格(二维数组)
+    **/
+    function color_chekcbox_status() {
+        var arr = [];
+        var i = 0;
+        $("input[class*=color-checkbox]").each(function (a, b) {
+            var sub = [];
+            if (b.checked) {
+                i++
+                var value = $(b).val();
+                sub.push($('#color-' + value).val());
+                sub.push($('#price-' + value).val());
+                sub.push($('#cost-' + value).val());
+                arr.push(sub);
+            }
+        });
+        return arr;
+    }
+
+    /**
+     * 更新表格 size_arr（二维数组）
+    **/
+    function update_table(color_arr, size_arr) {
+        var count = color_arr.length;
+        var rowspan = size_arr.length;
+        var html = '';
+        var color;
+        var price;
+
+        //尺码存在标致(test)
+        var size_flag = true;
+        if (typeof ($('#size_flag').val()) != 'undefined') {
+            if ($('#size_flag').val() == 0) {
+                size_flag = false;
+            }
+        } else if ($('.size_checkbox').length <= 0) {
+            size_flag = false;
+        }
+
+        for (var i = 0; i < count; i++) {
+            //循环获取价格和颜色值
+            for (var k = 0; k < color_arr[i].length; k++) {
+                if (k == 0) {
+                    color = color_arr[i][0];
+                } else if (k == 1) {
+                    price = color_arr[i][1];
+                } else if (k == 2) {
+                    lowest_price = color_arr[i][2];
+                }
+            }
+            if (size_flag == true) {
+                //根据上面颜色循环组装table
+                for (var j = 0; j < rowspan; j++) {
+                    html += '<tr align="center">';
+                    if (j == 0) {
+                        html += '<td rowspan="' + rowspan + '">' + color + '<input type="hidden" name="table_color[]" value="' + color + '"/><input type="hidden" name="table_cost[]" value="' + lowest_price + '"/></td>';
+                    }
+                    html += '<td>' + size_arr[j][0] + '<input type="hidden" name="table_sid[]" value="' + size_arr[j][1] + '"/><input type="hidden" name="table_size[]" value="' + size_arr[j][0] + '"/></td>';
+                    html += '<td><input type="text" required pattern="^[0-9]+|[0-9]+\.[0-9]+$" title="请填写合法的金额" name="goods_price[]" disabled value="' + price + '" style="width:60px;"></td>';
+                    html += '<td>' + lowest_price + '</td></tr>';
+                }
+            }
+        }
+        //写进DOM
+        $('#sales').empty().html(html);
+    }
+</script>
+
+
