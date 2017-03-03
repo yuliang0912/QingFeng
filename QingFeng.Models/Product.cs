@@ -41,5 +41,8 @@ namespace QingFeng.Models
 
         [IgnoreField]
         public IEnumerable<ProductStock> ProductStocks { get; set; }
+
+        [IgnoreField]
+        public IEnumerable<ProductSkus> ProductSkus { get; set; }
     }
 }

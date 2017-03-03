@@ -33,8 +33,6 @@ namespace QingFeng.Business.V2
 
             using (var trans = new TransactionScope())
             {
-                if (baseProduct == null)
-                {
                     baseProduct = new ProductBase()
                     {
                         BaseName = model.baseName.Trim(),
@@ -47,16 +45,7 @@ namespace QingFeng.Business.V2
                         CreateDate = DateTime.Now
                     };
                     baseProduct.BaseId = _productBaseRepository.Insert(baseProduct, true);
-                }
-                else
-                {
-                    _productBaseRepository.Update(new
-                    {
-                        CategoryId = model.categoryId,
-                        BrandId = model.brandId,
-                        SexId = model.sex,
-                    }, new {baseProduct.BrandId});
-                }
+               
 
                 var productStockList = new List<ProductStock>();
                 foreach (var item in model.subProduct)
