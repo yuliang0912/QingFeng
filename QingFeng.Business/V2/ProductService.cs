@@ -87,7 +87,8 @@ namespace QingFeng.Business.V2
                         });
                     }
                 }
-                _productStockRepository.BatchInsert(productStockList);
+                //productSku
+                //_productStockRepository.BatchInsert(productStockList);
                 trans.Complete();
             }
 

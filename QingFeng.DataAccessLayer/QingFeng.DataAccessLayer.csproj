@@ -73,6 +73,7 @@
     <Compile Include="Repository\OrderMasterRepository.cs" />
     <Compile Include="Repository\ProductBaseRepository.cs" />
     <Compile Include="Repository\ProductRepository.cs" />
+    <Compile Include="Repository\ProductSkuRepository.cs" />
     <Compile Include="Repository\ProductStockRepository.cs" />
     <Compile Include="Repository\SkuItemRepository.cs" />
     <Compile Include="Repository\StoreRepository.cs" />
