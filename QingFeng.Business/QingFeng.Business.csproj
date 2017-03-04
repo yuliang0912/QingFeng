@@ -68,6 +68,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SkuItemService.cs" />
     <Compile Include="StoreService.cs" />
+    <Compile Include="UserLogService.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="V2\ProductService.cs" />
   </ItemGroup>

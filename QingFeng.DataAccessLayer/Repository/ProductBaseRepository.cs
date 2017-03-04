@@ -77,7 +77,7 @@ namespace QingFeng.DataAccessLayer.Repository
         /// <param name="productBase"></param>
         /// <param name="productSkus"></param>
         /// <returns></returns>
-        public bool CreateProduct(ProductBase productBase, List<ProductSkus> productSkus)
+        public bool CreateProduct(ProductBase productBase)
         {
             using (var connection = GetWriteConnection)
             {
@@ -99,6 +99,41 @@ namespace QingFeng.DataAccessLayer.Repository
                             //            VALUES({0},{1},{2},{3},0) ON DUPLICATE KEY UPDATE status = 0";
                             //sql = string.Format(sql, sku.SkuId, baseId, productId, sku.Price);
                             //connection.Execute(sql, null, trans);
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+                    trans.Rollback();
+                    throw;
+                }
+            }
+            return true;
+        }
+
+        public bool EditProduct(ProductBase productBase)
+        {
+            using (var connection = GetWriteConnection)
+            {
+                connection.Open();
+                var trans = connection.BeginTransaction();
+                try
+                {
+                    connection.Update(productBase, new { productBase.BaseId }, TableName, transaction: trans);
+                    foreach (var item in productBase.SubProduct)
+                    {
+                        var sql = @"INSERT INTO productskus(ProductName,BaseId,BaseNo,BaseName,ProductNo,OriginalPrice,ActualPrice,CreateDate) 
+                                    VALUES(@ProductName,@BaseId,@BaseNo,@BaseName,@ProductNo,@OriginalPrice,@ActualPrice,@CreateDate) 
+                                    ON DUPLICATE KEY UPDATE status = 0;SELECT LAST_INSERT_ID()";
+
+                        var productId = connection.ExecuteScalar<int>(sql, item, trans);
+                        foreach (var sku in item.ProductSkus)
+                        {
+                            sku.ProductId = productId;
+                            var sqlSku = @"INSERT INTO productskus(skuId,baseId,productId,price,status) 
+                                        VALUES({0},{1},{2},{3},0) ON DUPLICATE KEY UPDATE status = 0";
+                            sql = string.Format(sqlSku, sku.SkuId, sku.BaseId, productId, sku.Price);
+                            connection.Execute(sql, null, trans);
                         }
                     }
                 }

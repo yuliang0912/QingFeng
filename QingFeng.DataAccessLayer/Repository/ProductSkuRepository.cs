@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using QingFeng.Models;
+using QingFeng.Common.Dapper;
 
 namespace QingFeng.DataAccessLayer.Repository
 {
@@ -14,7 +13,24 @@ namespace QingFeng.DataAccessLayer.Repository
         public ProductSkuRepository() : base(TableName)
         {
 
-            //add on duc.... update status ....
+        }
+
+        public IEnumerable<ProductStock> GetProductStockListByBaseIds(params int[] baseId)
+        {
+            if (baseId == null || !baseId.Any())
+            {
+                return new List<ProductStock>();
+            }
+
+            var additional = $"AND baseId IN ({string.Join(",", baseId)})";
+
+            Func<object, string> buildWhereSql =
+                (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional);
+
+            using (var connection = GetReadConnection)
+            {
+                return connection.QueryList<ProductStock>(null, TableName, buildWhereSql);
+            }
         }
     }
 }
