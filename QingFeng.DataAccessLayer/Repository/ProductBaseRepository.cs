@@ -95,10 +95,6 @@ namespace QingFeng.DataAccessLayer.Repository
                             sku.BaseId = baseId;
                             sku.ProductId = productId;
                             connection.Insert(sku, "productskus", trans);
-                            //var sql = @"INSERT INTO productskus(skuId,baseId,productId,price,status) 
-                            //            VALUES({0},{1},{2},{3},0) ON DUPLICATE KEY UPDATE status = 0";
-                            //sql = string.Format(sql, sku.SkuId, baseId, productId, sku.Price);
-                            //connection.Execute(sql, null, trans);
                         }
                     }
                 }
