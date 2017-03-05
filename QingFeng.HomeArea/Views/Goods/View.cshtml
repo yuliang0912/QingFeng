@@ -1,0 +1,147 @@
+﻿
+@{
+    ViewBag.Title = "View";
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+    var productSkus = ViewBag.productSkus as List<string>;
+}
+
+@using QingFeng.Models
+@model QingFeng.Models.ProductBase
+<div class="page-header">
+    <h1 class="form-inline">
+        商品详情
+        <a href="http://www.findshoes.cn/goods/index" class="btn btn-info btn-sm pull-right back-to-list"> <i class="icon-circle-arrow-left"></i> 返回列表</a>
+    </h1>
+</div>
+<!-- /.page-header -->
+
+<style type="text/css">
+    .panel {
+        width: 99%;
+        margin: 10px auto;
+    }
+
+    .red-star {
+        color: #f00;
+    }
+
+    .td_title {
+        width: 100px;
+        text-align: center;
+    }
+
+    .td_input {
+        width: 200px;
+    }
+
+    .td-left {
+        width: 350px;
+    }
+
+    .red-span {
+        color: #f00;
+    }
+
+    .td_left {
+        width: 150px;
+        text-align: center;
+    }
+
+    #table_info tr td {
+        vertical-align: middle;
+    }
+
+    #table-order-goods tbody td {
+        vertical-align: middle;
+    }
+
+    #table-color-goods tbody td {
+        vertical-align: middle;
+        text-align: center;
+    }
+</style>
+<div class="panel panel-info">
+    <!-- Default panel contents -->
+    <div class="panel-heading">商品基本信息</div>
+
+    <table class="table table-bordered" id="table_info">
+        <tbody>
+            <tr>
+                <td class="td_title">商品名称：</td>
+                <td width="300">@Model.BaseName</td>
+                <td class="td_title">货号：</td>
+                <td>@Model.BaseNo</td>
+            </tr>
+            <tr>
+                <td class="td_title">所属品牌：</td>
+                <td>@Model.BaseId.ToString()</td>
+                <td class="td_title">所属分类：</td>
+                <td>@Model.CategoryId.ToString()</td>
+            </tr>
+            <tr>
+                <td class="td_title">性别：</td>
+                <td>@Model.SexId.ToString()</td>
+                <td class="td_title">状态：</td>
+                <td>
+                    <button type="button" class="btn btn-success">@(Model.Status == 0 ? "正常" : "已删除")</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="panel panel-info">
+    <div class="panel-heading">颜色属性</div>
+    <table class="table table-bordered" id="table-color-goods">
+        <thead>
+            <tr>
+                <th rowspan="2" class="center">
+                    尺码
+                </th>
+                @foreach (var item in Model.SubProduct)
+                {
+                    <th colspan="2" class="center">
+                        @item.ProductNo <span class="label @(item.Status == 0 ?"label-success":"label-warning")">@(Model.Status == 0 ? "正常" : "已下架")</span>
+                    </th>
+                }
+            </tr>
+            <tr>
+                @foreach (var item in Model.SubProduct)
+                {
+                    <th class="center">市场价</th>
+                    <th class="center">最低售价</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+        @for (int i = 0; i < productSkus.Count; i++)
+        {
+            <tr>
+                <td>@productSkus[i]</td>
+                @if (i == 0)
+                {
+                    foreach (var item in Model.SubProduct)
+                    {
+                        <td rowspan="@productSkus.Count" style="font-size: 20px;">¥@(item.OriginalPrice)</td>
+                        <td rowspan="@productSkus.Count" style="font-size: 20px;">¥@(item.ActualPrice)</td>
+                    }
+                }
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript">
+    $('.back-to-list').off('click').on('click', function () {
+        var url = $('#page-content').attr('data-back-url');
+        if (!url) {
+            url = $(this).attr('href');
+        }
+
+        $.getPageContent({ url: url });
+        return false;
+    });
+
+    $("[data-toggle='tooltip']").tooltip({ html: true });
+</script>
+

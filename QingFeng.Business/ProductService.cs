@@ -8,15 +8,67 @@ using QingFeng.Models;
 using QingFeng.Common.Extensions;
 using System.Dynamic;
 using QingFeng.Common;
+using QingFeng.Common.ApiCore.Result;
+using QingFeng.Models.DTO;
 
 namespace QingFeng.Business
 {
-    
+
     public class ProductService
     {
         private readonly ProductRepository _productRepository = new ProductRepository();
+        private readonly ProductSkuRepository _productSkuRepository = new ProductSkuRepository();
         private readonly ProductBaseRepository _productBaseRepository = new ProductBaseRepository();
         private readonly SkuItemRepository _skuItemRepository = new SkuItemRepository();
+
+        public ApiResult<bool> AddProduct(CreateProductDto model, UserInfo user)
+        {
+            if (_productBaseRepository.Count(new {baseNo = model.baseNo.Trim()}) > 0)
+            {
+                return new ApiResult<bool>(false) {ErrorCode = 1, Message = "当前商品已经存在,不能重复添加"};
+            }
+
+            var baseProduct = new ProductBase
+            {
+                BaseName = model.baseName.Trim(),
+                BaseNo = model.baseNo.Trim(),
+                CategoryId = model.categoryId,
+                BrandId = model.brandId,
+                SexId = model.sex,
+                Status = 0,
+                CreateUserId = user.UserId,
+                CreateDate = DateTime.Now,
+                SubProduct = model.subProduct.Select(item =>
+                {
+                    var product = new Product
+                    {
+                        ProductName = model.baseName,
+                        ProductNo = item.color,
+                        BaseNo = model.baseNo,
+                        BaseName = model.baseName,
+                        OriginalPrice = item.sizeList.First().sizePrice,
+                        ActualPrice = item.lowestPrice,
+                        Status = 0,
+                        CreateDate = DateTime.Now,
+                        ProductSkus = item.sizeList.Select(size => new ProductSkus()
+                        {
+                            SkuId = size.sizeId,
+                            SkuName = size.sizeName,
+                            Price = size.sizePrice,
+                            Status = 0,
+                            UpdateDate = DateTime.Now
+                        })
+                    };
+
+                    return product;
+                })
+            };
+
+
+            var result = _productBaseRepository.CreateProduct(baseProduct);
+
+            return new ApiResult<bool>(result);
+        }
 
         public int CreateProduct(Product model)
         {
@@ -62,8 +114,10 @@ namespace QingFeng.Business
             }
 
             return _productRepository.Update(
-                    new {model.ProductNo, model.ProductName, model.OriginalPrice, model.ActualPrice},
-                    new {model.ProductId})? 1: 0;
+                new {model.ProductNo, model.ProductName, model.OriginalPrice, model.ActualPrice},
+                new {model.ProductId})
+                ? 1
+                : 0;
         }
 
         public bool UpdateProductBaseInfo(object model, object condition)
@@ -151,6 +205,11 @@ namespace QingFeng.Business
         {
             int totalItem;
             return _productRepository.SearchProduct(keyWords, 1, 150, out totalItem);
+        }
+
+        public IEnumerable<ProductSkus> GetProductSkuListByBaseId(int baseId)
+        {
+            return _productSkuRepository.GetList(new {baseId});
         }
     }
 }

@@ -16,6 +16,7 @@ namespace QingFeng.WebArea.Controllers
         private readonly ProductService _productService = new ProductService();
         private readonly ProductStockService _productStockService = new ProductStockService();
         private readonly SkuItemService _skuItemService = new SkuItemService();
+        
 
         [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public ActionResult EditProduct(int productId)

@@ -10,6 +10,8 @@ namespace QingFeng.Models
 
         public int SkuId { get; set; }
 
+        public string SkuName { get; set; }
+
         public int BaseId { get; set; }
 
         public int ProductId { get; set; }

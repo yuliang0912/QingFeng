@@ -546,6 +546,9 @@
     <Content Include="Views\Shared\_LayoutAgentV2.cshtml" />
     <Content Include="Views\Goods\Index.cshtml" />
     <Content Include="Views\Goods\Add.cshtml" />
+    <Content Include="Views\Goods\Set.cshtml" />
+    <Content Include="Views\Goods\View.cshtml" />
+    <Content Include="Views\Goods\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

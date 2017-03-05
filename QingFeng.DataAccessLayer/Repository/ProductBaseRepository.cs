@@ -75,7 +75,6 @@ namespace QingFeng.DataAccessLayer.Repository
         /// 
         /// </summary>
         /// <param name="productBase"></param>
-        /// <param name="productSkus"></param>
         /// <returns></returns>
         public bool CreateProduct(ProductBase productBase)
         {
@@ -97,6 +96,7 @@ namespace QingFeng.DataAccessLayer.Repository
                             connection.Insert(sku, "productskus", trans);
                         }
                     }
+                    trans.Commit();
                 }
                 catch (Exception)
                 {

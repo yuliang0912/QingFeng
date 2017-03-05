@@ -10,6 +10,6 @@ namespace QingFeng.Business
 {
     public class UserLogService : Singleton<UserLogService>
     {
-        private readonly UserLogsRepository _orderLogs = new UserLogsRepository();
+        //private readonly UserLogsRepository _orderLogs = new UserLogsRepository();
     }
 }
