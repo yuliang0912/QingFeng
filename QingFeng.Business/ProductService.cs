@@ -7,6 +7,7 @@ using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
 using QingFeng.Common.Extensions;
 using System.Dynamic;
+using System.Transactions;
 using QingFeng.Common;
 using QingFeng.Common.ApiCore.Result;
 using QingFeng.Models.DTO;
@@ -169,6 +170,20 @@ namespace QingFeng.Business
         public IEnumerable<Product> GetProductByBaseId(int baseId)
         {
             return _productRepository.GetList(new {baseId});
+        }
+
+        public bool UpdateStatus(int baseId, int baseStatus, List<KeyValuePair<int, int>> productStatus)
+        {
+            using (var trans = new TransactionScope())
+            {
+                _productBaseRepository.Update(new {status = baseStatus}, new {baseId});
+                foreach (var item in productStatus)
+                {
+                    _productRepository.Update(new {status = item.Value}, new {productId = item.Key});
+                }
+                trans.Complete();
+            }
+            return true;
         }
 
         public IEnumerable<ProductBase> SearchBaseProduct(string keyWords, int categoryId, int status, int page,

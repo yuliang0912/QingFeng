@@ -108,6 +108,31 @@ namespace QingFeng.WebArea.Controllers
             return View(baseInfo);
         }
 
+        [HttpPost]
+        public JsonResult Set()
+        {
+            var baseId = Convert.ToInt32(Request.Form["baseId"] ?? string.Empty);
+
+            var productList = _productService.GetProductByBaseId(baseId);
+
+            var list = new List<KeyValuePair<int, int>>();
+            foreach (var item in productList)
+            {
+                var status = Request.Form[$"spu[{item.ProductId}]"];
+                if (!string.IsNullOrEmpty(status))
+                {
+                    item.Status = Convert.ToInt32(status);
+                    list.Add(new KeyValuePair<int, int>(item.ProductId, item.Status));
+                }
+            }
+
+            var baseStatus = productList.Any(t => t.Status == 0) ? 0 : 1;
+
+            var result = _productService.UpdateStatus(baseId, baseStatus, list);
+
+            return Json(result);
+        }
+
 
         /// <summary>
         /// 商品详情
