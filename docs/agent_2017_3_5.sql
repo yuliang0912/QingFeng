@@ -1,4 +1,4 @@
-/*
+﻿/*
 Navicat MySQL Data Transfer
 
 Source Server         : localhost
@@ -15,9 +15,28 @@ Date: 2017-03-05 22:49:49
 
 SET FOREIGN_KEY_CHECKS=0;
 
+
+
+
+CREATE TABLE `userproductprice` (
+  `priceId` int(11) NOT NULL AUTO_INCREMENT,
+  `baseId` int(11) NOT NULL,
+  `productId` int(11) NOT NULL,
+  `userId` int(11) NOT NULL,
+  `originalPrice` decimal(6,2) NOT NULL,
+  `actualPrice` decimal(6,2) NOT NULL,
+  `status` int(11) NOT NULL,
+  `updateDate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`priceId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 -- ----------------------------
 -- Table structure for logistics
 -- ----------------------------
+
+
+
 DROP TABLE IF EXISTS `logistics`;
 CREATE TABLE `logistics` (
   `Id` int(11) NOT NULL AUTO_INCREMENT,

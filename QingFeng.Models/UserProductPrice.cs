@@ -1,9 +1,5 @@
 ﻿using QingFeng.Common.Dapper;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace QingFeng.Models
 {
@@ -19,10 +15,14 @@ namespace QingFeng.Models
 
         public int ProductId { get; set; }
 
-        public decimal Price { get; set; }
+        public decimal OriginalPrice { get; set; }
+
+        public decimal ActualPrice { get; set; }
 
         public int UserId { get; set; }
 
-        public DateTime CreateDate { get; set; }
+        public int Status { get; set; }
+
+        public DateTime UpdateDate { get; set; }
     }
 }
