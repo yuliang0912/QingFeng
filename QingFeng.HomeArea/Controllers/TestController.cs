@@ -49,10 +49,10 @@ namespace QingFeng.WebArea.Controllers
             var workbook = new XLWorkbook();
             workbook.Worksheets.Add(dataTable, "Sheet1");
 
-            var workSheet = workbook.Worksheet(0);
+            var workSheet = workbook.Worksheet(1);
             workSheet.Rows(1, 1000).Height = 20;
             workSheet.Columns(1, 100).Width = 25;
-            workSheet.Range("A1:C1").Style.Fill.BackgroundColor = XLColor.Yellow;
+            workSheet.Range("A1:C1").Style.Fill.BackgroundColor = XLColor.Green;
             workSheet.Range("A1:C1").Style.Font.SetFontColor(XLColor.Yellow);
             workSheet.Range("A1:C1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
