@@ -560,6 +560,7 @@
     <Content Include="Views\Goods\Edit.cshtml" />
     <Content Include="Views\Price\Index.cshtml" />
     <Content Include="Views\Price\DistributorSet.cshtml" />
+    <Content Include="Views\Price\DistributorImport.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

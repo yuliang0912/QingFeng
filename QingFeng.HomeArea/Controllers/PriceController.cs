@@ -48,10 +48,18 @@ namespace QingFeng.WebArea.Controllers
             });
         }
 
-
+        //设置价格
         public ActionResult DistributorSet(int userId, int baseId)
         {
             return View();
+        }
+
+        //批量EXCEL导入
+        public ActionResult DistributorImport()
+        {
+            var allUsers = _userService.GetList(new { UserRole = 3 }).ToList();
+
+            return View(allUsers);
         }
     }
 }
