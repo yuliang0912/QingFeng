@@ -13,8 +13,9 @@ namespace QingFeng.Business
     public class UserService
     {
         private const string PassWordSplitString = "#agent@com";
+        private readonly StoreRepository _storeRepository = new StoreRepository();
         private readonly UserInfoRepository _userInfoRepository = new UserInfoRepository();
-        private readonly StoreRepository _storeRepository =new StoreRepository();
+        private readonly UserProductPriceRepository _userProductPriceRepository = new UserProductPriceRepository();
 
         public IEnumerable<UserInfo> GetPageList(object condition, int page, int pageSize, out int totalItem)
         {
@@ -42,7 +43,7 @@ namespace QingFeng.Business
         //注册用户
         public int RegisterUser(UserInfo model)
         {
-            if (_userInfoRepository.Count(new {model.UserName}) > 0)
+            if (_userInfoRepository.Count(new { model.UserName }) > 0)
             {
                 return 2;
             }
@@ -62,7 +63,7 @@ namespace QingFeng.Business
 
         public int UpdatePassWord(int userId, string password)
         {
-            var userInfo = _userInfoRepository.Get(new {userId});
+            var userInfo = _userInfoRepository.Get(new { userId });
 
             if (userInfo == null)
             {
@@ -75,7 +76,7 @@ namespace QingFeng.Business
                 string.Concat(userInfo.UserName, PassWordSplitString, userInfo.UserRole.GetHashCode(), password)
                     .Hmacsha1(userInfo.Salt);
 
-            return _userInfoRepository.Update(new {passWord = newPassWord, userInfo.Salt}, new {userId}) ? 1 : 0;
+            return _userInfoRepository.Update(new { passWord = newPassWord, userInfo.Salt }, new { userId }) ? 1 : 0;
         }
 
         public int UpdatePassWord(UserInfo user, string oldPwd, string newPwd)
@@ -90,7 +91,7 @@ namespace QingFeng.Business
                 string.Concat(user.UserName, PassWordSplitString, user.UserRole.GetHashCode(), newPwd)
                     .Hmacsha1(user.Salt);
 
-            return _userInfoRepository.Update(new {passWord = newPassWord}, new {user.UserId}) ? 1 : 0;
+            return _userInfoRepository.Update(new { passWord = newPassWord }, new { user.UserId }) ? 1 : 0;
         }
 
         public bool UpdateUserInfo(UserInfo model)
@@ -99,24 +100,24 @@ namespace QingFeng.Business
             {
                 return false;
             }
-            var userInfo = _userInfoRepository.Get(new {model.UserId});
+            var userInfo = _userInfoRepository.Get(new { model.UserId });
             if (userInfo == null)
             {
                 return false;
             }
 
             model.NickName = model.NickName ?? userInfo.UserName;
-            return _userInfoRepository.Update(new {model.NickName}, new {model.UserId});
+            return _userInfoRepository.Update(new { model.NickName }, new { model.UserId });
         }
 
         public bool DelOrRecoveryStatus(int userId)
         {
-            var userInfo = _userInfoRepository.Get(new {userId, userRole = AgentEnums.UserRole.StoreUser.GetHashCode()});
+            var userInfo = _userInfoRepository.Get(new { userId, userRole = AgentEnums.UserRole.StoreUser.GetHashCode() });
             if (userInfo == null)
             {
                 return false;
             }
-            return _userInfoRepository.Update(new {status = userInfo.Status == 0 ? 1 : 0}, new {userId});
+            return _userInfoRepository.Update(new { status = userInfo.Status == 0 ? 1 : 0 }, new { userId });
         }
 
         public UserInfo Login(string userName, string passWord, out bool isPass)
@@ -149,6 +150,21 @@ namespace QingFeng.Business
         public int Count(object condition)
         {
             return _userInfoRepository.Count(condition);
+        }
+
+        public IEnumerable<UserInfo> GetList(object condition)
+        {
+            return _userInfoRepository.GetList(condition);
+        }
+
+        public IEnumerable<UserProductPrice> GetUserPrice(int userId, int brandId, params int[] baseId)
+        {
+            return _userProductPriceRepository.GetListByBaseIds(userId, baseId);
+        }
+
+        public bool ResetUserPrice(int userId, int brandId, List<UserProductPrice> list)
+        {
+            return _userProductPriceRepository.BatchInsert(userId, list);
         }
     }
 }

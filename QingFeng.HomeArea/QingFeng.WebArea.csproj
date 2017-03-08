@@ -455,6 +455,7 @@
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\GoodsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\PriceController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Fillter\AdminAuthorize.cs" />
@@ -564,7 +565,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\Price\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QingFeng.Business\QingFeng.Business.csproj">
       <Project>{d8906a58-c9da-4cf6-ac7f-0adf00b3ed56}</Project>
