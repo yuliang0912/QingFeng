@@ -13,6 +13,8 @@ namespace QingFeng.Models
 
         public int BaseId { get; set; }
 
+        public int BrandId { get; set; }
+
         public int ProductId { get; set; }
 
         public decimal OriginalPrice { get; set; }

@@ -4,6 +4,7 @@
     Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
     var userPrice = ViewBag.userPrice as Dictionary<int, UserProductPrice>;
     var userList = ViewBag.userList as List<UserInfo>;
+    var index = 0;
 }
 @using QingFeng.Common
 @using QingFeng.Models
@@ -13,11 +14,9 @@
     #order-table-list thead tr {
         background: none;
     }
-
     th {
         text-align: center;
     }
-
     #order-table-list td {
         vertical-align: middle;
     }
@@ -91,28 +90,48 @@
         </thead>
 
         <tbody>
-            <tr align="center">
-                <td rowspan="3" id="goods-name-9018">7-31SPW0036</td>
-                <td rowspan="3">7-31SPW0036</td>
-                <td rowspan="3">Locaste</td>
-                <td rowspan="3">休闲鞋</td>
-                <td rowspan="3">女</td>
-                <td>7-31SPW0036A75</td>
-                <td>599.00</td>
-                <td>260</td>
-                <td>260.00</td>
-                <td>0%</td>
-                <td rowspan="3">
-                    <a href="http://www.qingfeng.com/price/distributorSet/75/9018" class="set-modal">设置</a>
-                </td>
-            </tr>
+            @foreach (var item in Model.PageList)
+            {
+                index = 0;
+                int productCount = item.SubProduct.Count();
+                foreach (var product in item.SubProduct)
+                {
+                    <tr align="center">
+                        @if (index == 0)
+                        {
+                            <td rowspan="@productCount" id="goods-name-@item.BaseId">7-@item.BaseName</td>
+                            <td rowspan="@productCount">@item.BaseNo</td>
+                            <td rowspan="@productCount">@item.BrandId.ToString()</td>
+                            <td rowspan="@productCount">@item.CategoryId.ToString()</td>
+                            <td rowspan="@productCount">@item.SexId.ToString()</td>
+                        }
+                        <td>@product.ProductNo</td>
+                        <td>@product.OriginalPrice</td>
+                        <td>@product.ActualPrice</td>
+                        @if (userPrice.ContainsKey(product.ProductId))
+                        {
+                            <td>@(userPrice[product.ProductId].ActualPrice)</td>
+                            <td>@((userPrice[product.ProductId].ActualPrice - product.ActualPrice) % product.ActualPrice)</td>
+                        }
+                        else
+                        {
+                            <td>@(product.ActualPrice)</td>
+                            <td>0%</td>
+                        }
+                        @if (index == 0)
+                        {
+                            <td rowspan="@productCount"><a href="http://www.findshoes.cn/price/distributorSet?userId=@(ViewBag.userId)&baseId=@item.BaseId" class="set-modal">设置</a></td>
+                        }
+                    </tr>
+                    index++;
+                }
+            }
         </tbody>
         <tfoot>
             <tr align="center">
                 <td colspan="11"><ul class="pagination"><li class="active"><a class="" href="http://www.qingfeng.com/#">1</a></li><li><a href="http://www.qingfeng.com/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=2">2</a></li><li><a href="http://www.qingfeng.com/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=3">3</a></li><li><a href="http://www.qingfeng.com/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=4">4</a></li><li><a href="http://www.qingfeng.com/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=2">下一页</a></li></ul></td>
             </tr>
         </tfoot>
-
     </table>
 </div>
 
