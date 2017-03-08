@@ -558,6 +558,8 @@
     <Content Include="Views\Goods\Set.cshtml" />
     <Content Include="Views\Goods\View.cshtml" />
     <Content Include="Views\Goods\Edit.cshtml" />
+    <Content Include="Views\Price\Index.cshtml" />
+    <Content Include="Views\Price\DistributorSet.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -565,9 +567,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Views\Price\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\QingFeng.Business\QingFeng.Business.csproj">
       <Project>{d8906a58-c9da-4cf6-ac7f-0adf00b3ed56}</Project>
