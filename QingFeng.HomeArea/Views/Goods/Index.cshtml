@@ -154,12 +154,13 @@ NTENT BEGINS -->
             return true;
         },
         success: function (response, status) {
-            if (response.error == 0) {
+            if (response.data === 1) {
+                layer.msg("保存成功");
                 $('#etop-modal').modal('hide');
                 $.pageReload();
             }
             else {
-                alert(response.msg);
+                alert(response.message);
             }
             return false;
         },

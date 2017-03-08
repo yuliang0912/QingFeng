@@ -3,6 +3,10 @@
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
     var sizeList = ViewBag.sizeList as List<SkuItem>;
+
+    var sizeDict = Model.SubProduct.SelectMany(t => t.ProductSkus)
+        .GroupBy(t => t.SkuId)
+        .ToDictionary(c => c.Key, c => c.ToList());
 }
 @using QingFeng.Common
 @using QingFeng.Models
@@ -180,7 +184,7 @@
                             @foreach (var item in sizeList)
                             {
                                 <span class="col-md-2">
-                                    <input type="checkbox" class="size_checkbox" name="goods_size[@(item.SkuId)]" id="size-@(item.SkuId)" value="@item.SkuName" data-sid="@item.SkuId" data-name="@item.SkuName">
+                                    <input type="checkbox" @(sizeDict.ContainsKey(item.SkuId) ? "checked":"" ) class="size_checkbox" name="goods_size[@(item.SkuId)]" id="size-@(item.SkuId)" value="@item.SkuName" data-sid="@item.SkuId" data-name="@item.SkuName">
                                     <lable for="size-@(item.SkuId)">@(item.SkuName)码</lable>
                                 </span>
                             }
@@ -562,4 +566,17 @@
         //写进DOM
         $('#sales').empty().html(html);
     }
+</script>
+<script>
+    $(function() {
+        var result = color_chekcbox_status();
+        var size = size_checkbox();
+        if (result.length <= 0) {
+            //清空表格
+            $('#sales').empty();
+        } else {
+            //更新下方表格
+            update_table(result, size);
+        }
+    })
 </script>

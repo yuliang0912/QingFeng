@@ -11,7 +11,7 @@
             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
             <h4 class="modal-title" id="edit-model-label">商品上下架</h4>
         </div>
-        <form class="form-horizontal" role="form" id="set-goods-form" method="post" action="http://www.findshoes.cn/goods/set/8983">
+        <form class="form-horizontal" role="form" id="set-goods-form" method="post" action="http://www.qingfeng.com/goods/set">
             <div class="panel panel-info">
                 <!-- Default panel contents -->
                 <div class="panel-heading">基本资料</div>
@@ -40,9 +40,9 @@
                     <div class="col-sm-4">
                         <input type="text" class="form-control ptn" value="@(Model.Status == 0 ? "正常" : "已删除")" disabled="disabled">
                     </div>
-
                 </div>
             </div>
+            <input type="hidden" name="baseId" value="@Model.BaseId" />
             <div class="panel panel-info">
                 <div class="panel-heading">颜色上下架</div>
                 <table class="table table-striped">
@@ -60,9 +60,9 @@
                             <tr>
                                 <td>@item.ProductNo</td>
                                 <td>@item.OriginalPrice</td>
-                                <td><button type="button" class="btn btn-warning">@(item.Status == 0 ? "已上架" : "已下架" )</button></td>
-                                <input type="hidden" name="spu[@item.ProductId]" id="spu_@(item.ProductNo)" class="spu" value="@(item.Status == 0)">
-                                <td><button type="button" class="btn btn-success xj xj_@(item.ProductNo)" name="@(item.ProductNo)" value="@(item.Status == 0)">@(item.Status == 0 ? "下架" : "上架" )</button></td>
+                                <td><button type="button" class="btn @(item.Status == 0 ? "btn-success" : "btn-warning" )">@(item.Status == 0 ? "已上架" : "已下架" )</button></td>
+                                <input type="hidden" name="spu[@item.ProductId]" id="spu_@(item.ProductNo)" class="spu" value="@(item.Status)">
+                                <td><button type="button" class="btn @(item.Status == 0 ? "btn-warning" : "btn-success" ) xj xj_@(item.ProductNo)" name="@(item.ProductNo)" value="@(item.Status == 0)">@(item.Status == 0 ? "下架" : "上架" )</button></td>
                             </tr>
                         }
                     </tbody>
@@ -72,40 +72,53 @@
             <div class="modal-footer" style="text-align:center;">
                 <input type="hidden" name="action" value="dosubmit">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-warning all_xj" value="1">全部下架</button>
-                <button type="submit" class="btn btn-primary">保存</button>
+                <button type="button" class="btn @(Model.Status == 0 ? "btn-warning" : "btn-success" ) all_xj" value="@Model.Status">@(Model.Status == 0 ? "全部下架" : "全部上架" )</button>
+                <button type="submit" id="submitForm" class="btn btn-primary">保存</button>
             </div>
         </form>
     </div>
 </div>
 <script type="text/javascript">
-    $(function () {
-        $('.xj').click(function () {
+    $(function() {
+        $('.xj').click(function() {
             var spu = $(this).attr('name');
             var val = $(this).val();
-            if (val == 1) {
-                $('#spu_' + spu).val('0');
-                $(this).val('0').html('下架').removeClass("btn-success").addClass("btn-warning");
-            }
-            else {
+            if (val == 0) {
                 $('#spu_' + spu).val('1');
-                $(this).val('1').html('上架').addClass("btn-success").removeClass("btn-warning");
+                $(this).val('1').html('下架').removeClass("btn-success").addClass("btn-warning");
+            } else {
+                $('#spu_' + spu).val('0');
+                $(this).val('0').html('上架').addClass("btn-success").removeClass("btn-warning");
             }
         });
-        $('.all_xj').click(function () {
+        $('.all_xj').click(function() {
             var val = $(this).val();
             if (val == 1) {
-                $(this).val('2').html('全部上架');
-                $('.spu').val('1');
-                $('.xj').addClass("btn-success").html('上架').removeClass("btn-warning");
-                $(this).addClass("btn-success").removeClass("btn-warning");
-            }
-            else {
-                $(this).val('1');
+                $(this).val('0');
                 $('.spu').val('0');
                 $('.xj').html('下架').addClass("btn-warning").removeClass("btn-success");
                 $(this).html('全部下架').removeClass("btn-success").addClass("btn-warning");
+            } else {
+                $(this).val('1');
+                $('.spu').val('1');
+                $('.xj').html('上架').addClass("btn-success").removeClass("btn-warning");
+                $(this).html('全部上架').removeClass("btn-warning").addClass("btn-success");
             }
         });
+
+        //$("#submitForm").click(function() {
+        //    $('#set-goods-form').ajaxSubmit({
+        //        type: "post",
+        //        url: "/goods/set",
+        //        dataType: "json",
+        //        success: function(data) {
+        //            if (data.ret === 0 && data.data === 1) {
+        //                layer.msg("保存成功");
+        //            } else {
+        //                layer.msg("保存失败");
+        //            }
+        //        }
+        //    });
+        //});
     });
 </script>
