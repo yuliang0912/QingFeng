@@ -35,33 +35,33 @@ namespace QingFeng.WebArea.Controllers
             return Content(result.ToString());
         }
 
-        //public ActionResult export()
-        //{
-        //    var list = new List<Pmodel>();
-        //    list.Add(new Pmodel { goods_id = 1, sku_id = 1, size = 1 });
-        //    list.Add(new Pmodel { goods_id = 2, sku_id = 2, size = 2 });
-        //    list.Add(new Pmodel { goods_id = 3, sku_id = 3, size = 3 });
+        public ActionResult export()
+        {
+            var list = new List<Pmodel>();
+            list.Add(new Pmodel { goods_id = 1, sku_id = 1, size = 1 });
+            list.Add(new Pmodel { goods_id = 2, sku_id = 2, size = 2 });
+            list.Add(new Pmodel { goods_id = 3, sku_id = 3, size = 3 });
 
-        //    var jsonStr = JsonConvert.SerializeObject(list);
+            var jsonStr = JsonConvert.SerializeObject(list);
 
-        //    var dataTable = JsonConvert.DeserializeObject<DataTable>(jsonStr);
+            var dataTable = JsonConvert.DeserializeObject<DataTable>(jsonStr);
 
-        //    var workbook = new XLWorkbook();
-        //    workbook.Worksheets.Add(dataTable, "Sheet1");
+            var workbook = new XLWorkbook();
+            workbook.Worksheets.Add(dataTable, "Sheet1");
 
-        //    var workSheet = workbook.Worksheet(1);
-        //    workSheet.Rows(1, 1000).Height = 20;
-        //    workSheet.Columns(1, 100).Width = 25;
-        //    workSheet.Range("A1:C1").Style.Fill.BackgroundColor = XLColor.Green;
-        //    workSheet.Range("A1:C1").Style.Font.SetFontColor(XLColor.Yellow);
-        //    workSheet.Range("A1:C1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            var workSheet = workbook.Worksheet(1);
+            workSheet.Rows(1, 1000).Height = 20;
+            workSheet.Columns(1, 100).Width = 25;
+            workSheet.Range("A1:C1").Style.Fill.BackgroundColor = XLColor.Green;
+            workSheet.Range("A1:C1").Style.Font.SetFontColor(XLColor.Yellow);
+            workSheet.Range("A1:C1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
-        //    return new ExportExcelResult
-        //    {
-        //        workBook = workbook,
-        //        FileName = string.Concat("ExportData_", DateTime.Now.ToString("yyyyMMddHHmmss"), ".xlsx")
-        //    };
-        //}
+            return new Common.ActionResultExtensions.ExportExcelResult
+            {
+                workBook = workbook,
+                FileName = string.Concat("ExportData_", DateTime.Now.ToString("yyyyMMddHHmmss"), ".xlsx")
+            };
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

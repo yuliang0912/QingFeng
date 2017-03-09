@@ -47,5 +47,13 @@ namespace QingFeng.Common.Extensions
                 ? str
                 : $"{(type == 0 || type == 1 ? "%" : string.Empty)}{str.Trim()}{(type == 0 || type == 2 ? "%" : string.Empty)}";
         }
+
+
+        public static string ConvertInterestRate(this decimal d1, decimal d2)
+        {
+            var difference = d1 - d2;
+
+            return string.Format("{0:0.00%}", difference / d1);
+        }
     }
 }

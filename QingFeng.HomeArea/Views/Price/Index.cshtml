@@ -8,15 +8,18 @@
 }
 @using QingFeng.Common
 @using QingFeng.Models
+@using QingFeng.Common.Extensions
 @model QingFeng.Common.ApiCore.Result.ApiPageList<ProductBase>
 
 <style type="text/css">
     #order-table-list thead tr {
         background: none;
     }
+
     th {
         text-align: center;
     }
+
     #order-table-list td {
         vertical-align: middle;
     }
@@ -68,72 +71,84 @@
     </h1>
 </div>
 
-<div class="table-responsive">
-    <table class="table table-bordered" id="order-table-list">
-        <thead>
-            <tr>
-                <th rowspan="2" class="center">品名</th>
-                <th rowspan="2" class="center">货号</th>
-                <th rowspan="2" class="center">品牌</th>
-                <th rowspan="2" class="center">分类</th>
-                <th rowspan="2" class="center">性别</th>
-                <th colspan="5" class="center">spu</th>
-                <th rowspan="2" class="center">操作</th>
-            </tr>
-            <tr>
-                <th>颜色</th>
-                <th>价格</th>
-                <th>最低售价</th>
-                <th>供货价</th>
-                <th>毛利率</th>
-            </tr>
-        </thead>
+@if (Model.PageList.Count() == 0)
+{
+    <div class="panel panel-default" style="width:500px; margin:20px auto;">
+        <div class="panel-heading">
+            <h3 class="panel-title">系统提示</h3>
+        </div>
+        <div class="panel-body"> 暂无相关记录, 马上选择过滤条件！！！</div>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered" id="order-table-list">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="center">品名</th>
+                    <th rowspan="2" class="center">货号</th>
+                    <th rowspan="2" class="center">品牌</th>
+                    <th rowspan="2" class="center">分类</th>
+                    <th rowspan="2" class="center">性别</th>
+                    <th colspan="5" class="center">spu</th>
+                    <th rowspan="2" class="center">操作</th>
+                </tr>
+                <tr>
+                    <th>颜色</th>
+                    <th>价格</th>
+                    <th>最低售价</th>
+                    <th>供货价</th>
+                    <th>毛利率</th>
+                </tr>
+            </thead>
 
-        <tbody>
-            @foreach (var item in Model.PageList)
-            {
-                index = 0;
-                int productCount = item.SubProduct.Count();
-                foreach (var product in item.SubProduct)
+            <tbody>
+                @foreach (var item in Model.PageList)
                 {
-                    <tr align="center">
-                        @if (index == 0)
+                    index = 0;
+                    int productCount = item.SubProduct.Count();
+                    foreach (var product in item.SubProduct)
+                    {
+                        <tr align="center">
+                            @if (index == 0)
                         {
-                            <td rowspan="@productCount" id="goods-name-@item.BaseId">7-@item.BaseName</td>
-                            <td rowspan="@productCount">@item.BaseNo</td>
-                            <td rowspan="@productCount">@item.BrandId.ToString()</td>
-                            <td rowspan="@productCount">@item.CategoryId.ToString()</td>
-                            <td rowspan="@productCount">@item.SexId.ToString()</td>
-                        }
-                        <td>@product.ProductNo</td>
-                        <td>@product.OriginalPrice</td>
-                        <td>@product.ActualPrice</td>
-                        @if (userPrice.ContainsKey(product.ProductId))
+                                <td rowspan="@productCount" id="goods-name-@item.BaseId">7-@item.BaseName</td>
+                                <td rowspan="@productCount">@item.BaseNo</td>
+                                <td rowspan="@productCount">@item.BrandId.ToString()</td>
+                                <td rowspan="@productCount">@item.CategoryId.ToString()</td>
+                                <td rowspan="@productCount">@item.SexId.ToString()</td>
+                            }
+                            <td>@product.ProductNo</td>
+                            <td>@product.OriginalPrice</td>
+                            <td>@product.ActualPrice</td>
+                            @if (userPrice.ContainsKey(product.ProductId))
                         {
-                            <td>@(userPrice[product.ProductId].ActualPrice)</td>
-                            <td>@((userPrice[product.ProductId].ActualPrice - product.ActualPrice) % product.ActualPrice)</td>
-                        }
-                        else
+                                <td>@(userPrice[product.ProductId].ActualPrice)</td>
+                                <td>@(userPrice[product.ProductId].ActualPrice.ConvertInterestRate(product.ActualPrice))</td>
+                            }
+                            else
+                            {
+                                <td>@(product.ActualPrice)</td>
+                                <td>0%</td>
+                            }
+                            @if (index == 0)
                         {
-                            <td>@(product.ActualPrice)</td>
-                            <td>0%</td>
-                        }
-                        @if (index == 0)
-                        {
-                            <td rowspan="@productCount"><a href="http://www.findshoes.cn/price/distributorSet?userId=@(ViewBag.userId)&baseId=@item.BaseId" class="set-modal">设置</a></td>
-                        }
-                    </tr>
-                    index++;
+                                <td rowspan="@productCount"><a href="http://www.findshoes.cn/price/distributorSet?userId=@(ViewBag.userId)&baseId=@item.BaseId" class="set-modal">设置</a></td>
+                            }
+                        </tr>
+                        index++;
+                    }
                 }
-            }
-        </tbody>
-        <tfoot>
-            <tr align="center">
-                <td colspan="11"><ul class="pagination"><li class="active"><a class="" href="http://www.qingfeng.com/#">1</a></li><li><a href="http://www.qingfeng.com/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=2">2</a></li><li><a href="http://www.qingfeng.com/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=3">3</a></li><li><a href="http://www.qingfeng.com/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=4">4</a></li><li><a href="http://www.qingfeng.com/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=2">下一页</a></li></ul></td>
-            </tr>
-        </tfoot>
-    </table>
-</div>
+            </tbody>
+            <tfoot>
+                <tr align="center">
+                    <td colspan="11"><ul class="pagination"><li class="active"><a class="" href="http://www.qingfeng.com/#">1</a></li><li><a href="http://www.qingfeng.com/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=2">2</a></li><li><a href="http://www.qingfeng.com/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=3">3</a></li><li><a href="http://www.qingfeng.com/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=4">4</a></li><li><a href="http://www.qingfeng.com/price/index?user_id=75&amp;brand_id=1&amp;category_id=6&amp;keyword=&amp;page=2">下一页</a></li></ul></td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+}
 
 <script type="text/javascript">
     $(function () {
@@ -141,8 +156,8 @@
             formId: 'price-set-form',
             'selector': '.add-modal,.set-modal',
             success: function (response, status) {
-                alert(response.msg);
-                if (response.error == 0) {
+                alert(response.message);
+                if (response.ret == 0) {
                     $('#etop-modal').modal('hide');
                     $('#etop-modal').off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
                         $.pageReload();
@@ -163,10 +178,10 @@
             }
 
             var url = 'http://www.qingfeng.com/price/index';
-            var query_str = 'brand_id=' + brand_id;
-            query_str += '&category_id=' + category_id;
-            query_str += '&keyword=' + keyword;
-            query_str += '&user_id=' + user_id;
+            var query_str = 'brandId=' + brand_id;
+            query_str += '&categoryId=' + category_id;
+            query_str += '&keyWord=' + keyword;
+            query_str += '&userId=' + user_id;
 
             url = url + '?' + query_str;
             $.getPageContent({ url: url });

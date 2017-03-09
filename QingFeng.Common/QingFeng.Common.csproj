@@ -97,6 +97,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActionResultExtensions\ExportExcelResult.cs" />
     <Compile Include="AgentEnums.cs" />
     <Compile Include="ApiCore\Excepition\ApiException.cs" />
     <Compile Include="ApiCore\Filter\ApiExceptionAttribute.cs" />
@@ -125,9 +126,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ActionResultExtensions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

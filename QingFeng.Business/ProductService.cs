@@ -172,6 +172,26 @@ namespace QingFeng.Business
             return _productRepository.GetList(new {baseId});
         }
 
+        public IEnumerable<ProductBase> GetBaseProductList(object condition)
+        {
+            var list = _productBaseRepository.GetList(condition);
+            if (list.Any())
+            {
+                var productDict = _productRepository.GetProductListByBaseIds(-1, list.Select(t => t.BaseId).ToArray())
+                    .GroupBy(c => c.BaseId)
+                    .ToDictionary(c => c.Key, c => c);
+
+                list.ToList().ForEach(t =>
+                {
+                    if (productDict.ContainsKey(t.BaseId))
+                    {
+                        t.SubProduct = productDict[t.BaseId];
+                    }
+                });
+            }
+            return list;
+        }
+
         public bool UpdateStatus(int baseId, int baseStatus, List<KeyValuePair<int, int>> productStatus)
         {
             using (var trans = new TransactionScope())

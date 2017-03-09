@@ -7,6 +7,7 @@ using QingFeng.Common.Utilities;
 using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
 using System.Transactions;
+using QingFeng.Models.DTO;
 
 namespace QingFeng.Business
 {
@@ -14,6 +15,7 @@ namespace QingFeng.Business
     {
         private const string PassWordSplitString = "#agent@com";
         private readonly StoreRepository _storeRepository = new StoreRepository();
+        private readonly ProductRepository _productRepository = new ProductRepository();
         private readonly UserInfoRepository _userInfoRepository = new UserInfoRepository();
         private readonly UserProductPriceRepository _userProductPriceRepository = new UserProductPriceRepository();
 
@@ -162,9 +164,46 @@ namespace QingFeng.Business
             return _userProductPriceRepository.GetListByBaseIds(userId, baseId);
         }
 
-        public bool ResetUserPrice(int userId, int brandId, List<UserProductPrice> list)
+        public int ResetUserPrice(int userId, int brandId, List<UserPriceExcelDTO> list)
         {
-            return _userProductPriceRepository.BatchInsert(userId, list);
+            if (list == null || !list.Any())
+            {
+                return 0;
+            }
+
+            var productList = _productRepository.GetProductListByIds(list.Select(t => t.ProductId).ToArray()).ToDictionary(c => c.ProductId, c => c);
+
+            if (!productList.Any())
+            {
+                return 0;
+            }
+
+            var addList = new List<UserProductPrice>();
+            foreach (var item in list)
+            {
+                if (!productList.ContainsKey(item.ProductId))
+                {
+                    continue;
+                }
+                var product = productList[item.ProductId];
+                if (product.BaseId == item.BaseId && product.BaseNo == item.BaseNo.Trim() && product.ProductNo == item.ProductNo.Trim())
+                {
+                    addList.Add(new UserProductPrice()
+                    {
+                        BaseId = product.BaseId,
+                        BrandId = brandId,
+                        ProductId = product.ProductId,
+                        UserId = userId,
+                        OriginalPrice = item.OriginalPrice,
+                        ActualPrice = item.ActualPrice,
+                        UpdateDate = DateTime.Now
+                    });
+                }
+            }
+
+            var isSuccess = _userProductPriceRepository.BatchInsert(userId, brandId, addList);
+
+            return isSuccess ? addList.Count() : 0;
         }
     }
 }
