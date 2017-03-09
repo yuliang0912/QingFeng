@@ -69,7 +69,7 @@ namespace QingFeng.WebArea.Controllers
         }
 
 
-        //导入EXCEL数据
+        //导入EXCEL数据(IIS-32位运行)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public JsonResult DistributorFileImport(HttpPostedFileBase file)
