@@ -15,16 +15,13 @@ namespace QingFeng.WebArea.Controllers
 {
     public class GoodsController : CustomerController
     {
-        private readonly SkuItemService _skuItemService = new SkuItemService();
-        private readonly ProductService _productService = new ProductService();
-
-
         // GET: Goods
         public ActionResult Index(string keyWord = "", int brandId = 1, int categoryId = 0, int page = 1,
             int pageSize = 30)
         {
+
             var totalItem = 0;
-            var list = _productService.SearchBaseProduct(brandId, 0, categoryId, keyWord, -1, page, pageSize, out totalItem);
+            var list = ProductService.Instance.SearchBaseProduct(brandId, 0, categoryId, keyWord, -1, page, pageSize, out totalItem);
 
             ViewBag.brandId = brandId;
             ViewBag.categoryId = categoryId;
@@ -42,7 +39,7 @@ namespace QingFeng.WebArea.Controllers
 
         public ActionResult Add()
         {
-            var sizeList = _skuItemService.GetList(AgentEnums.SkuType.Size).ToList();
+            var sizeList = SkuItemService.Instance.GetList(AgentEnums.SkuType.Size).ToList();
 
             return View(sizeList);
         }
@@ -55,7 +52,7 @@ namespace QingFeng.WebArea.Controllers
         [HttpPost]
         public JsonResult Add(CreateProductDto model)
         {
-            var result = _productService.AddProduct(model, new UserInfo() {UserId = 155014});
+            var result = ProductService.Instance.AddProduct(model, new UserInfo() { UserId = 155014 });
 
             return Json(result);
         }
@@ -66,14 +63,14 @@ namespace QingFeng.WebArea.Controllers
         /// <returns></returns>
         public ActionResult Edit(int baseId)
         {
-            var baseInfo = _productService.GetProductBase(baseId);
+            var baseInfo = ProductService.Instance.GetProductBase(baseId);
             if (baseInfo == null)
             {
                 return Content("参数错误");
             }
-            baseInfo.SubProduct = _productService.GetProductByBaseId(baseId);
+            baseInfo.SubProduct = ProductService.Instance.GetProductByBaseId(baseId);
 
-            var skuDict = _productService.GetProductSkuListByBaseId(baseId)
+            var skuDict = ProductService.Instance.GetProductSkuListByBaseId(baseId)
                 .GroupBy(t => t.ProductId)
                 .ToDictionary(c => c.Key, c => c.ToList());
 
@@ -85,7 +82,7 @@ namespace QingFeng.WebArea.Controllers
                 }
             }
 
-            ViewBag.sizeList = _skuItemService.GetList(AgentEnums.SkuType.Size).ToList();
+            ViewBag.sizeList = SkuItemService.Instance.GetList(AgentEnums.SkuType.Size).ToList();
 
             return View(baseInfo);
         }
@@ -97,13 +94,13 @@ namespace QingFeng.WebArea.Controllers
         /// <returns></returns>
         public ActionResult Set(int baseId)
         {
-            var baseInfo = _productService.GetProductBase(baseId);
+            var baseInfo = ProductService.Instance.GetProductBase(baseId);
             if (baseInfo == null)
             {
                 return Content("参数错误");
             }
 
-            baseInfo.SubProduct = _productService.GetProductByBaseId(baseId);
+            baseInfo.SubProduct = ProductService.Instance.GetProductByBaseId(baseId);
 
             return View(baseInfo);
         }
@@ -113,7 +110,7 @@ namespace QingFeng.WebArea.Controllers
         {
             var baseId = Convert.ToInt32(Request.Form["baseId"] ?? string.Empty);
 
-            var productList = _productService.GetProductByBaseId(baseId);
+            var productList = ProductService.Instance.GetProductByBaseId(baseId);
 
             var list = new List<KeyValuePair<int, int>>();
             foreach (var item in productList)
@@ -128,7 +125,7 @@ namespace QingFeng.WebArea.Controllers
 
             var baseStatus = productList.Any(t => t.Status == 0) ? 0 : 1;
 
-            var result = _productService.UpdateStatus(baseId, baseStatus, list);
+            var result = ProductService.Instance.UpdateStatus(baseId, baseStatus, list);
 
             return Json(result);
         }
@@ -141,15 +138,15 @@ namespace QingFeng.WebArea.Controllers
         /// <returns></returns>
         public ActionResult View(int baseId)
         {
-            var baseInfo = _productService.GetProductBase(baseId);
+            var baseInfo = ProductService.Instance.GetProductBase(baseId);
             if (baseInfo == null)
             {
                 return Content("参数错误");
             }
-            baseInfo.SubProduct = _productService.GetProductByBaseId(baseId);
+            baseInfo.SubProduct = ProductService.Instance.GetProductByBaseId(baseId);
 
             ViewBag.productSkus =
-                _productService.GetProductSkuListByBaseId(baseId).ToList()
+                ProductService.Instance.GetProductSkuListByBaseId(baseId).ToList()
                     .GroupBy(t => t.SkuName).Select(t => t.Key).ToList();
 
             return View(baseInfo);

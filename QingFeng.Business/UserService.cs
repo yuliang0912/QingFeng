@@ -10,8 +10,10 @@ using QingFeng.Models.DTO;
 
 namespace QingFeng.Business
 {
-    public class UserService
+    public class UserService : Singleton<UserService>
     {
+        private UserService() { }
+
         private const string PassWordSplitString = "#agent@com";
         private readonly StoreRepository _storeRepository = new StoreRepository();
         private readonly ProductRepository _productRepository = new ProductRepository();

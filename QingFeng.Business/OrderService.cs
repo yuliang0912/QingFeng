@@ -9,10 +9,12 @@ using QingFeng.Common;
 
 namespace QingFeng.Business
 {
-    public class OrderService
+    public class OrderService : Singleton<OrderService>
     {
+        private OrderService() { }
+
         private readonly ProductRepository _product = new ProductRepository();
-        private readonly ProductBaseRepository _productBase =new ProductBaseRepository();
+        private readonly ProductBaseRepository _productBase = new ProductBaseRepository();
         private readonly LogisticsRepository _logistics = new LogisticsRepository();
         private readonly OrderMasterRepository _orderMaster = new OrderMasterRepository();
         private readonly OrderDetailRepository _orderDetail = new OrderDetailRepository();
@@ -119,7 +121,7 @@ namespace QingFeng.Business
                 _logistics.Insert(model); //物流
                 var waitDeliverGoodsCount =
                     _orderDetail.Count(
-                        new {orderInfo.OrderId, orderStatus = AgentEnums.OrderDetailStatus.待发货});
+                        new { orderInfo.OrderId, orderStatus = AgentEnums.OrderDetailStatus.待发货 });
                 _orderMaster.Update(
                     new
                     {
@@ -127,7 +129,7 @@ namespace QingFeng.Business
                             waitDeliverGoodsCount == 0
                                 ? AgentEnums.MasterOrderStatus.已完成
                                 : AgentEnums.MasterOrderStatus.进行中
-                    }, new {orderInfo.OrderId});
+                    }, new { orderInfo.OrderId });
                 _orderLogs.Insert(new OrderLogs()
                 {
                     OrderId = orderInfo.OrderId,
@@ -152,14 +154,14 @@ namespace QingFeng.Business
             var model = _orderMaster.Get(conditon);
             if (null != model)
             {
-                model.OrderDetails = _orderDetail.GetList(new {model.OrderNo});
+                model.OrderDetails = _orderDetail.GetList(new { model.OrderNo });
             }
             return model;
         }
 
         public bool IsExists(string orderNo)
         {
-            return _orderMaster.Count(new {orderNo}) > 0;
+            return _orderMaster.Count(new { orderNo }) > 0;
         }
 
         public IEnumerable<OrderMaster> SearchOrderList(int userId, int storeId, int orderStatus, DateTime beginDate,

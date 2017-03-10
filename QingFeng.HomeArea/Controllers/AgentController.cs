@@ -13,12 +13,6 @@ namespace QingFeng.WebArea.Controllers
     [AdminAuthorize(AgentEnums.UserRole.StoreUser)]
     public class AgentController : CustomerController
     {
-
-        private readonly OrderService _orderService = new OrderService();
-        private readonly ProductService _productService = new ProductService();
-        private readonly OrderLogsService _orderLogsService = new OrderLogsService();
-        private readonly LogisticsService _logisticsService = new LogisticsService();
-        private readonly ProductStockService _productStockService = new ProductStockService();
         // GET: Agent
         public ActionResult Index()
         {
@@ -43,15 +37,15 @@ namespace QingFeng.WebArea.Controllers
             endDate = endDate.AddDays(1).AddSeconds(-1);
 
             int totalItem;
-            var list = _orderService.SearchOrderList(user.UserId, storeId, orderStatus, beginDate, endDate, keyWords,
+            var list = OrderService.Instance.SearchOrderList(user.UserId, storeId, orderStatus, beginDate, endDate, keyWords,
                 page,
                 pageSize, out totalItem);
 
-            ViewBag.ProductBase = _productService.GetProductBaseList(
+            ViewBag.ProductBase = ProductService.Instance.GetProductBaseList(
                 list.SelectMany(t => t.OrderDetails).Select(t => t.BaseId).ToArray())
                 .ToDictionary(c => c.BaseId, c => c);
 
-            ViewBag.PorductList = _productService.GetProduct(
+            ViewBag.PorductList = ProductService.Instance.GetProduct(
                 list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
                 .ToDictionary(c => c.ProductId, c => c);
 
@@ -80,7 +74,7 @@ namespace QingFeng.WebArea.Controllers
         {
             int totalItem;
 
-            var list = _productService.SearchBaseProduct(0, 0, categoryId, keyWords, 0, page, pageSize, out totalItem);
+            var list = ProductService.Instance.SearchBaseProduct(0, 0, categoryId, keyWords, 0, page, pageSize, out totalItem);
 
             ViewBag.categoryId = categoryId;
             ViewBag.keyWords = keyWords;
@@ -101,15 +95,15 @@ namespace QingFeng.WebArea.Controllers
                 return View(new ProductBase());
             }
 
-            var model = _productService.GetProductBase(baseNo);
+            var model = ProductService.Instance.GetProductBase(baseNo);
             if (model == null)
             {
                 return Content("<script>alert('未找到指定的产品号');location.href='/agent/ProductStocks';</script>");
             }
 
-            model.SubProduct = _productService.GetProductByBaseId(model.BaseId);
+            model.SubProduct = ProductService.Instance.GetProductByBaseId(model.BaseId);
 
-            var productStockList = _productStockService.GetList(new {model.BaseId});
+            var productStockList = ProductStockService.Instance.GetList(new {model.BaseId});
 
             var productStocks = productStockList
                 .GroupBy(t => t.ProductId)
@@ -131,18 +125,18 @@ namespace QingFeng.WebArea.Controllers
 
         public ActionResult OrderDetail(UserInfo user, long orderId)
         {
-            var order = _orderService.Get(new {orderId, user.UserId});
+            var order = OrderService.Instance.Get(new {orderId, user.UserId});
             if (order == null)
             {
                 return Content("未找到指定的订单");
             }
-            ViewBag.ProductBase = _productService.GetProductBaseList(order.OrderDetails.Select(t => t.BaseId).ToArray())
+            ViewBag.ProductBase = ProductService.Instance.GetProductBaseList(order.OrderDetails.Select(t => t.BaseId).ToArray())
                 .ToDictionary(c => c.BaseId, c => c);
 
-            ViewBag.PorductList = _productService.GetProduct(order.OrderDetails.Select(t => t.ProductId).ToArray())
+            ViewBag.PorductList = ProductService.Instance.GetProduct(order.OrderDetails.Select(t => t.ProductId).ToArray())
                 .ToDictionary(c => c.ProductId, c => c);
 
-            var orderLogistics = _logisticsService.GetLogistics(orderId);
+            var orderLogistics = LogisticsService.Instance.GetLogistics(orderId);
 
             foreach (var item in order.OrderDetails)
             {
@@ -155,7 +149,7 @@ namespace QingFeng.WebArea.Controllers
                 }
             }
 
-            ViewBag.OrderLogs = _orderLogsService.GetList(orderId);
+            ViewBag.OrderLogs = OrderLogsService.Instance.GetList(orderId);
 
             return View(order);
         }
@@ -169,7 +163,7 @@ namespace QingFeng.WebArea.Controllers
             {
                 return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "数据错误"});
             }
-            if (_orderService.IsExists(order.OrderNo))
+            if (OrderService.Instance.IsExists(order.OrderNo))
             {
                 return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "订单号已经存在"});
             }
@@ -180,7 +174,7 @@ namespace QingFeng.WebArea.Controllers
 
             foreach (var item in order.OrderDetails)
             {
-                var stock = _productStockService.Get(new {item.ProductId, item.SkuId});
+                var stock = ProductStockService.Instance.Get(new {item.ProductId, item.SkuId});
                 if (stock == null || stock.StockNum < 1 || item.Quantity > stock.StockNum)
                 {
                     return Json(new ApiResult<int>(5) {Ret = RetEum.ApplicationError, Message = "库存不足"});
@@ -189,7 +183,7 @@ namespace QingFeng.WebArea.Controllers
 
             order.UserId = user.UserId;
 
-            var result = _orderService.CreateOrder(user, order, order.OrderDetails.ToList());
+            var result = OrderService.Instance.CreateOrder(user, order, order.OrderDetails.ToList());
 
             return Json(new ApiResult<bool>(result) {Message = result ? order.OrderId.ToString() : "操作失败"});
         }
@@ -197,9 +191,9 @@ namespace QingFeng.WebArea.Controllers
 
         public JsonResult SearchProduct(string keyWords)
         {
-            var list = _productService.SearchProduct(keyWords);
+            var list = ProductService.Instance.SearchProduct(keyWords);
 
-            var baseList = _productService.GetProductBaseList(list.Select(t => t.BaseId).ToArray())
+            var baseList = ProductService.Instance.GetProductBaseList(list.Select(t => t.BaseId).ToArray())
                 .ToDictionary(c => c.BaseId, c => c);
 
             return Json(list.Select(x => new
@@ -220,7 +214,7 @@ namespace QingFeng.WebArea.Controllers
         public JsonResult GetProductStock(int productId)
         {
             var list =
-                _productStockService.GetList(new {productId})
+                ProductStockService.Instance.GetList(new {productId})
                     .OrderBy(t => t.SkuName)
                     .Where(t => t.StockNum > 0);
 
@@ -235,7 +229,7 @@ namespace QingFeng.WebArea.Controllers
                 return Json(Enumerable.Empty<object>());
             }
 
-            var list = _productService.SearchBaseProduct(categoryId, 0, keyWords).Select(t => new
+            var list = ProductService.Instance.SearchBaseProduct(categoryId, 0, keyWords).Select(t => new
             {
                 baseId = t.BaseId,
                 baseNo = t.BaseNo
@@ -246,7 +240,7 @@ namespace QingFeng.WebArea.Controllers
         [HttpPost]
         public JsonResult PayOrder(UserInfo user, long orderId)
         {
-            var order = _orderService.Get(new {orderId, userId = user.UserId});
+            var order = OrderService.Instance.Get(new {orderId, userId = user.UserId});
 
             if (order == null)
             {
@@ -258,12 +252,12 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "只有待支付状态的订单才能继续支付"});
             }
 
-            var result = _orderService.UpdateOrder(new {orderStatus = AgentEnums.MasterOrderStatus.已支付.GetHashCode()},
+            var result = OrderService.Instance.UpdateOrder(new {orderStatus = AgentEnums.MasterOrderStatus.已支付.GetHashCode()},
                 new {orderId});
 
             if (result)
             {
-                _orderLogsService.CreateLog(new OrderLogs()
+                OrderLogsService.Instance.CreateLog(new OrderLogs()
                 {
                     UserId = user.UserId,
                     UserName = user.UserName,

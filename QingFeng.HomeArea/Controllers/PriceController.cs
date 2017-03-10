@@ -16,10 +16,6 @@ namespace QingFeng.WebArea.Controllers
 {
     public class PriceController : CustomerController
     {
-        private readonly UserService _userService = new UserService();
-        private readonly ProductService _productService = new ProductService();
-
-
         public ActionResult Index(int userId = 0, string keyWord = "", int brandId = 1, int categoryId = 0, int page = 1,
             int pageSize = 30)
         {
@@ -29,13 +25,13 @@ namespace QingFeng.WebArea.Controllers
 
             if (userId > 0)
             {
-                list = _productService.SearchBaseProduct(0, 0, categoryId, keyWord, 0, page, pageSize, out totalItem).ToList();
+                list = ProductService.Instance.SearchBaseProduct(0, 0, categoryId, keyWord, 0, page, pageSize, out totalItem).ToList();
 
-                userPrice = _userService.GetUserPrice(userId, brandId, list.Select(t => t.BaseId).ToArray())
+                userPrice = UserService.Instance.GetUserPrice(userId, brandId, list.Select(t => t.BaseId).ToArray())
                     .ToDictionary(c => c.ProductId, c => c);
             }
 
-            var allUsers = _userService.GetList(new { UserRole = 3 }).ToList();
+            var allUsers = UserService.Instance.GetList(new { UserRole = 3 }).ToList();
 
             ViewBag.brandId = brandId;
             ViewBag.categoryId = categoryId;
@@ -63,7 +59,7 @@ namespace QingFeng.WebArea.Controllers
         [HttpGet]
         public ActionResult DistributorImport()
         {
-            var allUsers = _userService.GetList(new { UserRole = 3 }).ToList();
+            var allUsers = UserService.Instance.GetList(new { UserRole = 3 }).ToList();
 
             return View(allUsers);
         }
@@ -113,7 +109,7 @@ namespace QingFeng.WebArea.Controllers
 
                 var lineItems = execelfile.Worksheet<UserPriceExcelDTO>(0).ToList();
 
-                var rows = _userService.ResetUserPrice(userId, brandId, lineItems);
+                var rows = UserService.Instance.ResetUserPrice(userId, brandId, lineItems);
 
                 return Json(new ApiResult<int>()
                 {
@@ -140,13 +136,13 @@ namespace QingFeng.WebArea.Controllers
         //导出模板文件
         public ActionResult DistributorImportExcel(int brandId, int userId)
         {
-            var baseProductList = _productService.GetBaseProductList(new { brandId, status = 0 });
+            var baseProductList = ProductService.Instance.GetBaseProductList(new { brandId, status = 0 });
 
             var userPrice = new Dictionary<int, UserProductPrice>();
 
             if (userId > 0)
             {
-                userPrice = _userService.GetUserPrice(userId, brandId, baseProductList.Select(t => t.BaseId).ToArray())
+                userPrice = UserService.Instance.GetUserPrice(userId, brandId, baseProductList.Select(t => t.BaseId).ToArray())
                     .ToDictionary(c => c.ProductId, c => c);
             }
 

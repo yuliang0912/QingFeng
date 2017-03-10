@@ -13,22 +13,17 @@ namespace QingFeng.WebArea.Controllers
 {
     public class ProductController : CustomerController
     {
-        private readonly ProductService _productService = new ProductService();
-        private readonly ProductStockService _productStockService = new ProductStockService();
-        private readonly SkuItemService _skuItemService = new SkuItemService();
-        
-
         [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public ActionResult EditProduct(int productId)
         {
-            var model = _productService.GetProduct(productId);
+            var model = ProductService.Instance.GetProduct(productId);
 
             if (model == null)
             {
                 return Content("未找到有效产品");
             }
 
-            var skuList = _skuItemService.GetList(AgentEnums.SkuType.Color);
+            var skuList = SkuItemService.Instance.GetList(AgentEnums.SkuType.Color);
 
             ViewBag.ColorSku = skuList.Where(t => t.Status == 0)
                 .Select(t => new KeyValuePair<int, string>(t.SkuId, t.SkuName))
@@ -40,25 +35,25 @@ namespace QingFeng.WebArea.Controllers
         [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public ActionResult SubProducts(int baseId)
         {
-            var list = _productService.GetProductByBaseId(baseId);
+            var list = ProductService.Instance.GetProductByBaseId(baseId);
             return View(list);
         }
 
         [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public ActionResult ProductManger(int baseId)
         {
-            var baseProduct = _productService.GetProductBase(baseId);
+            var baseProduct = ProductService.Instance.GetProductBase(baseId);
 
             //if (baseProduct == null)
             //{
             //    return Content("未找到有效产品");
             //}
 
-            //baseProduct.SubProduct = _productService.GetProductByBaseId(baseId).ToList();
+            //baseProduct.SubProduct = ProductService.Instance.GetProductByBaseId(baseId).ToList();
 
             //var skuIds = baseProduct.SubProduct.Select(t => t.ColorId).ToList();
 
-            //var skuList = _skuItemService.GetList(AgentEnums.SkuType.Color);
+            //var skuList = SkuItemService.Instance.GetList(AgentEnums.SkuType.Color);
 
             //ViewBag.ColorSku = skuList.Where(t => t.Status == 0 && !skuIds.Contains(t.SkuId))
             //    .Select(t => new KeyValuePair<int, string>(t.SkuId, t.SkuName))
@@ -72,7 +67,7 @@ namespace QingFeng.WebArea.Controllers
         {
             int totalItem;
 
-            var list = _productService.SearchBaseProduct(0, 0, categoryId, keyWords, 0, page, pageSize, out totalItem);
+            var list = ProductService.Instance.SearchBaseProduct(0, 0, categoryId, keyWords, 0, page, pageSize, out totalItem);
 
             ViewBag.categoryId = categoryId;
             ViewBag.keyWords = keyWords;
@@ -89,14 +84,14 @@ namespace QingFeng.WebArea.Controllers
         [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public ActionResult CreateProduct(int baseId)
         {
-            var baseProduct = _productService.GetProductBase(baseId);
+            var baseProduct = ProductService.Instance.GetProductBase(baseId);
 
             if (baseProduct == null)
             {
                 return Content("未找到有效产品");
             }
 
-            var skuList = _skuItemService.GetList(AgentEnums.SkuType.Color);
+            var skuList = SkuItemService.Instance.GetList(AgentEnums.SkuType.Color);
 
             ViewBag.ColorSku = skuList.Where(t => t.Status == 0)
                 .Select(t => new KeyValuePair<int, string>(t.SkuId, t.SkuName))
@@ -110,23 +105,23 @@ namespace QingFeng.WebArea.Controllers
         [HttpPost, AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public JsonResult AddProduct(Product model)
         {
-            return Json(_productService.CreateProduct(model));
+            return Json(ProductService.Instance.CreateProduct(model));
         }
 
 
         [HttpPost, AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public JsonResult EditProduct(Product model)
         {
-            return Json(_productService.EditProduct(model));
+            return Json(ProductService.Instance.EditProduct(model));
         }
 
         [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public JsonResult UpdateBaserProductStatus(int baseId, int status)
         {
-            var result = _productService.UpdateBaseProductInfo(new {status}, new {baseId});
+            var result = ProductService.Instance.UpdateBaseProductInfo(new {status}, new {baseId});
             if (result && status == 1)
             {
-                _productService.UpdateProductInfo(new {status}, new {baseId});
+                ProductService.Instance.UpdateProductInfo(new {status}, new {baseId});
             }
             return Json(result);
         }
@@ -134,7 +129,7 @@ namespace QingFeng.WebArea.Controllers
         [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public JsonResult UpdateProductStatus(int productId, int status)
         {
-            return Json(_productService.UpdateProductInfo(new {status}, new {productId}));
+            return Json(ProductService.Instance.UpdateProductInfo(new {status}, new {productId}));
         }
 
         /// <summary>
@@ -145,16 +140,16 @@ namespace QingFeng.WebArea.Controllers
         [AdminAuthorize(AgentEnums.UserRole.AllUser)]
         public JsonResult GetProductStock(string baseNo)
         {
-            var model = _productService.GetProductBase(baseNo);
+            var model = ProductService.Instance.GetProductBase(baseNo);
 
             if (model == null)
             {
                 return Json(Enumerable.Empty<object>());
             }
 
-            model.SubProduct = _productService.GetProductByBaseId(model.BaseId);
+            model.SubProduct = ProductService.Instance.GetProductByBaseId(model.BaseId);
 
-            var productStockList = _productStockService.GetList(new {model.BaseId});
+            var productStockList = ProductStockService.Instance.GetList(new {model.BaseId});
 
             var productStocks = productStockList
                 .GroupBy(t => t.ProductId)
@@ -193,7 +188,7 @@ namespace QingFeng.WebArea.Controllers
         {
             int totalItem;
 
-            var list = _productService.SearchBaseProduct(0, 0, categoryId, keyWords, 0, page, pageSize, out totalItem);
+            var list = ProductService.Instance.SearchBaseProduct(0, 0, categoryId, keyWords, 0, page, pageSize, out totalItem);
 
             return Json(new ApiPageList<ProductBase>()
             {

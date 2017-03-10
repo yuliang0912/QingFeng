@@ -15,16 +15,6 @@ namespace QingFeng.WebArea.Controllers
     [AdminAuthorize(AgentEnums.UserRole.Administrator)]
     public class AdminController : CustomerController
     {
-        private readonly UserService _userService = new UserService();
-        private readonly OrderService _orderService = new OrderService();
-        private readonly SkuItemService _skuItemService = new SkuItemService();
-        private readonly ProductService _productService = new ProductService();
-        private readonly StoreService _storeService = new StoreService();
-        private readonly LogisticsService _logisticsService = new LogisticsService();
-        private readonly OrderLogsService _orderLogsService = new OrderLogsService();
-        private readonly ProductStockService _productStockService = new ProductStockService();
-
-
         public ActionResult CreateUser()
         {
             return View();
@@ -33,7 +23,7 @@ namespace QingFeng.WebArea.Controllers
         public ActionResult UserList(int page = 1, int pageSize = 20)
         {
             int totalItem;
-            var list = _userService.GetPageList(new {userRole = AgentEnums.UserRole.StoreUser.GetHashCode()}, page,
+            var list = UserService.Instance.GetPageList(new {userRole = AgentEnums.UserRole.StoreUser.GetHashCode()}, page,
                 pageSize, out totalItem);
 
             return View(new ApiPageList<UserInfo>()
@@ -54,19 +44,19 @@ namespace QingFeng.WebArea.Controllers
 
         public ActionResult OrderDetail(long orderId)
         {
-            var order = _orderService.Get(new {orderId});
+            var order = OrderService.Instance.Get(new {orderId});
             if (order == null)
             {
                 return Content("未找到指定的订单");
             }
 
-            ViewBag.ProductBase = _productService.GetProductBaseList(order.OrderDetails.Select(t => t.BaseId).ToArray())
+            ViewBag.ProductBase = ProductService.Instance.GetProductBaseList(order.OrderDetails.Select(t => t.BaseId).ToArray())
                 .ToDictionary(c => c.BaseId, c => c);
 
-            ViewBag.PorductList = _productService.GetProduct(order.OrderDetails.Select(t => t.ProductId).ToArray())
+            ViewBag.PorductList = ProductService.Instance.GetProduct(order.OrderDetails.Select(t => t.ProductId).ToArray())
                 .ToDictionary(c => c.ProductId, c => c);
 
-            var orderLogistics = _logisticsService.GetLogistics(orderId);
+            var orderLogistics = LogisticsService.Instance.GetLogistics(orderId);
             foreach (var item in order.OrderDetails)
             {
                 foreach (var logistics in orderLogistics)
@@ -77,9 +67,9 @@ namespace QingFeng.WebArea.Controllers
                     }
                 }
             }
-            ViewBag.OrderLogs = _orderLogsService.GetList(orderId);
+            ViewBag.OrderLogs = OrderLogsService.Instance.GetList(orderId);
 
-            ViewBag.ComplanyList = _logisticsService.GetComplanyList();
+            ViewBag.ComplanyList = LogisticsService.Instance.GetComplanyList();
 
             return View(order);
         }
@@ -87,7 +77,7 @@ namespace QingFeng.WebArea.Controllers
 
         public ActionResult EditUser(int userId)
         {
-            var userInfo = _userService.GetUserInfo(new {userId, userRole = AgentEnums.UserRole.StoreUser.GetHashCode()});
+            var userInfo = UserService.Instance.GetUserInfo(new {userId, userRole = AgentEnums.UserRole.StoreUser.GetHashCode()});
 
             if (userInfo == null)
             {
@@ -99,7 +89,7 @@ namespace QingFeng.WebArea.Controllers
 
         public ActionResult EditBaseProduct(int baseId)
         {
-            var model = _productService.GetProductBase(baseId);
+            var model = ProductService.Instance.GetProductBase(baseId);
 
             if (model == null)
             {
@@ -123,7 +113,7 @@ namespace QingFeng.WebArea.Controllers
         public ActionResult BaseProducts(int categoryId = 0, string keyWords = "", int page = 1, int pageSize = 10)
         {
             int totalItem;
-            var list = _productService.SearchBaseProduct(0, 0, categoryId, keyWords, -1, page, pageSize, out totalItem);
+            var list = ProductService.Instance.SearchBaseProduct(0, 0, categoryId, keyWords, -1, page, pageSize, out totalItem);
 
             ViewBag.categoryId = categoryId;
             ViewBag.keyWords = keyWords;
@@ -139,19 +129,19 @@ namespace QingFeng.WebArea.Controllers
 
         public ActionResult ColorList()
         {
-            var list = _skuItemService.GetList(AgentEnums.SkuType.Color);
+            var list = SkuItemService.Instance.GetList(AgentEnums.SkuType.Color);
             return View(list);
         }
 
         public ActionResult SizeList()
         {
-            var list = _skuItemService.GetList(AgentEnums.SkuType.Size).OrderBy(t => t.SkuName);
+            var list = SkuItemService.Instance.GetList(AgentEnums.SkuType.Size).OrderBy(t => t.SkuName);
             return View(list);
         }
 
         public ActionResult StoreManger(int userId)
         {
-            var userInfo = _userService.GetUserInfo(new {userId});
+            var userInfo = UserService.Instance.GetUserInfo(new {userId});
 
             if (userInfo == null)
             {
@@ -166,9 +156,9 @@ namespace QingFeng.WebArea.Controllers
         {
             int totalItem;
 
-            var list = _productService.SearchBaseProduct(0, 0, categoryId, keyWords, 0, page, pageSize, out totalItem);
+            var list = ProductService.Instance.SearchBaseProduct(0, 0, categoryId, keyWords, 0, page, pageSize, out totalItem);
 
-            var productStocks = _productStockService.GetProductStockListByBaseIds(
+            var productStocks = ProductStockService.Instance.GetProductStockListByBaseIds(
                 list.Select(t => t.BaseId).ToArray()).GroupBy(t => t.BaseId)
                 .ToDictionary(c => c.Key, c => c.GroupBy(x => x.ProductId).ToDictionary(a => a.Key, a => a.ToList()));
 
@@ -197,15 +187,15 @@ namespace QingFeng.WebArea.Controllers
 
         public ActionResult ProductStockDetails(int productId)
         {
-            var productInfo = _productService.GetProduct(productId);
+            var productInfo = ProductService.Instance.GetProduct(productId);
 
             if (productInfo == null)
             {
                 return Content("参数错误");
             }
 
-            var productStocks = _productStockService.GetList(new {productId}).ToList();
-            var skuList = _skuItemService.GetList(AgentEnums.SkuType.Size);
+            var productStocks = ProductStockService.Instance.GetList(new {productId}).ToList();
+            var skuList = SkuItemService.Instance.GetList(AgentEnums.SkuType.Size);
 
             var skuIds = productStocks.Select(t => t.SkuId).ToList();
 
@@ -222,14 +212,14 @@ namespace QingFeng.WebArea.Controllers
         [HttpPost]
         public JsonResult AddStore(int userId, string homeUrl)
         {
-            var result = _storeService.AddStore(userId, homeUrl);
+            var result = StoreService.Instance.AddStore(userId, homeUrl);
             return Json(result);
         }
 
         [HttpPost]
         public JsonResult UpdateStoreStatus(int storeId, int status)
         {
-            var result = _storeService.UpdateStoreStatus(storeId, status);
+            var result = StoreService.Instance.UpdateStoreStatus(storeId, status);
             return Json(result);
         }
 
@@ -241,7 +231,7 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(4) {Ret = RetEum.ApplicationError, Message = "用户名和密码不能为空"});
             }
 
-            var result = _userService.RegisterUser(userInfo);
+            var result = UserService.Instance.RegisterUser(userInfo);
 
             return Json(new ApiResult<int>(result));
         }
@@ -265,13 +255,13 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(3) {Message = "货名和货号不能为空"});
             }
 
-            if (_productService.GetProductBase(model.BaseNo) != null)
+            if (ProductService.Instance.GetProductBase(model.BaseNo) != null)
             {
                 return Json(new ApiResult<int>(4) {Message = "当前货号已经存在"});
             }
 
             model.CreateUserId = user.UserId;
-            var result = _productService.CreateBaseProduct(model);
+            var result = ProductService.Instance.CreateBaseProduct(model);
             return Json(new ApiResult<bool>(result));
         }
 
@@ -284,7 +274,7 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(2) {Message = "未接收到数据"});
             }
 
-            var baseProduct = _productService.GetProductBase(model.BaseId);
+            var baseProduct = ProductService.Instance.GetProductBase(model.BaseId);
             if (baseProduct == null)
             {
                 return Json(new ApiResult<int>(5) {Message = "参数错误,未找到制定商品"});
@@ -295,13 +285,13 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(3) {Message = "货名和货号不能为空"});
             }
 
-            var result = _productService.UpdateProductBaseInfo(new
+            var result = ProductService.Instance.UpdateProductBaseInfo(new
             {
                 model.BaseName,
                 categoryId = model.CategoryId.GetHashCode()
             }, new {baseProduct.BaseId});
 
-            _productService.UpdateProductInfo(new {model.BaseName}, new {baseProduct.BaseId});
+            ProductService.Instance.UpdateProductInfo(new {model.BaseName}, new {baseProduct.BaseId});
 
             return Json(new ApiResult<bool>(result));
         }
@@ -323,7 +313,7 @@ namespace QingFeng.WebArea.Controllers
             endDate = endDate.AddDays(1).AddSeconds(-1);
 
             int totalItem;
-            var list = _orderService.SearchOrderList(0, 0, orderStatus, beginDate, endDate, keyWords,
+            var list = OrderService.Instance.SearchOrderList(0, 0, orderStatus, beginDate, endDate, keyWords,
                 page,
                 pageSize, out totalItem);
 
@@ -339,12 +329,12 @@ namespace QingFeng.WebArea.Controllers
         [HttpPost]
         public JsonResult UpdateUserInfo(UserInfo userInfo)
         {
-            return Json(_userService.UpdateUserInfo(userInfo));
+            return Json(UserService.Instance.UpdateUserInfo(userInfo));
         }
 
         public JsonResult DelOrRecoveryStatus(UserInfo user, int userId)
         {
-            return Json(_userService.DelOrRecoveryStatus(userId));
+            return Json(UserService.Instance.DelOrRecoveryStatus(userId));
         }
 
         public JsonResult UpdatePassWord(UserInfo user, int userId, string passWord)
@@ -354,13 +344,13 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "密码不能为空"});
             }
 
-            return Json(_userService.UpdatePassWord(userId, passWord));
+            return Json(UserService.Instance.UpdatePassWord(userId, passWord));
         }
 
         [HttpPost]
         public JsonResult SendDeliverGoods(UserInfo user, long orderId, List<int> flowIds, LogisticsInfo model)
         {
-            var orderInfo = _orderService.Get(new {orderId});
+            var orderInfo = OrderService.Instance.Get(new {orderId});
 
             if (orderInfo == null)
             {
@@ -393,7 +383,7 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(6) {Ret = RetEum.ApplicationError, Message = "已取消的商品,不能发货"});
             }
 
-            var result = _orderService.SendDeliverGoods(user, orderInfo, flowIds, model);
+            var result = OrderService.Instance.SendDeliverGoods(user, orderInfo, flowIds, model);
 
             return Json(result);
         }
@@ -402,7 +392,7 @@ namespace QingFeng.WebArea.Controllers
         {
             status = status == 0 ? 0 : 1;
 
-            var result = _skuItemService.Update(new {status}, new {skuId});
+            var result = SkuItemService.Instance.Update(new {status}, new {skuId});
 
             return Json(result);
         }
@@ -419,23 +409,23 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(4) {Ret = RetEum.ApplicationError, Message = "名称不能为空"});
             }
             sku.SkuImgUrl = string.Empty;
-            var result = _skuItemService.AddSkuItem(sku);
+            var result = SkuItemService.Instance.AddSkuItem(sku);
             return Json(result);
         }
 
         public JsonResult ConfrimPayed(UserInfo user, long orderId)
         {
-            var order = _orderService.Get(new {orderId});
+            var order = OrderService.Instance.Get(new {orderId});
             if (order.OrderStatus != AgentEnums.MasterOrderStatus.已支付)
             {
                 return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "只有已支付状态的订单才允许确认收款"});
             }
-            var result = _orderService.UpdateOrder(new {orderStatus = AgentEnums.MasterOrderStatus.待发货.GetHashCode()},
+            var result = OrderService.Instance.UpdateOrder(new {orderStatus = AgentEnums.MasterOrderStatus.待发货.GetHashCode()},
                 new {orderId});
 
             if (result)
             {
-                _orderLogsService.CreateLog(new OrderLogs()
+                OrderLogsService.Instance.CreateLog(new OrderLogs()
                 {
                     UserId = user.UserId,
                     UserName = user.UserName,
@@ -451,12 +441,12 @@ namespace QingFeng.WebArea.Controllers
 
         public JsonResult CancelOrder(UserInfo user, long orderId, string remark)
         {
-            var result = _orderService.UpdateOrder(new {orderStatus = AgentEnums.MasterOrderStatus.已取消.GetHashCode()},
+            var result = OrderService.Instance.UpdateOrder(new {orderStatus = AgentEnums.MasterOrderStatus.已取消.GetHashCode()},
                 new {orderId});
 
             if (result)
             {
-                _orderLogsService.CreateLog(new OrderLogs()
+                OrderLogsService.Instance.CreateLog(new OrderLogs()
                 {
                     UserId = user.UserId,
                     UserName = user.NickName,
@@ -472,7 +462,7 @@ namespace QingFeng.WebArea.Controllers
 
         public JsonResult CreateProductStock(int productId, string sizeSkuIds)
         {
-            var product = _productService.GetProduct(productId);
+            var product = ProductService.Instance.GetProduct(productId);
 
             if (null == product)
             {
@@ -483,7 +473,7 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "尺码SKU必须指定一个"});
             }
             var sizeList = sizeSkuIds.Split(',').Select(int.Parse).ToList();
-            var result = _productStockService.CreateProductStock(productId, sizeList);
+            var result = ProductStockService.Instance.CreateProductStock(productId, sizeList);
 
             return Json(new ApiResult<int>(result));
         }
@@ -496,7 +486,7 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "库存不能小于0"});
             }
 
-            var result = _productStockService.UpdateProductStock(new {stockNum}, new {stockId});
+            var result = ProductStockService.Instance.UpdateProductStock(new {stockNum}, new {stockId});
 
             return Json(new ApiResult<bool>(result));
         }

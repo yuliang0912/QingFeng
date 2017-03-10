@@ -25,7 +25,7 @@ namespace QingFeng.WebArea.Fillter
         {
             var userId = FormsAuthenticationService.Instance.UserId;
 
-            CurrentUser = string.IsNullOrEmpty(userId) ? null : new UserService().GetUserInfo(new {userId});
+            CurrentUser = string.IsNullOrEmpty(userId) ? null : UserService.Instance.GetUserInfo(new {userId});
 
             //CurrentUser = new UserService().GetUserInfo(new {userName = "admin"});
 

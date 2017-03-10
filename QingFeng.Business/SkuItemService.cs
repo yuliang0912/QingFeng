@@ -9,8 +9,10 @@ using QingFeng.Models;
 
 namespace QingFeng.Business
 {
-    public class SkuItemService
+    public class SkuItemService : Singleton<SkuItemService>
     {
+        private SkuItemService() { }
+
         private readonly SkuItemRepository _skuItemRepository = new SkuItemRepository();
 
         public IEnumerable<SkuItem> GetList()
@@ -20,7 +22,7 @@ namespace QingFeng.Business
 
         public IEnumerable<SkuItem> GetList(AgentEnums.SkuType skuType)
         {
-            return _skuItemRepository.GetList(new {skuType = skuType.GetHashCode()});
+            return _skuItemRepository.GetList(new { skuType = skuType.GetHashCode() });
         }
 
         public bool Update(object model, object condition)
@@ -30,7 +32,7 @@ namespace QingFeng.Business
 
         public bool IsExists(string skuName, AgentEnums.SkuType skuType)
         {
-            return _skuItemRepository.Count(new {skuName = skuName.Trim(), skuType = skuType.GetHashCode()}) > 0;
+            return _skuItemRepository.Count(new { skuName = skuName.Trim(), skuType = skuType.GetHashCode() }) > 0;
         }
 
         public int AddSkuItem(SkuItem model)

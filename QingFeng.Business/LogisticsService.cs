@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
+using QingFeng.Common;
 
 namespace QingFeng.Business
 {
-    public class LogisticsService
+    public class LogisticsService: Singleton<LogisticsService>
     {
+        private LogisticsService() { }
         private readonly LogisticsRepository _logisticsRepository=new LogisticsRepository();
         public List<KeyValuePair<int, string>> GetComplanyList()
         {

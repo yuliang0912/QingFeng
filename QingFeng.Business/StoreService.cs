@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using QingFeng.Common.Extensions;
 using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
+using QingFeng.Common;
 
 namespace QingFeng.Business
 {
-    public class StoreService
+    public class StoreService : Singleton<StoreService>
     {
+        private StoreService() { }
+
         private readonly StoreRepository _storeRepository = new StoreRepository();
 
         public int CreateStore(StoreInfo model)

@@ -5,11 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
+using QingFeng.Common;
 
 namespace QingFeng.Business
 {
-    public class OrderLogsService
+    public class OrderLogsService: Singleton<OrderLogsService>
     {
+        private OrderLogsService() { }
         private readonly OrderLogsRepository _orderLogsRepository = new OrderLogsRepository();
 
         public IEnumerable<OrderLogs> GetList(long orderId)

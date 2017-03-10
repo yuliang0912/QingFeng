@@ -17,6 +17,9 @@ namespace QingFeng.Business
 
     public class ProductService : Singleton<ProductService>
     {
+
+        private ProductService() { }
+       
         private readonly ProductRepository _productRepository = new ProductRepository();
         private readonly ProductSkuRepository _productSkuRepository = new ProductSkuRepository();
         private readonly ProductBaseRepository _productBaseRepository = new ProductBaseRepository();

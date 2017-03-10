@@ -11,7 +11,6 @@ namespace QingFeng.WebArea.Controllers
 {
     public class HomeController : CustomerController
     {
-        private readonly UserService _userService = new UserService();
         // GET: Home
         [AdminAuthorize(AgentEnums.UserRole.Administrator)]
         public ActionResult Index(UserInfo user)
@@ -33,7 +32,7 @@ namespace QingFeng.WebArea.Controllers
         public JsonResult LoginCheck(string loginName, string passWord)
         {
             bool isPass;
-            var userInfo = _userService.Login(loginName, passWord, out isPass);
+            var userInfo = UserService.Instance.Login(loginName, passWord, out isPass);
             if (userInfo != null && userInfo.Status != 0)
             {
                 return Json(new {isPass = 2, userRole = userInfo?.UserRole}, JsonRequestBehavior.AllowGet);
@@ -54,7 +53,7 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "不能更新自己的状态"});
             }
 
-            var result = _userService.UpdateUserInfo(new UserInfo() {UserId = userId, Status = status});
+            var result = UserService.Instance.UpdateUserInfo(new UserInfo() {UserId = userId, Status = status});
 
             return Json(new ApiResult<bool>(result));
         }
@@ -68,7 +67,7 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "密码不能为空"});
             }
 
-            return Json(_userService.UpdatePassWord(user, oldPwd, newPwd));
+            return Json(UserService.Instance.UpdatePassWord(user, oldPwd, newPwd));
         }
     }
 }
