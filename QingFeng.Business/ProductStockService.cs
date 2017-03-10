@@ -1,4 +1,5 @@
-﻿using QingFeng.DataAccessLayer.Repository;
+﻿using QingFeng.Common;
+using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
 using System;
 using System.Collections.Generic;
@@ -7,7 +8,7 @@ using System.Transactions;
 
 namespace QingFeng.Business
 {
-    public class ProductStockService
+    public class ProductStockService : Singleton<ProductStockService>
     {
         private readonly ProductRepository _productRepository = new ProductRepository();
         private readonly SkuItemRepository _skuItemRepository = new SkuItemRepository();
@@ -23,12 +24,12 @@ namespace QingFeng.Business
                 return 0;
             }
 
-            var product = _productRepository.Get(new {productId});
+            var product = _productRepository.Get(new { productId });
             if (product == null)
             {
                 return 0;
             }
-            var productStockList = _productStockRepository.GetList(new {productId}).ToList();
+            var productStockList = _productStockRepository.GetList(new { productId }).ToList();
 
 
             var addCount = 0;

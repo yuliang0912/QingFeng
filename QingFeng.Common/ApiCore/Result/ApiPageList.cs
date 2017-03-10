@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Newtonsoft.Json;
+using System.Text;
 
 namespace QingFeng.Common.ApiCore.Result
 {
@@ -49,5 +50,94 @@ namespace QingFeng.Common.ApiCore.Result
 
         [JsonProperty(PropertyName = "pageList")]
         public IEnumerable<T> PageList { get; set; }
+
+
+        public virtual string GetPagerHtml(string JsMethod = "goPage")
+        {
+            int intPages = 0;
+
+            List<int> alPages = CalculateBeginAndEnd(TotalCount, PageSize, Page, 5);
+
+            if (1 >= alPages.Count) return string.Empty;
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("<ul class=\"pagination\">");
+            if (Page > intPages) Page = intPages;
+
+            if (Page != 1)
+            {
+                sb.AppendFormat("<li><a href=\"javascript:{1}({0})\">上一页</a></li>", Page - 1, JsMethod);
+            }
+
+            foreach (int i in alPages)
+            {
+                if (i == Page)
+                {
+                    sb.AppendFormat("<li class=\"active\"><a href=\"javascript:void(0)\">{0}</a></li>", i);
+                }
+                else
+                {
+                    sb.AppendFormat("<li><a href=\"javascript:{2}({0})\">{1}</a></li>", i, i, JsMethod);
+                }
+            }
+
+            if (Page + 1 <= intPages)
+            {
+                sb.AppendFormat("<li><a href=\"javascript:{1}({0})\">下一页</a></li>", Page + 1, JsMethod);
+            }
+            sb.Append("</ul>");
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// 获取页面中需要显示的页码
+        /// </summary>
+        /// <param name="totalRecords">记录数</param>
+        /// <param name="pageSize">每页显示记录数</param>
+        /// <param name="pageIndex">当前页码</param>
+        /// <param name="stepNum">当前页左右要显示页码数</param>
+        /// <param name="pageCount">返回的总页面数</param>
+        /// <returns>需要显示的页码</returns>
+        private List<int> CalculateBeginAndEnd(int totalRecords, int pageSize, int pageIndex, int stepNum)
+        {
+            List<int> list = new List<int>();
+            int intBegin = 0;
+            int intEnd = 0;
+
+            if (PageCount == 0 || pageIndex < 1 || PageCount < pageIndex)
+                return list;
+
+            stepNum = stepNum < 1 ? 1 : stepNum;
+
+            intBegin = pageIndex - stepNum;
+            intEnd = pageIndex + stepNum;
+
+            if (intBegin < 1)
+            {
+                intEnd -= intBegin;
+
+                intBegin = 1;
+            }
+
+            if (intEnd > PageCount)
+            {
+                intBegin -= intEnd - PageCount - 1;
+
+                intEnd = PageCount;
+            }
+
+            if (intBegin < 1)
+            {
+                intBegin = 1;
+            }
+
+            for (int i = intBegin; i <= intEnd; i++)
+            {
+                list.Add(i);
+            }
+
+            return list;
+        }
     }
 }

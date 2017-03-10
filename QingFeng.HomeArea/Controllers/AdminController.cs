@@ -123,7 +123,7 @@ namespace QingFeng.WebArea.Controllers
         public ActionResult BaseProducts(int categoryId = 0, string keyWords = "", int page = 1, int pageSize = 10)
         {
             int totalItem;
-            var list = _productService.SearchBaseProduct(keyWords, categoryId, -1, page, pageSize, out totalItem);
+            var list = _productService.SearchBaseProduct(0, 0, categoryId, keyWords, -1, page, pageSize, out totalItem);
 
             ViewBag.categoryId = categoryId;
             ViewBag.keyWords = keyWords;
@@ -166,7 +166,7 @@ namespace QingFeng.WebArea.Controllers
         {
             int totalItem;
 
-            var list = _productService.SearchBaseProduct(keyWords, categoryId, 0, page, pageSize, out totalItem);
+            var list = _productService.SearchBaseProduct(0, 0, categoryId, keyWords, 0, page, pageSize, out totalItem);
 
             var productStocks = _productStockService.GetProductStockListByBaseIds(
                 list.Select(t => t.BaseId).ToArray()).GroupBy(t => t.BaseId)

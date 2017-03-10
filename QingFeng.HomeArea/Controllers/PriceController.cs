@@ -29,7 +29,7 @@ namespace QingFeng.WebArea.Controllers
 
             if (userId > 0)
             {
-                list = _productService.SearchBaseProduct(keyWord, categoryId, 0, page, pageSize, out totalItem).ToList();
+                list = _productService.SearchBaseProduct(0, 0, categoryId, keyWord, 0, page, pageSize, out totalItem).ToList();
 
                 userPrice = _userService.GetUserPrice(userId, brandId, list.Select(t => t.BaseId).ToArray())
                     .ToDictionary(c => c.ProductId, c => c);

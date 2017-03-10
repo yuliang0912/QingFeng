@@ -72,7 +72,7 @@ namespace QingFeng.WebArea.Controllers
         {
             int totalItem;
 
-            var list = _productService.SearchBaseProduct(keyWords, categoryId, 0, page, pageSize, out totalItem);
+            var list = _productService.SearchBaseProduct(0, 0, categoryId, keyWords, 0, page, pageSize, out totalItem);
 
             ViewBag.categoryId = categoryId;
             ViewBag.keyWords = keyWords;
@@ -193,7 +193,7 @@ namespace QingFeng.WebArea.Controllers
         {
             int totalItem;
 
-            var list = _productService.SearchBaseProduct(keyWords, categoryId, 0, page, pageSize, out totalItem);
+            var list = _productService.SearchBaseProduct(0, 0, categoryId, keyWords, 0, page, pageSize, out totalItem);
 
             return Json(new ApiPageList<ProductBase>()
             {

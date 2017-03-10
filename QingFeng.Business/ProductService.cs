@@ -15,7 +15,7 @@ using QingFeng.Models.DTO;
 namespace QingFeng.Business
 {
 
-    public class ProductService
+    public class ProductService : Singleton<ProductService>
     {
         private readonly ProductRepository _productRepository = new ProductRepository();
         private readonly ProductSkuRepository _productSkuRepository = new ProductSkuRepository();
@@ -24,9 +24,9 @@ namespace QingFeng.Business
 
         public ApiResult<bool> AddProduct(CreateProductDto model, UserInfo user)
         {
-            if (_productBaseRepository.Count(new {baseNo = model.baseNo.Trim()}) > 0)
+            if (_productBaseRepository.Count(new { baseNo = model.baseNo.Trim() }) > 0)
             {
-                return new ApiResult<bool>(false) {ErrorCode = 1, Message = "当前商品已经存在,不能重复添加"};
+                return new ApiResult<bool>(false) { ErrorCode = 1, Message = "当前商品已经存在,不能重复添加" };
             }
 
             var baseProduct = new ProductBase
@@ -77,12 +77,12 @@ namespace QingFeng.Business
             {
                 return 2;
             }
-            var baseInfo = _productBaseRepository.Get(new {model.BaseId});
+            var baseInfo = _productBaseRepository.Get(new { model.BaseId });
             if (baseInfo == null)
             {
                 return 0;
             }
-            if (_productRepository.Count(new {model.ProductNo}) > 0)
+            if (_productRepository.Count(new { model.ProductNo }) > 0)
             {
                 return 3;
             }
@@ -96,7 +96,7 @@ namespace QingFeng.Business
 
         public int EditProduct(Product model)
         {
-            var originalInfo = _productRepository.Get(new {model.ProductId});
+            var originalInfo = _productRepository.Get(new { model.ProductId });
             if (originalInfo == null)
             {
                 return 2;
@@ -105,7 +105,7 @@ namespace QingFeng.Business
             {
                 return 3;
             }
-            if (!model.ProductNo.Equals(originalInfo.ProductNo) && _productRepository.Count(new {model.ProductNo}) > 0)
+            if (!model.ProductNo.Equals(originalInfo.ProductNo) && _productRepository.Count(new { model.ProductNo }) > 0)
             {
                 return 4;
             }
@@ -115,8 +115,8 @@ namespace QingFeng.Business
             }
 
             return _productRepository.Update(
-                new {model.ProductNo, model.ProductName, model.OriginalPrice, model.ActualPrice},
-                new {model.ProductId})
+                new { model.ProductNo, model.ProductName, model.OriginalPrice, model.ActualPrice },
+                new { model.ProductId })
                 ? 1
                 : 0;
         }
@@ -144,7 +144,7 @@ namespace QingFeng.Business
 
         public ProductBase GetProductBase(int baseId)
         {
-            return _productBaseRepository.Get(new {baseId});
+            return _productBaseRepository.Get(new { baseId });
         }
 
         public IEnumerable<ProductBase> GetProductBaseList(params int[] baseId)
@@ -154,7 +154,7 @@ namespace QingFeng.Business
 
         public ProductBase GetProductBase(string baseNo)
         {
-            return _productBaseRepository.Get(new {baseNo});
+            return _productBaseRepository.Get(new { baseNo });
         }
 
         public IEnumerable<Product> GetProduct(params int[] productId)
@@ -164,12 +164,12 @@ namespace QingFeng.Business
 
         public Product GetProduct(int productId)
         {
-            return _productRepository.Get(new {productId});
+            return _productRepository.Get(new { productId });
         }
 
         public IEnumerable<Product> GetProductByBaseId(int baseId)
         {
-            return _productRepository.GetList(new {baseId});
+            return _productRepository.GetList(new { baseId });
         }
 
         public IEnumerable<ProductBase> GetBaseProductList(object condition)
@@ -196,21 +196,20 @@ namespace QingFeng.Business
         {
             using (var trans = new TransactionScope())
             {
-                _productBaseRepository.Update(new {status = baseStatus}, new {baseId});
+                _productBaseRepository.Update(new { status = baseStatus }, new { baseId });
                 foreach (var item in productStatus)
                 {
-                    _productRepository.Update(new {status = item.Value}, new {productId = item.Key});
+                    _productRepository.Update(new { status = item.Value }, new { productId = item.Key });
                 }
                 trans.Complete();
             }
             return true;
         }
 
-        public IEnumerable<ProductBase> SearchBaseProduct(string keyWords, int categoryId, int status, int page,
-            int pageSize,
+        public IEnumerable<ProductBase> SearchBaseProduct(int brandId, int sexId, int categoryId, string keyWords, int status, int page, int pageSize,
             out int totalItem)
         {
-            var list = _productBaseRepository.SearchProductBase(categoryId, keyWords, status, page, pageSize,
+            var list = _productBaseRepository.SearchProductBase(brandId, sexId, categoryId, keyWords, status, page, pageSize,
                 out totalItem);
 
             if (!list.Any()) return list;
@@ -233,7 +232,7 @@ namespace QingFeng.Business
         public IEnumerable<ProductBase> SearchBaseProduct(int categoryId, int status, string keyWords)
         {
             int totalItem;
-            return _productBaseRepository.SearchProductBase(categoryId, keyWords, status, 1, 100, out totalItem);
+            return _productBaseRepository.SearchProductBase(0, 0, categoryId, keyWords, status, 1, 100, out totalItem);
         }
 
         public IEnumerable<Product> SearchProduct(string keyWords)
@@ -244,7 +243,12 @@ namespace QingFeng.Business
 
         public IEnumerable<ProductSkus> GetProductSkuListByBaseId(int baseId)
         {
-            return _productSkuRepository.GetList(new {baseId});
+            return _productSkuRepository.GetList(new { baseId });
+        }
+
+        public List<KeyValuePair<int, string>> GetDistinctSkuList(params int[] baseId)
+        {
+            return _productSkuRepository.GetDistinctSkuList(baseId);
         }
     }
 }

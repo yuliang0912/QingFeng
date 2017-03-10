@@ -40,6 +40,9 @@ namespace QingFeng.Models
         public int Status { get; set; }
 
         [IgnoreField]
+        public int StockNum { get; set; }
+
+        [IgnoreField]
         public IEnumerable<ProductStock> ProductStocks { get; set; }
 
         [IgnoreField]

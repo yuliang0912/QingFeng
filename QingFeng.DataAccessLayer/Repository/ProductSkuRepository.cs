@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using QingFeng.Models;
 using QingFeng.Common.Dapper;
+using Dapper;
 
 namespace QingFeng.DataAccessLayer.Repository
 {
@@ -30,6 +31,23 @@ namespace QingFeng.DataAccessLayer.Repository
             using (var connection = GetReadConnection)
             {
                 return connection.QueryList<ProductStock>(null, TableName, buildWhereSql);
+            }
+        }
+
+        public List<KeyValuePair<int, string>> GetDistinctSkuList(params int[] baseId)
+        {
+            if (baseId == null || !baseId.Any())
+            {
+                return new List<KeyValuePair<int, string>>();
+            }
+
+            var sql = $"SELECT DISTINCT skuId,skuName FROM productskus WHERE baseId IN ({string.Join(",", baseId)}) ORDER BY skuId";
+
+            using (var connection = GetReadConnection)
+            {
+                return connection.Query<ProductStock>(sql)
+                    .Select(t => new KeyValuePair<int, string>(t.SkuId, t.SkuName))
+                    .ToList();
             }
         }
     }

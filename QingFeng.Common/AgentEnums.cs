@@ -79,6 +79,14 @@ namespace QingFeng.Common
         }
 
         /// <summary>
+        /// 仓库
+        /// </summary>
+        public enum Warehouse
+        {
+            XH = 1
+        }
+
+        /// <summary>
         /// 主订单状态
         /// </summary>
         public enum MasterOrderStatus

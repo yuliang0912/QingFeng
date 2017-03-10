@@ -34,7 +34,7 @@ namespace QingFeng.DataAccessLayer.Repository
             }
         }
 
-        public IEnumerable<ProductBase> SearchProductBase(int categoryId, string keyWords, int status, int page, int pageSize,
+        public IEnumerable<ProductBase> SearchProductBase(int brandId, int sexId, int categoryId, string keyWords, int status, int page, int pageSize,
             out int totalItem)
         {
             var additional = string.IsNullOrWhiteSpace(keyWords)
@@ -45,21 +45,25 @@ namespace QingFeng.DataAccessLayer.Repository
             {
                 additional += " AND status = " + status;
             }
+            if (categoryId > 0)
+            {
+                additional += " AND categoryId = " + categoryId;
+            }
+            if (brandId > 0)
+            {
+                additional += " AND brandId = " + brandId;
+            }
+            if (sexId > 0)
+            {
+                additional += " AND sexId = " + sexId;
+            }
 
             Func<object, string> buildWhereSql =
                 (cond) => SqlMapperExtensions.BuildWhereSql(cond, false, additional, "keyWords");
 
             object condition = null;
 
-            if (categoryId > 0 && !string.IsNullOrWhiteSpace(keyWords))
-            {
-                condition = new { categoryId, keyWords = keyWords.FormatSqlLikeString() };
-            }
-            else if (categoryId > 0)
-            {
-                condition = new { categoryId };
-            }
-            else if (!string.IsNullOrWhiteSpace(keyWords))
+            if (!string.IsNullOrWhiteSpace(keyWords))
             {
                 condition = new { keyWords = keyWords.FormatSqlLikeString() };
             }

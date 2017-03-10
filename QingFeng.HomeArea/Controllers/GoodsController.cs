@@ -24,7 +24,7 @@ namespace QingFeng.WebArea.Controllers
             int pageSize = 30)
         {
             var totalItem = 0;
-            var list = _productService.SearchBaseProduct(keyWord, categoryId, -1, page, pageSize, out totalItem);
+            var list = _productService.SearchBaseProduct(brandId, 0, categoryId, keyWord, -1, page, pageSize, out totalItem);
 
             ViewBag.brandId = brandId;
             ViewBag.categoryId = categoryId;
