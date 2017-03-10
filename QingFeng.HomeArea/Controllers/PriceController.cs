@@ -109,6 +109,15 @@ namespace QingFeng.WebArea.Controllers
 
                 var lineItems = execelfile.Worksheet<UserPriceExcelDTO>(0).ToList();
 
+                if (lineItems.Any(t => t.ActualPrice < 0 || t.OriginalPrice < 0))
+                {
+                    return Json(new ApiResult<bool>(false)
+                    {
+                        ErrorCode = 4,
+                        Message = "价格不能设置成低于0元"
+                    });
+                }
+
                 var rows = UserService.Instance.ResetUserPrice(userId, brandId, lineItems);
 
                 return Json(new ApiResult<int>()

@@ -4,7 +4,6 @@ using QingFeng.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
-using QingFeng.Common.Extensions;
 using QingFeng.Common;
 
 namespace QingFeng.Business

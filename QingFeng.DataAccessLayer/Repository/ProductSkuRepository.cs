@@ -16,11 +16,11 @@ namespace QingFeng.DataAccessLayer.Repository
 
         }
 
-        public IEnumerable<ProductStock> GetProductStockListByBaseIds(params int[] baseId)
+        public IEnumerable<ProductSkus> GetProductSkuListByBaseIds(params int[] baseId)
         {
             if (baseId == null || !baseId.Any())
             {
-                return new List<ProductStock>();
+                return new List<ProductSkus>();
             }
 
             var additional = $"AND baseId IN ({string.Join(",", baseId)})";
@@ -30,7 +30,7 @@ namespace QingFeng.DataAccessLayer.Repository
 
             using (var connection = GetReadConnection)
             {
-                return connection.QueryList<ProductStock>(null, TableName, buildWhereSql);
+                return connection.QueryList<ProductSkus>(null, TableName, buildWhereSql);
             }
         }
 

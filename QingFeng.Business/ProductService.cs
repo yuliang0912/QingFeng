@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
-using QingFeng.Common.Extensions;
-using System.Dynamic;
 using System.Transactions;
 using QingFeng.Common;
 using QingFeng.Common.ApiCore.Result;
@@ -247,6 +243,11 @@ namespace QingFeng.Business
         public IEnumerable<ProductSkus> GetProductSkuListByBaseId(int baseId)
         {
             return _productSkuRepository.GetList(new { baseId });
+        }
+
+        public IEnumerable<ProductSkus> GetProductSkuListByBaseIds(params int[] baseId)
+        {
+            return _productSkuRepository.GetProductSkuListByBaseIds(baseId);
         }
 
         public List<KeyValuePair<int, string>> GetDistinctSkuList(params int[] baseId)
