@@ -143,7 +143,13 @@ namespace QingFeng.Business
 
         public ProductBase GetProductBase(int baseId)
         {
-            return _productBaseRepository.Get(new { baseId });
+            var model = _productBaseRepository.Get(new {baseId});
+
+            if (model != null)
+            {
+                model.SubProduct = _productRepository.GetProductListByBaseIds(0, model.BaseId);
+            }
+            return model;
         }
 
         public IEnumerable<ProductBase> GetProductBaseList(params int[] baseId)
@@ -153,7 +159,13 @@ namespace QingFeng.Business
 
         public ProductBase GetProductBase(string baseNo)
         {
-            return _productBaseRepository.Get(new { baseNo });
+            var model = _productBaseRepository.Get(new {baseNo});
+
+            if (model != null)
+            {
+                model.SubProduct = _productRepository.GetProductListByBaseIds(0, model.BaseId);
+            }
+            return model;
         }
 
         public IEnumerable<Product> GetProduct(params int[] productId)

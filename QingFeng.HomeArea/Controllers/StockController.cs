@@ -14,16 +14,34 @@ using System.Web.Mvc;
 
 namespace QingFeng.WebArea.Controllers
 {
-    public class StockController : Controller
+    public class StockController : CustomerController
     {
 
-        public ActionResult Search(string keyWords = "", int brandId = 0, int sexId = 0, int warehouseId = 0, int page = 1, int pageSize = 20)
+        public ActionResult Search(int baseId = 0, int brandId = 0, int sexId = 0, int warehouseId = 0, int page = 1,
+            int pageSize = 20)
         {
-            int totalItem;
+            int totalItem = 0;
 
-            var list = ProductService.Instance.SearchBaseProduct(brandId, sexId, 0, keyWords, 0, page, pageSize, out totalItem);
+            var list = new List<ProductBase>();
+            if (baseId > 0)
+            {
+                var model = ProductService.Instance.GetProductBase(baseId);
+                if (model != null)
+                {
+                    totalItem = 1;
+                    list.Add(model);
+                }
+            }
+            else
+            {
+                list =
+                    ProductService.Instance.SearchBaseProduct(brandId, sexId, 0, string.Empty, 0, page, pageSize,
+                        out totalItem).ToList();
+            }
 
-            var productStocks = ProductStockService.Instance.GetProductStockListByBaseIds(list.Select(t => t.BaseId).ToArray())
+
+            var productStocks = ProductStockService.Instance.GetProductStockListByBaseIds(
+                list.Select(t => t.BaseId).ToArray())
                 .GroupBy(t => t.ProductId)
                 .ToDictionary(c => c.Key, c => c.ToList());
 
@@ -43,7 +61,6 @@ namespace QingFeng.WebArea.Controllers
 
             ViewBag.brandId = brandId;
             ViewBag.sexId = sexId;
-            ViewBag.keyWords = keyWords;
             ViewBag.warehouseId = warehouseId;
 
             return View(new ApiPageList<ProductBase>
@@ -53,6 +70,22 @@ namespace QingFeng.WebArea.Controllers
                 TotalCount = totalItem,
                 PageList = list
             });
+        }
+
+
+        public JsonResult SearchGoods(string keyWords)
+        {
+            if (string.IsNullOrWhiteSpace(keyWords))
+            {
+                return Json(Enumerable.Empty<object>());
+            }
+
+            var list = ProductService.Instance.SearchBaseProduct(0, 0, keyWords).Select(t => new
+            {
+                baseId = t.BaseId,
+                baseNo = t.BaseNo
+            });
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
 
         public ActionResult Import()

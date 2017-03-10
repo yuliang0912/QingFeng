@@ -10,7 +10,7 @@ using QingFeng.WebArea.Fillter;
 
 namespace QingFeng.WebArea.Controllers
 {
-    [AdminAuthorize(AgentEnums.UserRole.StoreUser)]
+    [AdminAuthorize(AgentEnums.UserRole.AllUser)]
     public class AgentController : CustomerController
     {
         // GET: Agent

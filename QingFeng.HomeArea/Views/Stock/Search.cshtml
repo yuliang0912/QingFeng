@@ -60,13 +60,13 @@
             <div class="form-group">
                 <label class="sr-only" for="goods_keyword">关键字</label>
                 <input type="text" placeholder="请输入商品名称或货号" value="@ViewBag.keyWords" class="form-control" name="goods_ipt" id="goods_ipt">
-                <input type="hidden" value="0" class="form-control" name="goods_ids" id="ipt_goods_id">
+                <input type="hidden" value="" class="form-control" name="goods_ids" id="ipt_goods_id">
                 <select id="good_ids" class="form-control"></select>
             </div>
 
             <button type="button" class="btn btn-primary btn-sm " id="do-goods-filter">过滤</button>
         </small>
-        <a href="http://www.findshoes.cn/stock/add" class="btn btn-info btn-sm pull-right add-modal" id="add-modal"> <i class="glyphicon glyphicon-plus"></i> 添加商品库存</a>
+        <a href="http://www.qingfeng.com/stock/add" class="btn btn-info btn-sm pull-right add-modal" id="add-modal"> <i class="glyphicon glyphicon-plus"></i> 添加商品库存</a>
     </h1>
 </div>
 <!-- /.page-header -->
@@ -77,12 +77,12 @@
             <tr>
                 <th class="center" rowspan="2">品名</th>
                 <th class="center" rowspan="2">货号</th>
-                <th class="center" rowspan="2">颜色</th>
                 <th class="center" rowspan="2">品牌</th>
                 <th class="center" rowspan="2">性别</th>
                 <th class="center" rowspan="2">仓库</th>
+                <th class="center" rowspan="2">颜色</th>
                 <th class="center" rowspan="2"> 小计</th>
-                <th class="center" colspan="8">尺码</th>
+                <th class="center" colspan="@allSkus.Count">尺码</th>
             </tr>
             <tr>
                 @foreach (var item in allSkus)
@@ -109,11 +109,11 @@
                         {
                             <td rowspan="@productCount">@item.BaseName</td>
                             <td rowspan="@productCount">@item.BaseNo</td>
-                            <td rowspan="@productCount">@product.ProductNo</td>
                             <td rowspan="@productCount">@item.BrandId.ToString()</td>
                             <td rowspan="@productCount">@item.SexId.ToString()</td>
+                            <td rowspan="@productCount">E-TOP(XH)</td>
                         }
-                        <td>E-TOP(XH)</td>
+                        <td>@product.ProductNo</td>
                         <td>@product.StockNum</td>
                         @foreach (var sku in allSkus)
                         {
@@ -121,7 +121,7 @@
                             {
                                 skuCounts[sku.Key] += dict[sku.Key];
                                 <td class="center">
-                                    <a href="http://www.findshoes.cn/stock/edit?stockId=&warehouse_id=7" class="center edit-modal">@dict[sku.Key]</a>
+                                    <a href="http://www.qingfeng.com/stock/edit?stockId=&warehouse_id=7" class="center edit-modal">@dict[sku.Key]</a>
                                 </td>
                             }
                             else
@@ -129,13 +129,17 @@
                                 <th class="center">0</th>
                             }
                         }
+                        @if (!allSkus.Any())
+                        {
+                            <th class="center">-</th>
+                        }
                     </tr>
+                    index++;
                 }
             }
-            <!--输出合计数量-->
             <tr align="center">
-                <td colspan="@skuCounts.Count" class="text-right" style="padding-right: 28px;">合计</td>
-                <td>@skuCounts.Sum(t => t.Key)</td>
+                <td colspan="6" class="text-right" style="padding-right: 28px;">合计</td>
+                <td>@skuCounts.Sum(t => t.Value)</td>
                 @foreach (var item in skuCounts)
                 {
                     <td>@item.Value</td>
@@ -149,7 +153,7 @@
         </tbody>
         <tfoot>
             <tr align="center">
-                <td colspan="16"><ul class="pagination"><li class="active"><a class="" href="http://www.findshoes.cn/#">1</a></li><li><a href="http://www.findshoes.cn/stock/search?brand_id=1&amp;gender_id=1&amp;warehouse_id=0&amp;goods_id=0&amp;page=2">2</a></li><li><a href="http://www.findshoes.cn/stock/search?brand_id=1&amp;gender_id=1&amp;warehouse_id=0&amp;goods_id=0&amp;page=2">下一页</a></li></ul></td>
+                <td colspan="12"><ul class="pagination"><li class="active"><a class="" href="http://www.qingfeng.com/#">1</a></li><li><a href="http://www.qingfeng.com/stock/search?brand_id=1&amp;gender_id=1&amp;warehouse_id=0&amp;goods_id=0&amp;page=2">2</a></li><li><a href="http://www.qingfeng.com/stock/search?brand_id=1&amp;gender_id=1&amp;warehouse_id=0&amp;goods_id=0&amp;page=2">下一页</a></li></ul></td>
             </tr>
         </tfoot>
     </table>
@@ -212,12 +216,11 @@
                 return false;
             }
 
-            var base_url = 'http://www.findshoes.cn/stock/search';
-            var params = '?brand_id=' + brand_id + '&gender_id=' + gender_id + '&warehouse_id=' + warehouse_id + '&goods_id=' + goods_id;
+            var base_url = 'http://www.qingfeng.com/stock/search';
+            var params = '?brandId=' + brand_id + '&sexId=' + gender_id + '&warehouseId=' + warehouse_id + '&baseId=' + goods_id;
 
             url = base_url + '/' + params;
             $.getPageContent({ url: url });
-
         });
 
         $('.pagination a').off('click').on('click', function () {
@@ -226,41 +229,37 @@
             return false;
         });
 
-        $('#goods_ipt').bind('input propertychange', function () {
-            val = $(this).val();
-            if (val != '') {
-                $.getJSON('http://www.findshoes.cn/stock/searchGoods' + '?keyword=' + val, function (response) {
-                    if (response.error == 0) {
-                        var list = response.data;
-                        var options = '';
-                        for (var key in list) {
-                            options += '<option value=' + list[key].goods_id + '>' + list[key].goods_name + '</option>';
-                        }
-                        $('#good_ids').html(options);
-                        $('#good_ids').show();
-                        good_ids.size = 25;
-                        $('#good_ids option').click(function () {
-                            $('.filter_goods').attr('disabled', 'disabled');
-                            val = $(this).html();
-                            var id = $(this).val();
-                            $('#goods_ipt').val(val);
-                            $('#ipt_goods_id').val(id);
-                            $('#good_ids').hide();
-                            get_color(id);
-                            get_goods_info(id);
-                        });
-                    }
-                    else {
-                        alert('请求失败');
-                        return false;
-                    }
-                });
-            }
-            else {
+        $('#goods_ipt').bind('input propertychange', function() {
+            var categoryId = $("#gender_id").val();
+            var val = $(this).val().trim();
+            if (val === '') {
                 $('.filter_goods').removeAttr('disabled');
-                $('#ipt_goods_id').val(0);
+                $('#ipt_goods_id').val('');
                 $('#good_ids').hide();
+                return;
             }
+            $.getJSON('/stock/SearchGoods?keyWords=' + val, function(response) {
+                if (response.ret !== 0) {
+                    layer.msg('请求失败');
+                    return;
+                }
+                var list = response.data;
+                var options = '';
+                $.each(list, function(i, item) {
+                    options += '<option value=' + item.baseId + '>' + item.baseNo + '</option>';
+                });
+                $('#good_ids').html(options);
+                $('#good_ids').show();
+                good_ids.size = 25;
+                $('#good_ids option').click(function() {
+                    $('.filter_goods').attr('disabled', 'disabled');
+                    val = $(this).html();
+                    var id = $(this).val();
+                    $('#goods_ipt').val(val);
+                    $('#ipt_goods_id').val(id);
+                    $('#good_ids').hide();
+                });
+            });
         });
     })
 </script>

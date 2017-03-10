@@ -115,19 +115,22 @@ NTENT BEGINS -->
         </tbody>
         <tfoot>
             <tr align="center">
-                <td colspan="11">
-                    <ul class="pagination" style="margin: 0 auto;">
-                        <ul class="pagination"><li class="active"><a class="" href="http://www.qingfeng.com/#">1</a></li><li><a href="http://www.qingfeng.com/goods/index?page_size=40&amp;brand_id=0&amp;category_id=0&amp;page=2">2</a></li><li><a href="http://www.qingfeng.com/goods/index?page_size=40&amp;brand_id=0&amp;category_id=0&amp;page=3">3</a></li><li><a href="http://www.qingfeng.com/goods/index?page_size=40&amp;brand_id=0&amp;category_id=0&amp;page=4">4</a></li><li><a href="http://www.qingfeng.com/goods/index?page_size=40&amp;brand_id=0&amp;category_id=0&amp;page=5">5</a></li><li><a href="http://www.qingfeng.com/goods/index?page_size=40&amp;brand_id=0&amp;category_id=0&amp;page=2">下一页</a></li></ul>
-                    </ul>
+                <td colspan="10">
+                    @(Html.Raw(Model.GetPagerHtml()))
                 </td>
             </tr>
         </tfoot>
-
     </table>
 </div>
 <!-- /.table-responsive -->
 <!-- PAGE CONTENT ENDS -->
 <script type="text/javascript">
+    function goPage(page) {
+        alert(page);
+        return false;
+
+    }
+
     $('#order-search').click(function () {
         var brand_id = $('#brand_id').val() * 1;
         var category_id = $('#category_id').val() * 1;

@@ -62,6 +62,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTO\CreateProductDTO.cs" />
+    <Compile Include="DTO\ProductStockExcelDTO.cs" />
     <Compile Include="DTO\UserPriceExcelDTO.cs" />
     <Compile Include="LogisticsInfo.cs" />
     <Compile Include="OrderDetail.cs" />
