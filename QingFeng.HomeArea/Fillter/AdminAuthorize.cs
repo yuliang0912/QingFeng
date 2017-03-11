@@ -16,7 +16,6 @@ namespace QingFeng.WebArea.Fillter
         public AdminAuthorize(Common.AgentEnums.UserRole allowRole)
         {
             _allowRole = allowRole;
-            //_allowRole = Common.AgentEnums.UserRole.AllUser;
         }
 
         protected UserInfo CurrentUser;
@@ -26,8 +25,6 @@ namespace QingFeng.WebArea.Fillter
             var userId = FormsAuthenticationService.Instance.UserId;
 
             CurrentUser = string.IsNullOrEmpty(userId) ? null : UserService.Instance.GetUserInfo(new {userId});
-
-            //CurrentUser = new UserService().GetUserInfo(new {userName = "admin"});
 
             if (CurrentUser != null &&
                 (CurrentUser.UserRole == _allowRole || _allowRole == Common.AgentEnums.UserRole.AllUser))

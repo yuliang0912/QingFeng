@@ -7,7 +7,6 @@ using QingFeng.Common;
 using QingFeng.Common.ApiCore.Result;
 using QingFeng.Models;
 using QingFeng.Models.DTO;
-using QingFeng.Common.ApiCore;
 using QingFeng.WebArea.Fillter;
 
 namespace QingFeng.WebArea.Controllers
@@ -172,34 +171,6 @@ namespace QingFeng.WebArea.Controllers
                 actualPrice = x.ActualPrice,
                 categoryName = baseList[x.BaseId].CategoryId.ToString()
             }));
-        }
-
-        [HttpPost]
-        public JsonResult CreateOrder(UserInfo user, OrderMaster order)
-        {
-            if (string.IsNullOrWhiteSpace(order?.OrderNo))
-            {
-                return Json(new ApiResult<int>(2) { Ret = RetEum.ApplicationError, Message = "数据错误" });
-            }
-            if (OrderService.Instance.IsExists(order.OrderNo))
-            {
-                return Json(new ApiResult<int>(3) { Ret = RetEum.ApplicationError, Message = "订单号已经存在" });
-            }
-
-            foreach (var item in order.OrderDetails)
-            {
-                var stock = ProductStockService.Instance.Get(new { item.ProductId, item.SkuId });
-                if (stock == null || stock.StockNum < 1 || item.Quantity > stock.StockNum)
-                {
-                    return Json(new ApiResult<int>(5) { Ret = RetEum.ApplicationError, Message = "库存不足" });
-                }
-            }
-
-            order.UserId = user.UserId;
-
-            var result = OrderService.Instance.CreateOrder(user, order, order.OrderDetails.ToList());
-
-            return Json(new ApiResult<bool>(result) { Message = result ? order.OrderId.ToString() : "操作失败" });
         }
         #endregion
     }

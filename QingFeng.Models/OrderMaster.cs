@@ -38,6 +38,11 @@ namespace QingFeng.Models
         /// </summary>
         public int StoreId { get; set; }
 
+        /// <summary>
+        /// 是否自营
+        /// </summary>
+        public int IsSelfSupport { get; set; }
+
         public string StoreName { get; set; }
 
         /// <summary>

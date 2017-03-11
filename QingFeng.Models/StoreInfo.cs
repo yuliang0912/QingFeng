@@ -11,7 +11,12 @@ namespace QingFeng.Models
 
         public string StoreName { get; set; }
 
-        public AgentEnums.ShopTypeEnum ShopType { get; set; }
+        public AgentEnums.ShopTypeEnum StoreType { get; set; }
+
+        /// <summary>
+        /// 是否自营
+        /// </summary>
+        public int IsSelfSupport { get; set; }
 
         public int MasterUserId { get; set; }
 

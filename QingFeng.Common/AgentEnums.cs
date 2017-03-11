@@ -20,17 +20,13 @@ namespace QingFeng.Common
             /// </summary>
             Administrator = 1,
             /// <summary>
-            /// 员工
+            /// 员工(普通管理员)
             /// </summary>
             Staff = 2,
             /// <summary>
             /// 分销商
             /// </summary>
-            StoreUser = 2,
-            /// <summary>
-            /// 自营
-            /// </summary>
-            SelfSupport = 3,
+            StoreUser = 3,
             /// <summary>
             /// 所有人
             /// </summary>
