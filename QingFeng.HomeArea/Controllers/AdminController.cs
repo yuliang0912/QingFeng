@@ -357,9 +357,7 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "数据接收失败"});
             }
 
-            if (orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.已支付 &&
-                orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.待发货 &&
-                orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.进行中)
+            if (orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.待发货)
             {
                 return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "订单状态错误"});
             }
@@ -416,7 +414,7 @@ namespace QingFeng.WebArea.Controllers
         public JsonResult ConfrimPayed(UserInfo user, long orderId)
         {
             var order = OrderService.Instance.Get(new {orderId});
-            if (order.OrderStatus != AgentEnums.MasterOrderStatus.已支付)
+            if (order.OrderStatus != AgentEnums.MasterOrderStatus.待发货)
             {
                 return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "只有已支付状态的订单才允许确认收款"});
             }

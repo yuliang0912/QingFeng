@@ -130,10 +130,7 @@ namespace QingFeng.Business
                 _orderMaster.Update(
                     new
                     {
-                        orderStatus =
-                            waitDeliverGoodsCount == 0
-                                ? AgentEnums.MasterOrderStatus.已完成
-                                : AgentEnums.MasterOrderStatus.进行中
+                        orderStatus = AgentEnums.MasterOrderStatus.已完成
                     }, new { orderInfo.OrderId });
                 _orderLogs.Insert(new OrderLogs()
                 {

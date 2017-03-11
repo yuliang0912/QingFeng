@@ -252,7 +252,7 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "只有待支付状态的订单才能继续支付"});
             }
 
-            var result = OrderService.Instance.UpdateOrder(new {orderStatus = AgentEnums.MasterOrderStatus.已支付.GetHashCode()},
+            var result = OrderService.Instance.UpdateOrder(new {orderStatus = AgentEnums.MasterOrderStatus.待发货.GetHashCode()},
                 new {orderId});
 
             if (result)

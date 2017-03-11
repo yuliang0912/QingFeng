@@ -1,6 +1,7 @@
 ﻿using System.Web.Mvc;
 using System.Web.Routing;
 using QingFeng.Common;
+using System.Collections.Generic;
 
 namespace QingFeng.WebArea
 {
@@ -10,82 +11,30 @@ namespace QingFeng.WebArea
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
-            routes.MapRoute(
-                name: "orderList",
-                url: "agent/confirmed",
-                defaults: new
-                {
-                    controller = "Agent",
-                    action = "OrderList",
-                    id = UrlParameter.Optional,
-                    orderStatus = AgentEnums.MasterOrderStatus.待发货.GetHashCode()
-                }
-            );
+            var orderRouteList = new List<KeyValuePair<int, string>>()
+            {
+                new KeyValuePair<int, string>(AgentEnums.MasterOrderStatus.待发货.GetHashCode(),"confirmed"),
+                new KeyValuePair<int, string>(AgentEnums.MasterOrderStatus.待支付.GetHashCode(),"unpay"),
+                new KeyValuePair<int, string>(AgentEnums.MasterOrderStatus.已完成.GetHashCode(),"done"),
+                new KeyValuePair<int, string>(AgentEnums.MasterOrderStatus.异常.GetHashCode(),"exceptional"),
+                new KeyValuePair<int, string>(AgentEnums.MasterOrderStatus.已取消.GetHashCode(),"canceled")
+            };
 
-            routes.MapRoute(
-                name: "orderList1",
-                url: "agent/pay",
-                defaults: new
+            orderRouteList.ForEach(item =>
+            {
+                routes.MapRoute("orderList" + item.Key, "order/" + item.Value, new
                 {
-                    controller = "Agent",
-                    action = "OrderList",
+                    controller = "Order",
+                    action = "Index",
                     id = UrlParameter.Optional,
-                    orderStatus = AgentEnums.MasterOrderStatus.已支付.GetHashCode()
-                }
-            );
-
-            routes.MapRoute(
-                name: "orderList2",
-                url: "agent/unpay",
-                defaults: new
-                {
-                    controller = "Agent",
-                    action = "OrderList",
-                    id = UrlParameter.Optional,
-                    orderStatus = AgentEnums.MasterOrderStatus.待支付.GetHashCode()
-                }
-            );
-
-            routes.MapRoute(
-                name: "orderList3",
-                url: "agent/done",
-                defaults: new
-                {
-                    controller = "Agent",
-                    action = "OrderList",
-                    id = UrlParameter.Optional,
-                    orderStatus = AgentEnums.MasterOrderStatus.已完成.GetHashCode()
-                }
-            );
-
-            routes.MapRoute(
-                name: "orderList4",
-                url: "agent/exceptional",
-                defaults: new
-                {
-                    controller = "Agent",
-                    action = "OrderList",
-                    id = UrlParameter.Optional,
-                    orderStatus = AgentEnums.MasterOrderStatus.异常.GetHashCode()
-                }
-            );
-
-            routes.MapRoute(
-                name: "orderList5",
-                url: "agent/canceled",
-                defaults: new
-                {
-                    controller = "Agent",
-                    action = "OrderList",
-                    id = UrlParameter.Optional,
-                    orderStatus = AgentEnums.MasterOrderStatus.已取消.GetHashCode()
-                }
-            );
+                    orderStatus = item.Key
+                });
+            });
 
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}",
-                defaults: new {controller = "Home", action = "Index"}
+                defaults: new { controller = "Home", action = "Index" }
             );
         }
     }

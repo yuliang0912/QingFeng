@@ -91,36 +91,23 @@ namespace QingFeng.Common
             /// 已取消
             /// </summary>
             已取消 = 1,
-
             /// <summary>
             /// 异常
             /// </summary>
             异常 = 2,
-
             /// <summary>
             /// 待支付
             /// </summary>
             待支付 = 3,
-
-            /// <summary>
-            /// 已支付
-            /// </summary>
-            已支付 = 4,
-
             /// <summary>
             /// 待发货
             /// </summary>
-            待发货 = 5,
-
-            /// <summary>
-            /// 进行中
-            /// </summary>
-            进行中 = 6,
-
+            待发货 = 4,
             /// <summary>
             /// 已完成
             /// </summary>
-            已完成 = 7
+            已完成 = 5,
+            全部 = 6
         }
 
         /// <summary>
