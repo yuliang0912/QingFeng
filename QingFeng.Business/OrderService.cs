@@ -61,6 +61,7 @@ namespace QingFeng.Business
                 t.OrderStatus = AgentEnums.OrderDetailStatus.待发货;
                 t.Amount = t.Price * t.Quantity;
                 t.SkuName = skuList[t.SkuId];
+                t.BrandId = baseProductList[product.BaseId].BrandId;
                 remark += t.SkuName + "  ";
             });
             orderMaster.Remark = (orderMaster.Remark ?? string.Empty).CutString(500);
