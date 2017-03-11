@@ -41,7 +41,7 @@ namespace QingFeng.DataAccessLayer.Repository
                 count +=
                     sizeSku.Sum(
                         item =>
-                            connection.Update(new {stockNum = item.Value}, new {productId, skuId = item.Key},
+                            connection.Update(new { stockNum = item.Value }, new { productId, skuId = item.Key },
                                 TableName));
             }
             return count > 0;
@@ -49,11 +49,27 @@ namespace QingFeng.DataAccessLayer.Repository
 
         public bool BatchInsert(List<ProductStock> list)
         {
+            if (list == null || !list.Any())
+            {
+                return false;
+            }
             using (var connection = GetWriteConnection)
             {
-                foreach (var item in list)
+                connection.Open();
+                var trans = connection.BeginTransaction();
+                try
                 {
-                    connection.Insert(item, TableName);
+                    connection.Delete(null, TableName, transaction: trans);
+                    foreach (var item in list)
+                    {
+                        connection.Insert(item, TableName, trans);
+                    }
+                    trans.Commit();
+                }
+                catch (Exception)
+                {
+                    trans.Rollback();
+                    throw;
                 }
             }
             return true;

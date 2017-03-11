@@ -151,11 +151,16 @@
             </tr>
             <!--输出合计数量 end-->
         </tbody>
-        <tfoot>
-            <tr align="center">
-                <td colspan="12"><ul class="pagination"><li class="active"><a class="" href="http://www.qingfeng.com/#">1</a></li><li><a href="http://www.qingfeng.com/stock/search?brand_id=1&amp;gender_id=1&amp;warehouse_id=0&amp;goods_id=0&amp;page=2">2</a></li><li><a href="http://www.qingfeng.com/stock/search?brand_id=1&amp;gender_id=1&amp;warehouse_id=0&amp;goods_id=0&amp;page=2">下一页</a></li></ul></td>
-            </tr>
-        </tfoot>
+        @if (Model.PageCount > 1)
+        {
+            <tfoot>
+                <tr align="center">
+                    <td colspan="15">
+                        @(Html.Raw(Model.GetPagerHtml(string.Format("/stock/search?pagesize=1&brandId={0}&sexId={1}&warehouseId={2}&page={3}", ViewBag.brandId, ViewBag.sexId, ViewBag.warehouseId, "{0}"))))
+                    </td>
+                </tr>
+            </tfoot>
+        }
     </table>
 </div>
 <!-- /.table-responsive -->
@@ -164,7 +169,6 @@
 <script type="text/javascript">
 
     $(function () {
-
         $.etopConfirm();
         $.showModal({
             formId: 'stock-form',

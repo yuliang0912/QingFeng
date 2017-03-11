@@ -129,16 +129,18 @@ namespace QingFeng.WebArea.Controllers
 
                 var execelfile = new ExcelQueryFactory(savePath);
 
-                execelfile.AddMapping<UserPriceExcelDTO>(x => x.BaseId, "商品ID");
-                execelfile.AddMapping<UserPriceExcelDTO>(x => x.ProductId, "spu_id");
-                execelfile.AddMapping<UserPriceExcelDTO>(x => x.BaseNo, "货号");
-                execelfile.AddMapping<UserPriceExcelDTO>(x => x.ProductNo, "颜色");
-                execelfile.AddMapping<UserPriceExcelDTO>(x => x.OriginalPrice, "市场价");
-                execelfile.AddMapping<UserPriceExcelDTO>(x => x.ActualPrice, "供货价");
+                execelfile.AddMapping<ProductStockExcelDTO>(x => x.BaseId, "商品ID");
+                execelfile.AddMapping<ProductStockExcelDTO>(x => x.ProductId, "spu_id");
+                execelfile.AddMapping<ProductStockExcelDTO>(x => x.SkuId, "sku_id");
+                execelfile.AddMapping<ProductStockExcelDTO>(x => x.StockId, "stock_id");
+                execelfile.AddMapping<ProductStockExcelDTO>(x => x.BaseNo, "货号");
+                execelfile.AddMapping<ProductStockExcelDTO>(x => x.ProductNo, "颜色");
+                execelfile.AddMapping<ProductStockExcelDTO>(x => x.SkuName, "尺码");
+                execelfile.AddMapping<ProductStockExcelDTO>(x => x.StockNum, "库存");
 
-                var lineItems = execelfile.Worksheet<UserPriceExcelDTO>(0).ToList();
+                var lineItems = execelfile.Worksheet<ProductStockExcelDTO>(0).ToList();
 
-                var rows = UserService.Instance.ResetUserPrice(userId, brandId, lineItems);
+                var rows = ProductStockService.Instance.ResetProductStock(lineItems);
 
                 return Json(new ApiResult<int>()
                 {

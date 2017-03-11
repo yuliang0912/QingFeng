@@ -52,7 +52,7 @@ namespace QingFeng.Common.ApiCore.Result
         public IEnumerable<T> PageList { get; set; }
 
 
-        public virtual string GetPagerHtml(string jsMethod = "goPage")
+        public virtual string GetPagerHtml(string urlFormat)
         {
             List<int> alPages = CalculateBeginAndEnd(TotalCount, PageSize, Page, 5);
 
@@ -62,24 +62,27 @@ namespace QingFeng.Common.ApiCore.Result
 
             sb.Append("<ul class=\"pagination\">");
 
-            if (Page != 1)
+            if (Page > 1)
             {
-                sb.AppendFormat("<li><a href=\"javascript:{1}({0})\">上一页</a></li>", Page - 1, jsMethod);
+                sb.AppendFormat("<li><a href=\"{0}\">上一页</a></li>", string.Format(urlFormat, Page - 1));
             }
 
             foreach (int i in alPages)
             {
                 if (i == Page)
                 {
-                    sb.AppendFormat("<li class=\"active\"><a href=\"javascript:void(0)\">{0}</a></li>", i);
+                    sb.AppendFormat("<li class=\"active\"><a href=\"{0}\">{1}</a></li>", string.Format(urlFormat, i), i);
                 }
                 else
                 {
-                    sb.AppendFormat("<li><a onclick=\"goPage(2)\" href=\"javascript:;\">{1}</a></li>", i, i, jsMethod);
+                    sb.AppendFormat("<li><a href=\"{0}\">{1}</a></li>", string.Format(urlFormat, i), i);
                 }
             }
 
-            sb.AppendFormat("<li><a href=\"javascript:{1}({0})\">下一页</a></li>", Page + 1, jsMethod);
+            if (Page < PageCount)
+            {
+                sb.AppendFormat("<li><a href=\"{0}\">下一页</a></li>", string.Format(urlFormat, Page + 1), Page + 1);
+            }
             sb.Append("</ul>");
             return sb.ToString();
         }
