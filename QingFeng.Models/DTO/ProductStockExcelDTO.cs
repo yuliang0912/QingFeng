@@ -18,9 +18,6 @@ namespace QingFeng.Models.DTO
         [JsonProperty(PropertyName = "sku_id")]
         public int SkuId { get; set; }
 
-        [JsonProperty(PropertyName = "stock_id")]
-        public int StockId { get; set; }
-
         [JsonProperty(PropertyName = "货号")]
         public string BaseNo { get; set; }
 

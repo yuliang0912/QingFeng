@@ -563,6 +563,7 @@
     <Content Include="Views\Price\DistributorSet.cshtml" />
     <Content Include="Views\Price\DistributorImport.cshtml" />
     <Content Include="Views\Stock\Search.cshtml" />
+    <Content Include="Views\Stock\Import.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

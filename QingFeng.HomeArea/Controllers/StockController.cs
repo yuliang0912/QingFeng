@@ -108,14 +108,13 @@ namespace QingFeng.WebArea.Controllers
                 });
             }
 
-            int userId = Convert.ToInt32(Request.Form["user_id"] ?? "");
             int brandId = Convert.ToInt32(Request.Form["brand_id"] ?? "");
-            if (userId == 0 || brandId == 0)
+            if (brandId == 0)
             {
                 return Json(new ApiResult<bool>(false)
                 {
                     ErrorCode = 2,
-                    Message = "未选择代理商或者品牌"
+                    Message = "未选择品牌"
                 });
             }
 
@@ -132,7 +131,6 @@ namespace QingFeng.WebArea.Controllers
                 execelfile.AddMapping<ProductStockExcelDTO>(x => x.BaseId, "商品ID");
                 execelfile.AddMapping<ProductStockExcelDTO>(x => x.ProductId, "spu_id");
                 execelfile.AddMapping<ProductStockExcelDTO>(x => x.SkuId, "sku_id");
-                execelfile.AddMapping<ProductStockExcelDTO>(x => x.StockId, "stock_id");
                 execelfile.AddMapping<ProductStockExcelDTO>(x => x.BaseNo, "货号");
                 execelfile.AddMapping<ProductStockExcelDTO>(x => x.ProductNo, "颜色");
                 execelfile.AddMapping<ProductStockExcelDTO>(x => x.SkuName, "尺码");
@@ -165,7 +163,7 @@ namespace QingFeng.WebArea.Controllers
         }
 
         //导出模板文件
-        public ActionResult StockImportExcel(int brandId)
+        public ActionResult StockExportExcel(int brandId)
         {
             int totalItem;
             var excelDataList = new List<ProductStockExcelDTO>();
@@ -200,7 +198,6 @@ namespace QingFeng.WebArea.Controllers
                     {
                         if (productStocks[item.ProductId].ContainsKey(sku.SkuId))
                         {
-                            model.StockId = productStocks[item.ProductId][sku.SkuId].StockId;
                             model.StockNum = productStocks[item.ProductId][sku.SkuId].StockNum;
                         }
                     }
@@ -218,9 +215,9 @@ namespace QingFeng.WebArea.Controllers
             var workSheet = workbook.Worksheet(1);
             workSheet.Rows(1, 1000).Height = 20;
             workSheet.Columns(1, 100).Width = 25;
-            workSheet.Range("A1:H1").Style.Fill.BackgroundColor = XLColor.Green;
-            workSheet.Range("A1:H1").Style.Font.SetFontColor(XLColor.Yellow);
-            workSheet.Range("A1:H1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            workSheet.Range("A1:G1").Style.Fill.BackgroundColor = XLColor.Green;
+            workSheet.Range("A1:G1").Style.Font.SetFontColor(XLColor.Yellow);
+            workSheet.Range("A1:G1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             return new Common.ActionResultExtensions.ExportExcelResult
             {
