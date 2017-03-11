@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using QingFeng.Business;
-using QingFeng.Business.V2;
 using QingFeng.Common;
 using QingFeng.Common.ApiCore.Result;
 using QingFeng.Models;
 using QingFeng.Models.DTO;
-using ProductService = QingFeng.Business.ProductService;
+using QingFeng.Common.ApiCore;
+using QingFeng.WebArea.Fillter;
 
 namespace QingFeng.WebArea.Controllers
 {
+    [AdminAuthorize(AgentEnums.UserRole.AllUser)]
     public class GoodsController : CustomerController
     {
         // GET: Goods
@@ -151,5 +151,56 @@ namespace QingFeng.WebArea.Controllers
 
             return View(baseInfo);
         }
+
+        #region Ajax
+        public JsonResult SearchProduct(string keyWords)
+        {
+            var list = ProductService.Instance.SearchProduct(keyWords);
+
+            var baseList = ProductService.Instance.GetProductBaseList(list.Select(t => t.BaseId).ToArray())
+                .ToDictionary(c => c.BaseId, c => c);
+
+            return Json(list.Select(x => new
+            {
+                baseId = x.BaseId,
+                baseNo = baseList[x.BaseId].BaseNo,
+                productId = x.ProductId,
+                baseName = x.BaseName,
+                productName = x.ProductName,
+                productNo = x.ProductNo,
+                originalPrice = x.OriginalPrice,
+                actualPrice = x.ActualPrice,
+                categoryName = baseList[x.BaseId].CategoryId.ToString()
+            }));
+        }
+
+        [HttpPost]
+        public JsonResult CreateOrder(UserInfo user, OrderMaster order)
+        {
+            if (string.IsNullOrWhiteSpace(order?.OrderNo))
+            {
+                return Json(new ApiResult<int>(2) { Ret = RetEum.ApplicationError, Message = "数据错误" });
+            }
+            if (OrderService.Instance.IsExists(order.OrderNo))
+            {
+                return Json(new ApiResult<int>(3) { Ret = RetEum.ApplicationError, Message = "订单号已经存在" });
+            }
+
+            foreach (var item in order.OrderDetails)
+            {
+                var stock = ProductStockService.Instance.Get(new { item.ProductId, item.SkuId });
+                if (stock == null || stock.StockNum < 1 || item.Quantity > stock.StockNum)
+                {
+                    return Json(new ApiResult<int>(5) { Ret = RetEum.ApplicationError, Message = "库存不足" });
+                }
+            }
+
+            order.UserId = user.UserId;
+
+            var result = OrderService.Instance.CreateOrder(user, order, order.OrderDetails.ToList());
+
+            return Json(new ApiResult<bool>(result) { Message = result ? order.OrderId.ToString() : "操作失败" });
+        }
+        #endregion
     }
 }

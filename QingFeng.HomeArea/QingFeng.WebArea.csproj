@@ -455,6 +455,7 @@
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\GoodsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\PriceController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\StockController.cs" />
@@ -564,6 +565,7 @@
     <Content Include="Views\Price\DistributorImport.cshtml" />
     <Content Include="Views\Stock\Search.cshtml" />
     <Content Include="Views\Stock\Import.cshtml" />
+    <Content Include="Views\Order\Add.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

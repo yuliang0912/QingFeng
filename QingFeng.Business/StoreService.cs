@@ -33,6 +33,11 @@ namespace QingFeng.Business
             return _storeRepository.GetBatchStoreInfos(userId);
         }
 
+        public IEnumerable<StoreInfo> GetList(object condition)
+        {
+            return _storeRepository.GetList(condition);
+        }
+
         public bool AddStore(int userId, string homeUrl)
         {
             var count = _storeRepository.Count(new {masterUserId = userId});

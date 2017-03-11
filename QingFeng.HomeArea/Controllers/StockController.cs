@@ -225,5 +225,17 @@ namespace QingFeng.WebArea.Controllers
                 FileName = string.Concat("goods-stock-template-", DateTime.Now.ToString("yyyy-MM-dd"), ".xlsx")
             };
         }
+
+
+        #region Ajax
+        public JsonResult GetProductStock(int productId)
+        {
+            var list = ProductStockService.Instance.GetList(new { productId })
+                    .OrderBy(t => t.SkuId)
+                    .Where(t => t.StockNum > 0);
+
+            return Json(list);
+        }
+        #endregion
     }
 }

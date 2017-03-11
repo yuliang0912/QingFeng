@@ -5,6 +5,7 @@ using QingFeng.Common;
 using QingFeng.Common.ApiCore.Result;
 using QingFeng.Models;
 using QingFeng.Models.DTO;
+using QingFeng.WebArea.Fillter;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -14,6 +15,7 @@ using System.Web.Mvc;
 
 namespace QingFeng.WebArea.Controllers
 {
+    [AdminAuthorize(AgentEnums.UserRole.AllUser)]
     public class PriceController : CustomerController
     {
         public ActionResult Index(int userId = 0, string keyWord = "", int brandId = 1, int categoryId = 0, int page = 1,
