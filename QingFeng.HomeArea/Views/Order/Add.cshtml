@@ -1,0 +1,406 @@
+﻿
+@{
+    ViewBag.Title = "Add";
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+
+    var user = ViewBag.User as QingFeng.Models.UserInfo;
+}
+
+<style type="text/css">
+    .panel {
+        width: 99%;
+        margin: 10px auto;
+    }
+    td {
+        vertical-align: middle !important;
+    }
+
+    th {
+        text-align: center !important;
+    }
+
+    .td_title {
+        width: 100px;
+        text-align: center;
+    }
+
+    .td_input {
+        width: 200px;
+    }
+
+    .td-left {
+        width: 350px;
+    }
+</style>
+<div class="page-header">
+    <h1 class="form-inline">
+        添加订单
+        <a href="/agent/orderList" class="btn btn-info btn-sm pull-right back-to-list"> <i class="icon-circle-arrow-left"></i> 返回列表</a>
+    </h1>
+</div>
+<form class="form-inline" role="form" id="order-form" method="post">
+    <div class="panel panel-info">
+        <!-- Default panel contents -->
+        <div class="panel-heading">订单基本信息</div>
+
+        <table class="table">
+            <tr>
+                <td class="td_title">订单编号：</td>
+                <td width="300"><input type="text" name="orderNo" id="orderNo" class="td_input" /></td>
+                <td class="td_title">所属店铺：</td>
+                <td>
+                    <select name="storeId" id="storeId">
+                        <option value="0">请选择店铺</option>
+                        @foreach (var item in user.StoreList)
+                        {
+                            <option value="@item.StoreId">@item.StoreName</option>
+                        }
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td class="td_title">联系人：</td>
+                <td><input type="text" name="contactName" id="contactName" class="td_input" /></td>
+                <td class="td_title">联系电话：</td>
+                <td><input type="text" name="contactPhone" id="contactPhone" class="td_input" /></td>
+            </tr>
+            <tr>
+                <td class="td_title">邮编：</td>
+                <td colspan="3"><input type="text" name="postCode" maxlength="8" id="postCode" class="td_input" /></td>
+            </tr>
+            <tr>
+                <td class="td_title">收货地址：</td>
+                <td colspan="3">
+                    <select id="province" name="province">
+                        <option value="0">请选择省份</option>
+                        <option value="2">北京</option>
+                        <option value="891">上海</option>
+                        <option value="2199">广东省</option>
+                        <option value="2048">湖南省</option>
+                        <option value="1914">湖北省</option>
+                        <option value="245">山西省</option>
+                        <option value="46">河北省</option>
+                        <option value="24">天津市</option>
+                        <option value="1717">河南省</option>
+                        <option value="1537">山东省</option>
+                        <option value="1411">江西省</option>
+                        <option value="3400">青海省</option>
+                        <option value="3286">甘肃省</option>
+                        <option value="3158">陕西省</option>
+                        <option value="2908">云南省</option>
+                        <option value="2800">贵州省</option>
+                        <option value="2574">四川省</option>
+                        <option value="2531">重庆市</option>
+                        <option value="2504">海南省</option>
+                        <option value="1307">福建省</option>
+                        <option value="1166">安徽省</option>
+                        <option value="1053">浙江省</option>
+                        <option value="914">江苏省</option>
+                        <option value="732">黑龙江省</option>
+                        <option value="649">吉林省</option>
+                        <option value="514">辽宁省</option>
+                        <option value="388">内蒙古自治区</option>
+                        <option value="3070">西藏自治区</option>
+                        <option value="2366">广西壮族自治区</option>
+                        <option value="3493">新疆维吾尔自治区</option>
+                        <option value="3460">宁夏回族自治区</option>
+                        <option value="3722">澳门特别行政区</option>
+                        <option value="3700">香港特别行政区</option>
+                        <option value="3622">台湾省</option>
+                    </select>
+                    <select id="city" name="city">
+                        <option value="0">请选择城市</option>
+                    </select>
+                    <input type="text" name="address" style="width:500px;" id="address" /> <br />
+                    <span id="show_address"></span>
+                    <input type="hidden" name="full_address" id="full_address" value="">
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="panel panel-success">
+        <!-- Default panel contents -->
+        <div class="panel-heading" style="padding:7px 15px;">
+            搜索商品
+            <div class="input-group">
+                <input type="text" class="form-control input-sm" value="" name="keywork" id="keyword" placeholder="请输入要搜索的货号">
+                <span class="input-group-btn">
+                    <button class="btn btn-default btn-sm" type="button" id="search-goods">搜索</button>
+                </span>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="form-group">
+                <label for="exampleInputEmail2">搜索结果：</label>
+                <select name="search_result" id="search_result" class="form-control" multiple="multiple" style="width:500px; height:150px;"></select>
+            </div>
+            <div class="input-group">
+                <button class="btn btn-success" type="button" id="add-to-order">添加到订单</button>
+            </div>
+        </div>
+
+        <!-- /.row -->
+    </div>
+    <div class="panel panel-info">
+        <!-- Default panel contents -->
+        <div class="panel-heading">订单商品</div>
+        <!-- Table -->
+        <table class="table table-bordered" id="table-order-goods">
+            <thead>
+                <tr>
+                    <th width="180">商品名称</th>
+                    <th width="150">商品分类</th>
+                    <th width="150">商品货号</th>
+                    <th width="150">商品颜色</th>
+                    <th width="150">市场价</th>
+                    <th width='150'>采购价</th>
+                    <th width='70'>采购数量</th>
+                    <th width='150'>选择尺码</th>
+                    <th width='70'>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr id="note">
+                    <td colspan="9">
+                        <div class="col-lg-10">
+                            <div class="form-group">
+                                <label for="exampleInputEmail2">备注：</label>
+                                <textarea name="note" rows="3" cols="50" maxlength="500" id="remark" class="form-control"></textarea>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div style="width:300px; margin:5px auto;">
+        <button type="button" class="btn btn-default" onclick="javasript: location.href = '/agent/orderList';" data-dismiss="modal">取消</button>
+        <button type="button" onclick="addOrder()" class="btn btn-primary" id="order-save">保存</button>
+    </div>
+</form>
+<script src="~/Content/agent/js/postcode.js"></script>
+<script src="~/Content/scripts/underscore-min.js"></script>
+<script>
+    $(function () {
+        $('#province').change(function () {
+            var province_id = $(this).val();
+            $('#district').remove();
+            if (province_id <= 0) {
+                $('#city').html('<option value="0">市</option>');
+                $('#show_address').html('');
+            } else {
+                if (typeof _regions[province_id] == 'object') {
+                    var html = '<option value="0">请选择</option>';
+                    for (key in _regions[province_id]['children']) {
+                        html += '<option value="' + key + '">' + _regions[province_id]['children'][key].name + '</option>';
+                    }
+                    $('#city').html(html);
+                    get_full_address();
+                }
+            }
+        });
+
+        $('#city').change(function () {
+            var province_id = $('#province').val();
+            var city_id = $(this).val();
+            $('#district').remove();
+            if (province_id > 0) {
+                if (typeof _regions[province_id]['children'][city_id]['children'] == 'object') {
+                    var html = '<select id="district" name="district"><option value="0">请选择</option>';
+                    for (key in _regions[province_id]['children'][city_id]['children']) {
+                        html += '<option value="' + key + '" data-zipcode="' + _regions[province_id]['children'][city_id]['children'][key].zipcode + '">' + _regions[province_id]['children'][city_id]['children'][key].name + '</option>';
+                    }
+
+                    html += '</select>';
+                    $('#city').after(html);
+                    get_full_address();
+                    $('#district').off('change').on('change', function () {
+                        if ($(this).val() > 0) {
+                            get_full_address();
+                        }
+                    });
+                }
+            }
+        });
+
+        function get_full_address() {
+            var full_address = '';
+            if ($('#province').val() > 0) {
+                full_address += $('#province').find('option:selected').text() + ' ';
+            }
+
+            if ($('#city').val() > 0) {
+                full_address += $('#city').find('option:selected').text() + ' ';
+            }
+
+
+            if ($('#district') && $('#district').val() > 0) {
+                full_address += $('#district').find('option:selected').text() + ' ';
+                $('#postCode').val($('#district').find('option:selected').attr('data-zipcode'));
+            }
+
+            var address = $('#address').val();
+            if (address != '') {
+                full_address += address;
+            }
+
+            $('#show_address').html(full_address);
+            $('#full_address').val(full_address);
+
+        }
+
+        $('#address').keyup(function () {
+            get_full_address();
+        });
+    });
+</script>
+<script>
+    function addOrder() {
+        var order = {};
+        order.orderNo = $("#orderNo").val().trim();
+        order.contactName = $("#contactName").val().trim();
+        order.contactPhone = $("#contactPhone").val().trim();
+        order.postCode = $("#postCode").val().trim();
+        order.address = $("#show_address").text().trim();
+        order.remark = $("#remark").val().trim();
+        order.areaCode = $("#province").val();
+        order.storeId = $("#storeId").val();
+
+        if (order.orderNo === "") {
+            layer.tips("订单不能为空", "#orderNo");
+            return;
+        }
+        if (order.storeId === "0") {
+            layer.tips("请选择店铺", "#storeId");
+            return;
+        }
+        if (order.contactName === "") {
+            layer.tips("联系人不能为空", "#contactName");
+            return;
+        }
+        if (order.contactPhone === "") {
+            layer.tips("手机号不能为空", "#contactPhone");
+            return;
+        }
+        if (order.postCode === "") {
+            layer.tips("邮政编码不能为空", "#postCode");
+            return;
+        }
+        if ($("#province").val() === "0") {
+            layer.tips("请选择省份", "#province");
+            return;
+        }
+        if ($("#city").val() === "0") {
+            layer.tips("请选择城市", "#city");
+            return;
+        }
+        if ($("#district").length !== 0 && $("#district").val() === "0") {
+            layer.tips("请选择城市", "#district");
+            return;
+        }
+        if (order.address === "" || $("#address").val().trim() === "") {
+            layer.tips("地址不能为空", "#address");
+            return;
+        }
+
+        order.OrderDetails = [];
+        $("#table-order-goods tr[data-productId]").each(function () {
+            var self = $(this);
+            var productId = self.attr("data-productId");
+            var buyNum = self.find("select:first").val();
+            var skuId = self.find("select:last").val();
+            if (skuId !== "0") {
+                order.OrderDetails.push({ productId: productId, quantity: buyNum, skuId: skuId });
+            }
+        });
+        if (order.OrderDetails.length === 0) {
+            layer.msg("订单中不存在任何有效商品,请检查是否添加商品,并且选择尺码");
+            return;
+        }
+        $core.ajax.postJSON("/order/CreateOrder", order, function (data) {
+            if (data === 1) {
+                var url = $('#page-content').attr('data-back-url');
+                if (!url) {
+                    url = "http://www.qingfeng.com/order/index";
+                }
+                $.getPageContent({ url: url });
+                return false;
+            }
+            layer.msg(this.message);
+        });
+    }
+
+    var searchResult = [];
+    $('#search-goods').click(function () {
+        var keyword = $('#keyword').val().replace(/(^\s+)|(\s+$)/g, "");
+        if (keyword.trim() === '') {
+            layer.msg("请输入要搜索的商品货号");
+            return;
+        }
+        $core.ajax.getJSON("/goods/SearchProduct", { keyWords: keyword }, function (data) {
+            var html = "";
+            $.each(data, function (i, item) {
+                html += '<option value="' + item.productId + '">' + item.productName + "&nbsp;&nbsp;" + item.productNo + "&nbsp;&nbsp;" + item.categoryName + '</option>';
+            });
+            $('#search_result').empty().html(html);
+            searchResult = data;
+            if (data.length === 0) {
+                layer.msg("暂未找到符合条件的货品");
+            }
+        });
+    });
+
+
+    $('#add-to-order').click(function () {
+        var selected_option = $('#search_result option:selected');
+        if (selected_option.length <= 0) {
+            return;
+        }
+
+        $.each(selected_option, function () {
+            var productId = $(this).val();
+            var product = _.find(searchResult, function (n) {
+                return n.productId == productId;
+            });
+            product && make_order_goods_item(product);
+        });
+
+        $('#table-order-goods').delegate('.remove-btn', 'click', function () {
+            $(this).parent('td').parent('tr').remove();
+        });
+    });
+
+    function GetProductStock(productId, randId) {
+        $core.ajax.getJSON("/stock/GetProductStock", { productId: productId }, function (data) {
+            var html = "<option value=\"0\">请选择尺码</option>";
+            $.each(data, function (i, item) {
+                html += '<option value="' + item.skuId + '">' + item.skuName + '</option>';
+            });
+            $("select[data-spu-id=sku_product_" + randId + "]").empty().html(html);
+        });
+    }
+
+    function make_order_goods_item(product) {
+        if (product) {
+            var randId = Math.floor(Math.random() * 1000000);
+            var html = '<tr data-productId="' + product.productId + '">';
+            html += '<td align="center">' + product.productName + '</td>';
+            html += '<td align="center">' + product.categoryName + '</td>';
+            html += '<td align="center">' + product.baseNo + '</td>';
+            html += '<td align="center">' + product.productNo + '</td>';
+            html += '<td align="center">&yen' + product.originalPrice + '</td>';
+            html += '<td align="center">&yen' + product.actualPrice + '</td>';
+            html += '<td align="center"><select><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option>'
+            html += '<option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option></select></td>';
+            html += '<td><select class="sku-id" data-spu-id="sku_product_' + randId + '"><option value="0">请选择尺码</option></select></td>';
+            html += '<td><button type="button" class="btn btn-warning btn-xs remove-btn">移除</button></td>';
+            html += '</tr>';
+
+            $('#search_result option:selected').prop('selected', false);
+            $('#note').before(html);
+
+            GetProductStock(product.productId, randId);
+        }
+    }
+</script>
+
