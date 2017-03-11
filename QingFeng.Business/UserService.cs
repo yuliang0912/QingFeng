@@ -142,9 +142,18 @@ namespace QingFeng.Business
         {
             var userInfo = _userInfoRepository.Get(condition);
 
-            if (userInfo != null)
+            if (userInfo == null)
+            {
+                return null;
+            }
+
+            if (userInfo.UserRole == AgentEnums.UserRole.StoreUser)
             {
                 userInfo.StoreList = _storeRepository.GetBatchStoreInfos(userInfo.UserId).ToList();
+            }
+            else
+            {
+                userInfo.StoreList = _storeRepository.GetList(new { status = 0, isSelfSupport = 1 }).ToList();
             }
 
             return userInfo;

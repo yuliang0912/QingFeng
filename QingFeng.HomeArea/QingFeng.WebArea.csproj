@@ -566,6 +566,7 @@
     <Content Include="Views\Stock\Search.cshtml" />
     <Content Include="Views\Stock\Import.cshtml" />
     <Content Include="Views\Order\Add.cshtml" />
+    <Content Include="Views\Order\Detail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

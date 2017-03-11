@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Transactions;
 using QingFeng.Common;
+using QingFeng.Common.Extensions;
 
 namespace QingFeng.Business
 {
@@ -23,71 +24,76 @@ namespace QingFeng.Business
 
         public bool CreateOrder(UserInfo user, OrderMaster orderMaster, List<OrderDetail> orderDetails)
         {
-            //if (orderMaster == null || orderDetails == null || !orderDetails.Any())
-            //{
-            //    return false;
-            //}
+            if (orderMaster == null || orderDetails == null || !orderDetails.Any())
+            {
+                return false;
+            }
 
-            //var productList = _product.GetProductListByIds(orderDetails.Select(t => t.ProductId).ToArray())
-            //    .ToDictionary(c => c.ProductId, c => c);
+            var productList = _product.GetProductListByIds(orderDetails.Select(t => t.ProductId).ToArray())
+                .ToDictionary(c => c.ProductId, c => c);
 
-            //var baseProductList = _productBase.GetListByIds(productList.Select(t => t.Value.BaseId).ToArray())
-            //    .ToDictionary(c => c.BaseId, c => c);
+            var baseProductList = _productBase.GetListByIds(productList.Select(t => t.Value.BaseId).ToArray())
+                .ToDictionary(c => c.BaseId, c => c);
 
-            //var skuIds = productList.Select(t => t.Value.ColorId).ToList();
-            //skuIds.AddRange(orderDetails.Select(t => t.SkuId).ToList());
+            var userPrice = UserService.Instance.GetUserPrice(user.UserId, 0, productList.Select(t => t.Value.BaseId).ToArray())
+                    .ToDictionary(c => c.ProductId, c => c);
 
-            //var skuList = _skuItemRepository.GetListByIds(skuIds.ToArray())
-            //    .ToDictionary(c => c.SkuId, c => c.SkuName);
+            var skuList = SkuItemService.Instance.GetList(AgentEnums.SkuType.Size)
+                .ToDictionary(c => c.SkuId, c => c.SkuName);
 
-            //var orderId = GuidConvert.ToUniqueId();
+            var orderId = GuidConvert.ToUniqueId();
 
-            //var remark = string.Empty;
+            var remark = string.Empty;
 
-            //orderDetails.ForEach(t =>
-            //{
-            //    var product = productList[t.ProductId];
-            //    t.Quantity = t.Quantity < 1 ? 1 : t.Quantity;
-            //    t.BaseId = product.BaseId;
-            //    t.BaseNo = baseProductList[product.BaseId].BaseNo;
-            //    t.BaseName = baseProductList[product.BaseId].BaseName;
-            //    t.ProductNo = product.ProductNo;
-            //    t.ProductName = product.ProductName;
-            //    t.Price = product.ActualPrice;
-            //    t.OrderId = orderId;
-            //    t.OrderNo = orderMaster.OrderNo;
-            //    t.Remark = (t.Remark ?? string.Empty).CutString(120);
-            //    t.OrderStatus = AgentEnums.OrderDetailStatus.待发货;
-            //    t.Amount = t.Price*t.Quantity;
-            //    t.SkuName = skuList[t.SkuId];
-            //    remark += t.SkuName + "  ";
-            //});
+            orderDetails.ForEach(t =>
+            {
+                var product = productList[t.ProductId];
+                t.Quantity = t.Quantity < 1 ? 1 : t.Quantity;
+                t.BaseId = product.BaseId;
+                t.BaseNo = baseProductList[product.BaseId].BaseNo;
+                t.BaseName = baseProductList[product.BaseId].BaseName;
+                t.ProductNo = product.ProductNo;
+                t.ProductName = product.ProductName;
+                t.Price = userPrice.ContainsKey(product.ProductId) ? userPrice[product.ProductId].ActualPrice : product.ActualPrice;
+                t.OrderId = orderId;
+                t.OrderNo = orderMaster.OrderNo;
+                t.Remark = (t.Remark ?? string.Empty).CutString(120);
+                t.OrderStatus = AgentEnums.OrderDetailStatus.待发货;
+                t.Amount = t.Price * t.Quantity;
+                t.SkuName = skuList[t.SkuId];
+                remark += t.SkuName + "  ";
+            });
+            orderMaster.Remark = (orderMaster.Remark ?? string.Empty).CutString(500);
+            if (orderMaster.IsSelfSupport == 1)
+            {
+                orderMaster.OrderStatus = AgentEnums.MasterOrderStatus.待发货;
+            }
+            else
+            {
+                orderMaster.OrderStatus = AgentEnums.MasterOrderStatus.待支付;
+            }
 
-            //orderMaster.StoreName = user.StoreList.FirstOrDefault(t => t.StoreId == orderMaster.StoreId)?.StoreName ??
-            //                        string.Empty;
-            //orderMaster.Remark = (orderMaster.Remark ?? string.Empty).CutString(500);
-            //orderMaster.OrderStatus = AgentEnums.MasterOrderStatus.待支付;
-            //orderMaster.OrderId = orderId;
-            //orderMaster.CreateDate = DateTime.Now;
-            //orderMaster.PayStatus = 1;
-            //orderMaster.PayDate = new DateTime(1970, 1, 1);
-            //orderMaster.OrderDetailCount = orderDetails.Count;
-            //orderMaster.OrderAmount = orderDetails.Sum(t => t.Amount);
+            orderMaster.OrderId = orderId;
+            orderMaster.CreateDate = DateTime.Now;
+            orderMaster.PayStatus = 1;
+            orderMaster.PayDate = new DateTime(1970, 1, 1);
+            orderMaster.OrderDetailCount = orderDetails.Count;
+            orderMaster.OrderAmount = orderDetails.Sum(t => t.Amount);
 
-            //var result = _orderMaster.CreateOrder(orderMaster, orderDetails);
+            var result = _orderMaster.CreateOrder(orderMaster, orderDetails);
 
-            //if (result)
-            //{
-            //    _orderLogs.Insert(new OrderLogs()
-            //    {
-            //        UserId = user.UserId,
-            //        OrderId = orderId,
-            //        UserName = user.UserName,
-            //        Title = "添加订单",
-            //        Content = string.IsNullOrWhiteSpace(orderMaster.Remark) ? remark : orderMaster.Remark,
-            //        CreateDate = DateTime.Now
-            //    });
-            //}
+            if (result)
+            {
+                _orderLogs.Insert(new OrderLogs()
+                {
+                    UserId = user.UserId,
+                    OrderId = orderId,
+                    UserName = user.UserName,
+                    Title = "添加订单",
+                    Content = string.IsNullOrWhiteSpace(orderMaster.Remark) ? remark : orderMaster.Remark,
+                    CreateDate = DateTime.Now
+                });
+            }
 
             //return result;
             return true;

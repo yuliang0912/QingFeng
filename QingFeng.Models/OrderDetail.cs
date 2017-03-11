@@ -30,17 +30,13 @@ namespace QingFeng.Models
         /// </summary>		
         public int ProductId { get; set; }
 
+        //商品编号
         public string ProductNo { get; set; }
 
         /// <summary>
         /// 商品名称
         /// </summary>		
         public string ProductName { get; set; }
-
-        /// <summary>
-        /// 商品图片
-        /// </summary>		
-        public string ImgUrl { get; set; }
 
         /// <summary>
         /// 商品单价
