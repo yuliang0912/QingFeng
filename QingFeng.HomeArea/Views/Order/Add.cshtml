@@ -261,9 +261,25 @@
         order.contactName = $("#contactName").val().trim();
         order.contactPhone = $("#contactPhone").val().trim();
         order.postCode = $("#postCode").val().trim();
-        order.address = $("#show_address").text().trim();
+        order.address = $("#address").text().trim();
         order.remark = $("#remark").val().trim();
-        order.areaCode = $("#province").val();
+        order.provinceId = $("#province").val();
+        order.cityId = $("#city").val();
+        order.areaCode = $("#district").val() || 0;
+       
+        var fullAddress = '';
+        if ($('#province').val() > 0) {
+            fullAddress += $('#province').find('option:selected').text() + ' ';
+        }
+        if ($('#city').val() > 0) {
+            fullAddress += $('#city').find('option:selected').text() + ' ';
+        }
+        if ($('#district') && $('#district').val() > 0) {
+            fullAddress += $('#district').find('option:selected').text() + ' ';
+            $('#postCode').val($('#district').find('option:selected').attr('data-zipcode'));
+        }
+        order.areaName = fullAddress;
+
         order.storeId = $("#storeId").val();
 
         if (order.orderNo === "") {
