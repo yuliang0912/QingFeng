@@ -1,0 +1,148 @@
+﻿
+@{
+    ViewBag.Title = "Address";
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+}
+@model QingFeng.Models.OrderMaster
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="edit-model-label">修改收货信息</h4>
+        </div>
+        <form class="form-horizontal" role="form" id="address-form" method="post" action="http://www.findshoes.cn/order/address/2471">
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">订单编号</label>
+                    <div class="col-sm-4">@Model.OrderNo</div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">所属店铺</label>
+                    <div class="col-sm-4">@Model.StoreName</div>
+                </div>
+                <div class="form-group">
+                    <label for="consignee" class="col-sm-2 control-label">联系人</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="consignee" value="@Model.ContactName" class="td_input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="phone" class="col-sm-2 control-label">联系电话</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="phone" value="@Model.ContactPhone" class="td_input">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="zipcode" class="col-sm-2 control-label">邮编</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="zipcode" value="@Model.PostCode" class="td_input">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-sm-2 control-label">收货地址(省市区)</label>
+                    <div class="col-sm-10">
+                        <select id="province" name="province">
+                            <option value="0">请选择省份</option>
+                            <option value="3722">澳门特别行政区</option>
+                            <option value="3700">香港特别行政区</option>
+                            <option value="3622">台湾省</option>
+                            <option value="3493">新疆维吾尔自治区</option>
+                            <option value="3460">宁夏回族自治区</option>
+                            <option value="3400">青海省</option>
+                            <option value="3286">甘肃省</option>
+                            <option value="3158">陕西省</option>
+                            <option value="3070">西藏自治区</option>
+                            <option value="2908">云南省</option>
+                            <option value="2800">贵州省</option>
+                            <option value="2574">四川省</option>
+                            <option value="2531">重庆市</option>
+                            <option value="2504">海南省</option>
+                            <option value="2366">广西壮族自治区</option>
+                            <option value="2199">广东省</option>
+                            <option value="2048">湖南省</option>
+                            <option value="1914">湖北省</option>
+                            <option value="1717">河南省</option>
+                            <option value="1537">山东省</option>
+                            <option value="1411">江西省</option>
+                            <option value="1307">福建省</option>
+                            <option value="1166">安徽省</option>
+                            <option value="1053">浙江省</option>
+                            <option value="914">江苏省</option>
+                            <option value="891">上海</option>
+                            <option value="732">黑龙江省</option>
+                            <option value="649">吉林省</option>
+                            <option value="514">辽宁省</option>
+                            <option value="388">内蒙古自治区</option>
+                            <option value="245">山西省</option>
+                            <option value="46">河北省</option>
+                            <option value="24">天津市</option>
+                            <option value="2">北京</option>
+                        </select>
+                        <select id="city" name="city"><option value="0">请选择</option></select>
+
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="address" class="col-sm-2 control-label">详细地址</label>
+                    <div class="col-sm-4">
+                        <input type="text" name="address" value="@Model.Address" style="width:500px;" id="address">
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer" style="text-align:center;">
+                <input type="hidden" name="action" value="dosubmit">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </div>
+        </form>
+    </div>
+</div>
+<script src="~/Content/agent/js/postcode.js"></script>
+<script>
+    $('#province').change(function () {
+        var province_id = $(this).val();
+        $('#district').remove();
+        if (province_id <= 0) {
+            $('#city').html('<option value="0">市</option>');
+            $('#full_address').html('');
+        }
+        else {
+            if (typeof _regions[province_id] == 'object') {
+                var html = '<option value="0">请选择</option>';
+                for (key in _regions[province_id]['children']) {
+                    html += '<option value="' + key + '">' + _regions[province_id]['children'][key].name + '</option>';
+                }
+
+                $('#city').html(html);
+                get_full_address();
+            }
+        }
+    });
+
+    $('#city').change(function () {
+        var province_id = $('#province').val();
+        var city_id = $(this).val();
+        $('#district').remove();
+        if (province_id > 0) {
+            if (typeof _regions[province_id]['children'][city_id]['children'] == 'object') {
+                var html = '<select id="district" name="district"><option value="0">请选择</option>';
+                for (key in _regions[province_id]['children'][city_id]['children']) {
+                    html += '<option value="' + key + '">' + _regions[province_id]['children'][city_id]['children'][key].name + '</option>';
+                }
+
+                html += '</select>';
+                $('#city').after(html);
+                get_full_address();
+                $('#district').off('change').on('change', function () {
+                    if ($(this).val() > 0) {
+                        get_full_address();
+                    }
+                });
+            }
+        }
+    });
+</script>

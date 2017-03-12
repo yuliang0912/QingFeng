@@ -122,20 +122,22 @@ namespace QingFeng.DataAccessLayer.Repository
                     connection.Update(productBase, new { productBase.BaseId }, TableName, transaction: trans);
                     foreach (var item in productBase.SubProduct)
                     {
-                        var sql = @"INSERT INTO productskus(ProductName,BaseId,BaseNo,BaseName,ProductNo,OriginalPrice,ActualPrice,CreateDate) 
-                                    VALUES(@ProductName,@BaseId,@BaseNo,@BaseName,@ProductNo,@OriginalPrice,@ActualPrice,@CreateDate) 
-                                    ON DUPLICATE KEY UPDATE status = 0;SELECT LAST_INSERT_ID()";
-
-                        var productId = connection.ExecuteScalar<int>(sql, item, trans);
+                        if (item.ProductId > 0)
+                        {
+                            connection.Update(item, new {item.ProductId}, "product", transaction: trans);
+                        }
+                        else
+                        {
+                            item.ProductId = connection.Insert(item, "product", trans, isReturnIncrementId: true);
+                        }
+                        connection.Delete(new {productBase.BaseId}, "productskus", transaction: trans);
                         foreach (var sku in item.ProductSkus)
                         {
-                            sku.ProductId = productId;
-                            var sqlSku = @"INSERT INTO productskus(skuId,baseId,productId,price,status) 
-                                        VALUES({0},{1},{2},{3},0) ON DUPLICATE KEY UPDATE status = 0";
-                            sql = string.Format(sqlSku, sku.SkuId, sku.BaseId, productId, sku.Price);
-                            connection.Execute(sql, null, trans);
+                            sku.ProductId = item.ProductId;
+                            connection.Insert(sku, "productskus", trans);
                         }
                     }
+                    trans.Commit();
                 }
                 catch (Exception)
                 {

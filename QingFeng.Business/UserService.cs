@@ -12,7 +12,9 @@ namespace QingFeng.Business
 {
     public class UserService : Singleton<UserService>
     {
-        private UserService() { }
+        private UserService()
+        {
+        }
 
         private const string PassWordSplitString = "#agent@com";
         private readonly StoreRepository _storeRepository = new StoreRepository();
@@ -46,7 +48,7 @@ namespace QingFeng.Business
         //注册用户
         public int RegisterUser(UserInfo model)
         {
-            if (_userInfoRepository.Count(new { model.UserName }) > 0)
+            if (_userInfoRepository.Count(new {model.UserName}) > 0)
             {
                 return 2;
             }
@@ -66,7 +68,7 @@ namespace QingFeng.Business
 
         public int UpdatePassWord(int userId, string password)
         {
-            var userInfo = _userInfoRepository.Get(new { userId });
+            var userInfo = _userInfoRepository.Get(new {userId});
 
             if (userInfo == null)
             {
@@ -79,7 +81,7 @@ namespace QingFeng.Business
                 string.Concat(userInfo.UserName, PassWordSplitString, userInfo.UserRole.GetHashCode(), password)
                     .Hmacsha1(userInfo.Salt);
 
-            return _userInfoRepository.Update(new { passWord = newPassWord, userInfo.Salt }, new { userId }) ? 1 : 0;
+            return _userInfoRepository.Update(new {passWord = newPassWord, userInfo.Salt}, new {userId}) ? 1 : 0;
         }
 
         public int UpdatePassWord(UserInfo user, string oldPwd, string newPwd)
@@ -94,7 +96,7 @@ namespace QingFeng.Business
                 string.Concat(user.UserName, PassWordSplitString, user.UserRole.GetHashCode(), newPwd)
                     .Hmacsha1(user.Salt);
 
-            return _userInfoRepository.Update(new { passWord = newPassWord }, new { user.UserId }) ? 1 : 0;
+            return _userInfoRepository.Update(new {passWord = newPassWord}, new {user.UserId}) ? 1 : 0;
         }
 
         public bool UpdateUserInfo(UserInfo model)
@@ -103,29 +105,29 @@ namespace QingFeng.Business
             {
                 return false;
             }
-            var userInfo = _userInfoRepository.Get(new { model.UserId });
+            var userInfo = _userInfoRepository.Get(new {model.UserId});
             if (userInfo == null)
             {
                 return false;
             }
 
             model.NickName = model.NickName ?? userInfo.UserName;
-            return _userInfoRepository.Update(new { model.NickName }, new { model.UserId });
+            return _userInfoRepository.Update(new {model.NickName}, new {model.UserId});
         }
 
         public bool DelOrRecoveryStatus(int userId)
         {
-            var userInfo = _userInfoRepository.Get(new { userId, userRole = AgentEnums.UserRole.StoreUser.GetHashCode() });
+            var userInfo = _userInfoRepository.Get(new {userId, userRole = AgentEnums.UserRole.StoreUser.GetHashCode()});
             if (userInfo == null)
             {
                 return false;
             }
-            return _userInfoRepository.Update(new { status = userInfo.Status == 0 ? 1 : 0 }, new { userId });
+            return _userInfoRepository.Update(new {status = userInfo.Status == 0 ? 1 : 0}, new {userId});
         }
 
         public UserInfo Login(string userName, string passWord, out bool isPass)
         {
-            var user = _userInfoRepository.Get(new { userName });
+            var user = _userInfoRepository.Get(new {userName});
 
             if (user == null)
             {
@@ -134,7 +136,9 @@ namespace QingFeng.Business
             }
 
             isPass =
-                string.Concat(user.UserName, PassWordSplitString, user.UserRole.GetHashCode(), passWord).Hmacsha1(user.Salt).Equals(user.PassWord);
+                string.Concat(user.UserName, PassWordSplitString, user.UserRole.GetHashCode(), passWord)
+                    .Hmacsha1(user.Salt)
+                    .Equals(user.PassWord);
             return user;
         }
 
@@ -153,7 +157,7 @@ namespace QingFeng.Business
             }
             else
             {
-                userInfo.StoreList = _storeRepository.GetList(new { status = 0, isSelfSupport = 1 }).ToList();
+                userInfo.StoreList = _storeRepository.GetList(new {status = 0, isSelfSupport = 1}).ToList();
             }
 
             return userInfo;
@@ -181,7 +185,9 @@ namespace QingFeng.Business
                 return 0;
             }
 
-            var productList = _productRepository.GetProductListByIds(list.Select(t => t.ProductId).ToArray()).ToDictionary(c => c.ProductId, c => c);
+            var productList =
+                _productRepository.GetProductListByIds(list.Select(t => t.ProductId).ToArray())
+                    .ToDictionary(c => c.ProductId, c => c);
 
             if (!productList.Any())
             {
@@ -196,12 +202,13 @@ namespace QingFeng.Business
                     continue;
                 }
                 var product = productList[item.ProductId];
-                if (product.BaseId == item.BaseId && product.BaseNo == item.BaseNo.Trim() && product.ProductNo == item.ProductNo.Trim())
+                if (product.BaseId == item.BaseId && product.BaseNo == item.BaseNo.Trim() &&
+                    product.ProductNo == item.ProductNo.Trim())
                 {
                     addList.Add(new UserProductPrice()
                     {
                         BaseId = product.BaseId,
-                        BrandId = brandId,
+                        BrandId = (AgentEnums.Brand) brandId,
                         ProductId = product.ProductId,
                         UserId = userId,
                         OriginalPrice = item.OriginalPrice,
@@ -214,6 +221,11 @@ namespace QingFeng.Business
             var isSuccess = _userProductPriceRepository.BatchInsert(userId, brandId, addList);
 
             return isSuccess ? addList.Count() : 0;
+        }
+
+        public bool ResetUserPrice(int userId, int baseId, List<UserProductPrice> list)
+        {
+            return _userProductPriceRepository.BatchInsert(userId, baseId, list);
         }
     }
 }

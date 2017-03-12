@@ -120,6 +120,11 @@ namespace QingFeng.Business
                 : 0;
         }
 
+        public bool EditBaseProduct(ProductBase model)
+        {
+            return _productBaseRepository.EditProduct(model);
+        }
+
         public bool UpdateProductBaseInfo(object model, object condition)
         {
             return _productBaseRepository.Update(model, condition);
@@ -147,7 +152,7 @@ namespace QingFeng.Business
 
             if (model != null)
             {
-                model.SubProduct = _productRepository.GetProductListByBaseIds(0, model.BaseId);
+                model.SubProduct = _productRepository.GetList(new {baseId});
             }
             return model;
         }

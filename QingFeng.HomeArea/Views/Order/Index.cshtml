@@ -7,7 +7,7 @@
     var productBase = (ViewBag.ProductBase as Dictionary<int, ProductBase>) ?? new Dictionary<int, ProductBase>();
     var porductList = (ViewBag.PorductList as Dictionary<int, Product>) ?? new Dictionary<int, Product>();
 }
-
+@using QingFeng.Common.Extensions
 @using QingFeng.Models
 @model QingFeng.Common.ApiCore.Result.ApiPageList<OrderMaster>
 
@@ -54,15 +54,16 @@
             <tr>
                 <th rowspan="2">订单流水号</th>
                 <th rowspan="2">日期</th>
-                <th rowspan="2">订单号</th>
                 <th rowspan="2">店铺</th>
+                <th rowspan="2">订单号</th>
                 <th rowspan="2">收货人</th>
                 <th rowspan="2">电话</th>
-                <th colspan="4" style="border-bottom-width:1px;">订单商品</th>
+                <th colspan="5" style="border-bottom-width: 1px;">订单商品</th>
                 <th rowspan="2" width="80" class="last">订单状态</th>
                 <th rowspan="2" class="last">操作</th>
             </tr>
             <tr>
+                <th>品牌</th>
                 <th>商品货号</th>
                 <th width="150">商品颜色</th>
                 <th>尺码</th>
@@ -79,22 +80,20 @@
                         @if (i == 0)
                         {
                             <td rowspan="@item.OrderDetailCount">@item.OrderId</td>
-                            <td rowspan="@item.OrderDetailCount">@item.CreateDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                            <td rowspan="@item.OrderDetailCount">@item.OrderNo</td>
+                            <td rowspan="@item.OrderDetailCount">@item.CreateDate.ToString("yyyy-MM-dd HH:mm")</td>
                             <td rowspan="@item.OrderDetailCount">@item.StoreName</td>
+                            <td rowspan="@item.OrderDetailCount">@item.OrderNo</td>
                             <td rowspan="@item.OrderDetailCount">@item.ContactName</td>
                             <td rowspan="@item.OrderDetailCount">@item.ContactPhone</td>
                         }
+                        <td>@productBase[detail.BaseId].BrandId.ToString()</td>
                         <td>@productBase[detail.BaseId].BaseNo</td>
                         <td>@porductList[detail.ProductId].ProductNo</td>
                         <td>@detail.SkuName</td>
                         <td><span data-detail-order-status="@detail.OrderStatus.GetHashCode()">@detail.OrderStatus</span></td>
                         @if (i == 0)
                         {
-                            <td rowspan="@item.OrderDetailCount"><span data-order-status="@item.OrderStatus.GetHashCode()">@item.OrderStatus.ToString()</span></td>
-                            <td rowspan="@item.OrderDetailCount" class="last">
-                                <a href="/agent/orderDetail?orderId=@item.OrderId" data-url="/agent/orderDetail?orderId=@item.OrderId" class="load-view">查看</a>
-                            </td>
+                            @Html.Partial("~/Views/Shared/_PartialOrderList.cshtml", item)
                         }
                     </tr>
                 }
@@ -104,98 +103,114 @@
         {
             <tfoot>
                 <tr align="center">
-                    <td colspan="11" style="text-align: center;">
-                        <div id="pageDiv"></div>
-                    </td>
+                    <td colspan="11" style="text-align: center;"></td>
                 </tr>
             </tfoot>
         }
     </table>
-    <script src="/content/agent/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
-    <script type="text/javascript">
-        $.fn.datetimepicker.dates['zh-CN'] = {
-            days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
-            daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六", "周日"],
-            daysMin: ["日", "一", "二", "三", "四", "五", "六", "日"],
-            months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-            monthsShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
-            today: "今天",
-            suffix: [],
-            meridiem: ["上午", "下午"]
-        };
-        $(function () {
-            $("#start_time").datetimepicker({ format: 'yyyy-mm-dd', language: 'zh-CN', 'endDate': '@DateTime.Now.ToString("yyyy-MM-dd")', minView: "month", autoclose: 1 }).on('changeDate', function (ev) {
-                $('#end_time').datetimepicker('setStartDate', $('#start_time').val());
-            });
-
-            $("#end_time").datetimepicker({ format: 'yyyy-mm-dd', language: 'zh-CN', 'endDate': '@DateTime.Now.ToString("yyyy-MM-dd")', minView: "month", autoclose: 1 });
-            $('#order-search').click(function () {
-                var start_time = $('#start_time').val();
-                var end_time = $('#end_time').val();
-                var keyword = $('#order_keyword').val();
-
-                var url = location.pathname;
-                url += '?beginDateStr=' + start_time;
-                url += '&endDateStr=' + end_time;
-                url += '&keyWords=' + encodeURI(keyword);
-                url += '&storeId=' + $('#storeId').val();
-
-                location.href = url;
-            });
-
-            $("[data-toggle='tooltip']").tooltip({ html: true });
-
-            $.etopConfirm({ selector: '.order-canceled,order-finished' });
-
-            $('#choose_all').click(function () {
-                if ($('#choose_all').is(':checked') == true) {
-                    $('.choose-item').prop('checked', true);
-                } else {
-                    $('.choose-item').prop('checked', false);
-                }
-            });
-
-            $('.load-view').click(function () {
-                var url = $(this).data('url');
-                url += url.indexOf("?") > -1 ? "&stype=1" : "?stype=1";
-                $.getPageContent({ url: url });
-                return false;
-            });
-
-
-            $("#pageDiv").pager({
-                pageIndex: @(Model.Page), pageSize: @(Model.PageSize), recordCount: @(Model.TotalCount), buttonClickCallback: function (page) {
-                    var url = $core.changeUrlArg(location.href, "page", page);
-                    $.getPageContent({ url: url });
-                }
-            });
-
-            $("span[data-order-status]").each(function() {
-                var status = parseInt($(this).attr("data-order-status"));
-                var color = status === 5 || status === 7
-                    ? "#428bca"
-                    : status === 1
-                    ? "#ccc"
-                    : status === 2
-                    ? "red"
-                    : status === 6
-                    ? "#5bc0de"
-                    : "";
-                $(this).css("color",color);
-            });
-
-            $("span[data-detail-order-status]").each(function() {
-                var status = parseInt($(this).attr("data-order-status"));
-                var color = status === 1
-                    ? "#ccc"
-                    : status === 2
-                    ? "#428bca"
-                    : status === 3
-                    ? "#ccc"
-                    : "";
-                $(this).css("color",color);
-            });
-        });
-    </script>
 </div>
+<script src="/content/agent/js/bootstrap-datetimepicker.min.js" type="text/javascript"></script>
+<script type="text/javascript">
+    $.fn.datetimepicker.dates['zh-CN'] = {
+        days: ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六", "星期日"],
+        daysShort: ["周日", "周一", "周二", "周三", "周四", "周五", "周六", "周日"],
+        daysMin: ["日", "一", "二", "三", "四", "五", "六", "日"],
+        months: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+        monthsShort: ["一月", "二月", "三月", "四月", "五月", "六月", "七月", "八月", "九月", "十月", "十一月", "十二月"],
+        today: "今天",
+        suffix: [],
+        meridiem: ["上午", "下午"]
+    };
+    $(function () {
+        $("#start_time").datetimepicker({ format: 'yyyy-mm-dd', language: 'zh-CN', 'endDate': '@DateTime.Now.ToString("yyyy-MM-dd")', minView: "month", autoclose: 1 }).on('changeDate', function (ev) {
+            $('#end_time').datetimepicker('setStartDate', $('#start_time').val());
+        });
+
+        $("#end_time").datetimepicker({ format: 'yyyy-mm-dd', language: 'zh-CN', 'endDate': '@DateTime.Now.ToString("yyyy-MM-dd")', minView: "month", autoclose: 1 });
+        $('#order-search').click(function () {
+            var start_time = $('#start_time').val();
+            var end_time = $('#end_time').val();
+            var keyword = $('#order_keyword').val();
+
+            var url = location.pathname;
+            url += '?beginDateStr=' + start_time;
+            url += '&endDateStr=' + end_time;
+            url += '&keyWords=' + encodeURI(keyword);
+            url += '&storeId=' + $('#storeId').val();
+
+            location.href = url;
+        });
+
+        $("[data-toggle='tooltip']").tooltip({ html: true });
+
+        $.etopConfirm({ selector: '.order-canceled,order-finished' });
+
+        $('#choose_all').click(function () {
+            if ($('#choose_all').is(':checked') == true) {
+                $('.choose-item').prop('checked', true);
+            } else {
+                $('.choose-item').prop('checked', false);
+            }
+        });
+
+        $('.load-view').click(function () {
+            var url = $(this).data('url');
+            url += url.indexOf("?") > -1 ? "&stype=1" : "?stype=1";
+            $.getPageContent({ url: url });
+            return false;
+        });
+
+
+        $("span[data-order-status]").each(function () {
+            var status = parseInt($(this).attr("data-order-status"));
+            var color = status === 5 || status === 7
+                ? "#428bca"
+                : status === 1
+                ? "#ccc"
+                : status === 2
+                ? "red"
+                : status === 6
+                ? "#5bc0de"
+                : "";
+            $(this).css("color", color);
+        });
+
+        $("span[data-detail-order-status]").each(function () {
+            var status = parseInt($(this).attr("data-order-status"));
+            var color = status === 1
+                ? "#ccc"
+                : status === 2
+                ? "#428bca"
+                : status === 3
+                ? "#ccc"
+                : "";
+            $(this).css("color", color);
+        });
+
+        $('.load-content,.pagination a').off('click').on('click', function (e) {
+            var url = $(this).attr('href');
+            if (e.ctrlKey) {
+                if (e.button == 0) {
+                    window.open(url);
+                    return false;
+                }
+
+            }
+
+            $.getPageContent({ url: url });
+            return false;
+        });
+
+        $.showModal({
+            'selector': '.order-address-update',
+            'formId': 'address-form'
+        });
+
+        $.showModal({
+            'selector': '.view-order-notes,.set-despatched'
+        });
+
+    });
+</script>
+
 

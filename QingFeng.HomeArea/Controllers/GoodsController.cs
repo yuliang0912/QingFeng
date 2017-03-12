@@ -129,6 +129,67 @@ namespace QingFeng.WebArea.Controllers
             return Json(result);
         }
 
+        [HttpPost]
+        public JsonResult Edit(CreateProductDto model)
+        {
+            var baseInfo = ProductService.Instance.GetProductBase(model.baseId);
+            if (baseInfo == null)
+            {
+                return Json(new ApiResult<bool>(false)
+                {
+                    ErrorCode = 1,
+                    Message = "数据错误,未找到产品!"
+                });
+            }
+
+            baseInfo.BaseName = model.baseName.Trim();
+            baseInfo.BaseNo = model.baseNo.Trim();
+            baseInfo.BrandId = model.brandId;
+            baseInfo.CategoryId = model.categoryId;
+            baseInfo.SexId = model.sex;
+
+            var existsProduct = baseInfo.SubProduct.ToDictionary(c => c.ProductNo, c => c);
+
+            var list = new List<Product>();
+            foreach (var item in model.subProduct)
+            {
+                var subProduct = new Product()
+                {
+                    BaseId = baseInfo.BaseId,
+                    BaseNo = baseInfo.BaseNo,
+                    BaseName = baseInfo.BaseName,
+                    ProductName = baseInfo.BaseName,
+                    ProductNo = item.color.Trim(),
+                    OriginalPrice = item.sizeList.First().sizePrice,
+                    ActualPrice = item.lowestPrice,
+                    CreateDate = DateTime.Now,
+                    Status = 0,
+                };
+                if (existsProduct.ContainsKey(subProduct.ProductNo))
+                {
+                    subProduct.ProductId = existsProduct[subProduct.ProductNo].ProductId;
+                    subProduct.CreateDate = existsProduct[subProduct.ProductNo].CreateDate;
+                }
+                subProduct.ProductSkus = item.sizeList.Select(x => new ProductSkus()
+                {
+                    BaseId = baseInfo.BaseId,
+                    ProductId = subProduct.ProductId,
+                    SkuId = x.sizeId,
+                    SkuName = x.sizeName,
+                    Price = x.sizePrice,
+                    Status = 0,
+                    UpdateDate = DateTime.Now
+                }).ToList();
+
+                list.Add(subProduct);
+            }
+
+            baseInfo.SubProduct = list;
+            var result = ProductService.Instance.EditBaseProduct(baseInfo);
+
+            return Json(result);
+        }
+
 
         /// <summary>
         /// 商品详情

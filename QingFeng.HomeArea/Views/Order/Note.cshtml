@@ -1,0 +1,121 @@
+﻿
+@{
+    ViewBag.Title = "Note";
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+
+    var logList = ViewBag.OrderLogs as List<OrderLogs>;
+}
+@using QingFeng.Common.Extensions
+@using QingFeng.Models
+@model OrderMaster
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="edit-model-label">备注</h4>
+        </div>
+        <div class="modal-body">
+            <div class="panel panel-info">
+                <!-- Default panel contents -->
+                <div class="panel-heading">订单基本信息</div>
+
+                <table class="table table-bordered">
+                    <tbody>
+                        <tr>
+                            <td class="td_title">订单编号：</td>
+                            <td width="300">@Model.OrderNo</td>
+                            <td class="td_title">所属店铺：</td>
+                            <td>@Model.StoreName</td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">联系人：</td>
+                            <td>@Model.ContactName</td>
+                            <td class="td_title">联系电话：</td>
+                            <td>@Model.ContactPhone</td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">邮编：</td>
+                            <td>@Model.PostCode</td>
+                            <td class="td_title">收货地址：</td>
+                            <td>@Model.Address</td>
+                        </tr>
+                        <tr>
+                            <td class="td_title">订单状态：</td>
+                            <td><span style="@Model.OrderStatus.GetOrderStyle()">@Model.OrderStatus.ToString()</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="panel panel-success">
+                <!-- Default panel contents -->
+                <div class="panel-heading">操作日志</div>
+                <table class="table table-striped" id="table-action-list">
+                    <thead>
+                        <tr>
+                            <th width="80">操作者</th>
+                            <th width="80">操作</th>
+                            <th>备注</th>
+                            <th width="150">时间</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in logList)
+                    {
+                        <tr>
+                            <td align="center" valign="middle">@item.UserName</td>
+                            <td align="center" valign="middle">@item.Title</td>
+                            <td>@item.Content</td>
+                            <td align="center" valign="middle">@item.CreateDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+            <form class="form-horizontal" role="form" id="note-create-form" method="post" action="http://www.qingfeng.com/order/createNote?orderId=@Model.OrderId">
+                <div class="panel panel-info">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">添加备注</div>
+                    <div class="panel-body">
+                        <textarea name="content" id="content" class="form-control"></textarea>
+                        <p style="padding: 15px 0px; text-align: center;"><input class="btn btn-primary" type="submit" value="提交订单备注"></p>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    $("#note-create-form").ajaxForm({
+        beforeSubmit: function (formData, jqForm, options) {
+            if ($('#content').val() == '') {
+                alert('备注内容不能为空');
+                return false;
+            }
+            return true;
+        },
+        success: function (response, status) {
+            if (response.errcode === 0) {
+                var data = response.data;
+                var html = '<tr><td align="center" valign="middle">' + data.userName + '</td>';
+                html += '<td align="center" valign="middle">' + data.title + '</td>';
+                html += '<td>' + $('#content').val() + '</td>';
+                html += '<td align="center" valign="middle">' + data.createDate + '</td></tr>';
+                $('#table-action-list').prepend(html);
+                $('#content').val('');
+            }
+            else {
+                alert(response.message);
+            }
+            return false;
+        },
+        dataType: 'json',
+        timeout: 10000,
+        error: function () { alert('发送请求失败'); }
+    });
+</script>
+

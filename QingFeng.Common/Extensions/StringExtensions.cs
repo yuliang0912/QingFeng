@@ -1,4 +1,5 @@
 ﻿using System;
+using static QingFeng.Common.AgentEnums.MasterOrderStatus;
 
 namespace QingFeng.Common.Extensions
 {
@@ -53,7 +54,34 @@ namespace QingFeng.Common.Extensions
         {
             var difference = d1 - d2;
 
-            return string.Format("{0:0.00%}", difference / d1);
+            return $"{difference/d2:0.00%}";
+        }
+
+        public static string GetOrderStyle(this AgentEnums.MasterOrderStatus orderStatus)
+        {
+            var style = string.Empty;
+            switch ((int) orderStatus)
+            {
+                case (int) 待发货:
+                    style = "color:#428bca;";
+                    break;
+                case (int) 已发货:
+                    style = "color:#5cb85c;";
+                    break;
+                case (int) 已完成:
+                    style = "color:#5cb85c;";
+                    break;
+                case (int) 已取消:
+                    style = "color:#ccc;";
+                    break;
+                case (int) 异常:
+                    style = "color:#f00;";
+                    break;
+                case (int) 待支付:
+                    style = "color:#f89406;";
+                    break;
+            }
+            return style;
         }
     }
 }

@@ -12,6 +12,7 @@ namespace QingFeng.Models
 
         public Product()
         {
+            ProductSkus = new List<ProductSkus>();
             ProductStocks = new List<ProductStock>();
         }
 

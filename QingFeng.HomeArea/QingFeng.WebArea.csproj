@@ -568,6 +568,9 @@
     <Content Include="Views\Order\Add.cshtml" />
     <Content Include="Views\Order\Detail.cshtml" />
     <Content Include="Views\Order\Index.cshtml" />
+    <Content Include="Views\Order\Note.cshtml" />
+    <Content Include="Views\Shared\_PartialOrderList.cshtml" />
+    <Content Include="Views\Order\Address.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

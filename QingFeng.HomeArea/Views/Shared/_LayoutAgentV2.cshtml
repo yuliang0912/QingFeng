@@ -300,7 +300,9 @@
                     </li>
                 </ul>
                 <!-- /.nav-list -->
-                <div class="sidebar-collapse" id="sidebar-collapse"> <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i> </div>
+                <div class="sidebar-collapse" id="sidebar-collapse">
+                    <i class="icon-double-angle-left" data-icon1="icon-double-angle-left" data-icon2="icon-double-angle-right"></i>
+                </div>
             </div>
             <div class="main-content" id="main-content">
                 <div class="page-content" id="page-content">
@@ -328,57 +330,57 @@
                 </div>
             </div>
         </div>
-
-        <!-- /.main-container -->
-        <script src="/ContentV2/js/ace-extra.min.js"></script>
-        <script src="/ContentV2/js/ace-elements.min.js"></script>
-        <script src="/ContentV2/js/ace.min.js"></script>
-        <script src="/ContentV2/js/layer.js"></script>
-        <script type="text/javascript" src="/ContentV2/js/jquery.form.js"></script>
-        <script type="text/javascript" src="/ContentV2/js/jquery.ztree.all-3.5.min.js"></script>
-        <script type="text/javascript">
-            $('.menu a,.mylog').click(function () {
-                var url = $(this).attr('href');
-                $.getPageContent({ url: url });
-                return false;
-            });
-            $.showModal({ selector: '#changepwd', formId: 'changepwd-form', });
-            $(document).bind("keydown", function (e) {
-                var e = e || event,
-                keycode = e.which || e.keyCode;
-                if (keycode == 116) {
-                    if (e.ctrlKey) return true;
-                    $.pageReload();
-                    return false;
-                }
-            });
-
-            $('.supplier-login').off('click').on('click', function () {
-                var url = $(this).attr('href');
-                $.ajax({
-                    url: url + '?action=dosubmit',
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response.error == 0) {
-                            var data = response.data;
-                            if (data.url) {
-                                window.open(data.url);
-                            }
-                        }
-                        else {
-                            layer.alert(response.msg, { icon: 5 });
-                        }
-                        return false;
-                    },
-                    error: function () {
-                        layer.alert('加载面页失败', { icon: 2 });
-                        return false;
-                    }
-                });
-
-                return false;
-            });
-        </script>
     </div>
 </body>
+<!-- /.main-container -->
+<script src="/ContentV2/js/ace-extra.min.js"></script>
+<script src="/ContentV2/js/ace-elements.min.js"></script>
+<script src="/ContentV2/js/ace.min.js"></script>
+<script src="/ContentV2/js/layer.js"></script>
+<script type="text/javascript" src="/ContentV2/js/jquery.form.js"></script>
+<script type="text/javascript" src="/ContentV2/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript">
+    $.showModal({ selector: '#changepwd', formId: 'changepwd-form', });
+    $(document).bind("keydown", function (e) {
+        var e = e || event,
+            keycode = e.which || e.keyCode;
+        if (keycode == 116) {
+            if (e.ctrlKey) return true;
+            $.pageReload();
+            return false;
+        }
+    });
+
+    $('.supplier-login').off('click').on('click', function () {
+        var url = $(this).attr('href');
+        $.ajax({
+            url: url + '?action=dosubmit',
+            dataType: 'json',
+            success: function (response) {
+                if (response.error == 0) {
+                    var data = response.data;
+                    if (data.url) {
+                        window.open(data.url);
+                    }
+                } else {
+                    layer.alert(response.msg, { icon: 5 });
+                }
+                return false;
+            },
+            error: function () {
+                layer.alert('加载面页失败', { icon: 2 });
+                return false;
+            }
+        });
+
+        return false;
+    });
+    $(function() {
+        $('.menu a,.mylog').click(function() {
+            var url = $(this).attr('href');
+            $.getPageContent({ url: url });
+            return false;
+        });
+    });
+</script>
 </html>

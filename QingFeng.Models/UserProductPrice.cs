@@ -1,5 +1,6 @@
 ﻿using QingFeng.Common.Dapper;
 using System;
+using QingFeng.Common;
 
 namespace QingFeng.Models
 {
@@ -13,7 +14,7 @@ namespace QingFeng.Models
 
         public int BaseId { get; set; }
 
-        public int BrandId { get; set; }
+        public AgentEnums.Brand BrandId { get; set; }
 
         public int ProductId { get; set; }
 

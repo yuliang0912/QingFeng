@@ -54,7 +54,7 @@ namespace QingFeng.WebArea.Controllers
                 }
             }
 
-            ViewBag.allSkus = productStocks.SelectMany(t => t.Value)
+            ViewBag.allSkus = productStocks.SelectMany(t => t.Value).OrderBy(t=>t.SkuId)
                 .GroupBy(t => t.SkuId)
                 .ToDictionary(t => t.Key, t => t.First().SkuName);
 

@@ -31,11 +31,11 @@ namespace QingFeng.DataAccessLayer.Repository
 
             using (var connection = GetReadConnection)
             {
-                return connection.QueryList<UserProductPrice>(new { userId }, TableName, buildWhereSql);
+                return connection.QueryList<UserProductPrice>(new {userId}, TableName, buildWhereSql);
             }
         }
 
-        public bool BatchInsert(int userId,int brandId, List<UserProductPrice> list)
+        public bool BatchInsert(int userId, int baseId, List<UserProductPrice> list)
         {
             using (var connection = GetWriteConnection)
             {
@@ -43,7 +43,7 @@ namespace QingFeng.DataAccessLayer.Repository
                 var trans = connection.BeginTransaction();
                 try
                 {
-                    connection.Delete(new { userId, brandId }, TableName, transaction: trans);
+                    connection.Delete(new {userId, baseId}, TableName, transaction: trans);
                     foreach (var item in list)
                     {
                         connection.Insert(item, TableName, trans);

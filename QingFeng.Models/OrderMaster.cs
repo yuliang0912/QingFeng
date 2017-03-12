@@ -66,12 +66,27 @@ namespace QingFeng.Models
         public string PostCode { get; set; }
 
         /// <summary>
-        /// 地址区域码
+        /// 省级ID
+        /// </summary>
+        public int ProvinceId { get; set; }
+
+        /// <summary>
+        /// 城市ID
+        /// </summary>
+        public int CityId { get; set; }
+
+        /// <summary>
+        /// 区域ID
         /// </summary>
         public int AreaCode { get; set; }
 
         /// <summary>
-        /// 收货地址
+        /// 地址前缀(XX省 XX市 XX区)
+        /// </summary>
+        public string AreaName { get; set; }
+
+        /// <summary>
+        /// 收货地址(街道门牌号)
         /// </summary>
         public string Address { get; set; }
 

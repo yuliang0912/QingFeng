@@ -54,7 +54,61 @@ namespace QingFeng.WebArea.Controllers
         //设置价格
         public ActionResult DistributorSet(int userId, int baseId)
         {
-            return View();
+            var baseInfo = ProductService.Instance.GetProductBase(baseId);
+            if (baseInfo == null)
+            {
+                return Content("参数错误");
+            }
+
+            var storeUser = UserService.Instance.GetUserInfo(new {userId, userRole = AgentEnums.UserRole.StoreUser});
+
+            if (storeUser == null)
+            {
+                return Content("参数错误");
+            }
+
+            
+            ViewBag.userPrice =
+                UserService.Instance.GetUserPrice(userId, baseInfo.BrandId.GetHashCode(), baseInfo.BaseId)
+                    .ToDictionary(c => c.ProductId, c => c);
+
+            ViewBag.storeUser = storeUser;
+
+            return View(baseInfo);
+        }
+
+        [HttpPost]
+        public ActionResult SetUserPrice(int userId, int baseId)
+        {
+            var baseInfo = ProductService.Instance.GetProductBase(baseId);
+            if (baseInfo == null)
+            {
+                return Content("参数错误");
+            }
+
+            var storeUser = UserService.Instance.GetUserInfo(new {userId, userRole = AgentEnums.UserRole.StoreUser});
+            if (storeUser == null)
+            {
+                return Content("参数错误");
+            }
+
+            var list = (from item in baseInfo.SubProduct
+                let cosePrice = Convert.ToDecimal(Request.Form[$"cost_{item.ProductId}"])
+                where cosePrice > 0
+                select new UserProductPrice()
+                {
+                    BaseId = item.BaseId,
+                    BrandId = baseInfo.BrandId,
+                    ProductId = item.ProductId,
+                    UserId = userId,
+                    OriginalPrice = item.OriginalPrice,
+                    ActualPrice = cosePrice,
+                    UpdateDate = DateTime.Now
+                }).ToList();
+
+            var result = UserService.Instance.ResetUserPrice(userId, baseInfo.BaseId, list);
+
+            return Json(result);
         }
 
         //批量EXCEL导入

@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using QingFeng.Common;
 
 namespace QingFeng.Models.DTO
 {
     public class CreateProductDto
     {
+        public int baseId { get; set; }
+
         public string baseNo { get; set; }
 
         public string baseName { get; set; }
