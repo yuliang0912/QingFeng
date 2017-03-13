@@ -7,7 +7,7 @@
     var productBase = (ViewBag.ProductBase as Dictionary<int, ProductBase>) ?? new Dictionary<int, ProductBase>();
     var porductList = (ViewBag.PorductList as Dictionary<int, Product>) ?? new Dictionary<int, Product>();
 }
-@using QingFeng.Common.Extensions
+
 @using QingFeng.Models
 @model QingFeng.Common.ApiCore.Result.ApiPageList<OrderMaster>
 
@@ -63,11 +63,11 @@
                 <th rowspan="2" class="last">操作</th>
             </tr>
             <tr>
-                <th>品牌</th>
-                <th>商品货号</th>
-                <th width="150">商品颜色</th>
-                <th>尺码</th>
-                <th width="60">状态</th>
+                <th width="60">品牌</th>
+                <th width="110">商品货号</th>
+                <th width="140">商品颜色</th>
+                <th width="50">尺码</th>
+                <th>状态</th>
             </tr>
         </thead>
         <tbody>
@@ -80,7 +80,7 @@
                         @if (i == 0)
                         {
                             <td rowspan="@item.OrderDetailCount">@item.OrderId</td>
-                            <td rowspan="@item.OrderDetailCount">@item.CreateDate.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td rowspan="@item.OrderDetailCount">@item.CreateDate.ToString("yy年dd月 HH:mm")</td>
                             <td rowspan="@item.OrderDetailCount">@item.StoreName</td>
                             <td rowspan="@item.OrderDetailCount">@item.OrderNo</td>
                             <td rowspan="@item.OrderDetailCount">@item.ContactName</td>
@@ -90,7 +90,7 @@
                         <td>@productBase[detail.BaseId].BaseNo</td>
                         <td>@porductList[detail.ProductId].ProductNo</td>
                         <td>@detail.SkuName</td>
-                        <td><span data-detail-order-status="@detail.OrderStatus.GetHashCode()">@detail.OrderStatus</span></td>
+                        @Html.Partial("~/Views/Shared/_PartialOrderDetail.cshtml", detail)
                         @if (i == 0)
                         {
                             @Html.Partial("~/Views/Shared/_PartialOrderList.cshtml", item)

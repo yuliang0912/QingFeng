@@ -131,7 +131,7 @@ namespace QingFeng.Business
                 _orderMaster.Update(
                     new
                     {
-                        orderStatus = AgentEnums.MasterOrderStatus.已完成
+                        orderStatus = AgentEnums.MasterOrderStatus.已发货
                     }, new { orderInfo.OrderId });
                 _orderLogs.Insert(new OrderLogs()
                 {
@@ -147,9 +147,43 @@ namespace QingFeng.Business
             return true;
         }
 
+
+        public bool SendDeliverGoodsV2(UserInfo user, OrderMaster orderInfo, LogisticsInfo model, string note)
+        {
+            if (model == null)
+            {
+                return false;
+            }
+
+            using (var trans = new TransactionScope())
+            {
+                var flowList = orderInfo.OrderDetails.Where(t => t.OrderStatus == AgentEnums.OrderDetailStatus.待发货).Select(t => t.FlowId).ToList();
+                _orderDetail.BatchUpdateOrderStatus(orderInfo.OrderId, flowList, AgentEnums.OrderDetailStatus.已发货);
+                model.FlowIds = string.Join(",", flowList);
+                _logistics.Insert(model); //物流
+                _orderMaster.Update(new { orderStatus = AgentEnums.MasterOrderStatus.已发货 }, new { orderInfo.OrderId });
+                _orderLogs.Insert(new OrderLogs()
+                {
+                    OrderId = orderInfo.OrderId,
+                    Title = "订单发货",
+                    Content = string.IsNullOrWhiteSpace(note) ? model.CompanyName + ",运单号:" + model.OddNumber : note,
+                    UserId = user.UserId,
+                    UserName = user.UserName,
+                    CreateDate = DateTime.Now
+                });
+                trans.Complete();
+            }
+            return true;
+        }
+
         public bool UpdateOrder(object model, object condition)
         {
             return _orderMaster.Update(model, condition);
+        }
+
+        public bool UpdateOrderDetail(object model, object condition)
+        {
+            return _orderDetail.Update(model, condition);
         }
 
         public OrderMaster Get(object conditon)

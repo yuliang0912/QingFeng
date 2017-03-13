@@ -1,0 +1,16 @@
+﻿
+@using QingFeng.Common
+@using QingFeng.Common.Extensions
+@model QingFeng.Models.OrderDetail
+
+<td>
+    @switch (Model.OrderStatus)
+    {
+        case AgentEnums.OrderDetailStatus.待发货:
+            <a href="http://www.qingdfeng.com/order/setDefect?orderId=@(Model.OrderId)&flowId=@(Model.FlowId)" class="op-confirm" data-id="2568" data-name="7-26SPW1021" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="无货" data-original-title="" title="">无货标记</a>
+            break;
+        default:
+            break;
+    }
+    <span style="@Model.OrderStatus.GetOrderStyle()">@Model.OrderStatus</span>
+</td>

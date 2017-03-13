@@ -1,9 +1,25 @@
 ﻿
 @using QingFeng.Common.Extensions
+@using QingFeng.Common
 @model QingFeng.Models.OrderMaster
 
-<td rowspan="@Model.OrderDetailCount"><span style="@(Model.OrderStatus.GetOrderStyle())">@Model.OrderStatus.ToString()</span></td>
-<td rowspan="@Model.OrderDetailCount" class="last">
+<td rowspan="@(Model.OrderDetailCount)"><span style="@(Model.OrderStatus.GetOrderStyle())">@Model.OrderStatus.ToString()</span></td>
+<td rowspan="@(Model.OrderDetailCount)" class="last">
     <a href="http://www.qingfeng.com/order/note?orderId=@Model.OrderId" title="查看备注" class="green view-order-notes">备注</a>
     <a href="http://www.qingfeng.com/order/detail?orderId=@Model.OrderId" data-url="/agent/orderDetail?orderId=@Model.OrderId" class="load-view">查看</a>
+    @switch (Model.OrderStatus)
+    {
+        case AgentEnums.MasterOrderStatus.待支付:
+            <a href="http://www.qingfeng.com/order/address?orderId=@Model.OrderId" title="修改收货信息" class="green order-address-update">修改地址</a>
+            <a href="http://www.qingfeng.com/order/cancelOrder?orderId=@Model.OrderId" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单" data-original-title="取消订单">取消</a>
+            <a href="http://www.qingfeng.com/order/sendGood?orderId=@Model.OrderId" class="set-despatched">发货</a>
+            break;
+        case AgentEnums.MasterOrderStatus.待发货:
+            <a href="http://www.qingfeng.com/order/address?orderId=@Model.OrderId" title="修改收货信息" class="green order-address-update">修改地址</a>
+            <a href="http://www.qingfeng.com/order/cancelOrder?orderId=@Model.OrderId" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单" data-original-title="取消订单">取消</a>
+            <a href="http://www.qingfeng.com/order/sendGood?orderId=@Model.OrderId" class="set-despatched">发货</a>
+            break;
+        default:
+            break;
+    }
 </td>

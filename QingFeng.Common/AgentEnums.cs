@@ -141,7 +141,7 @@ namespace QingFeng.Common
             /// <summary>
             /// 无货标记
             /// </summary>
-            无货标记 = 4,
+            无货取消 = 4,
         }
 
         public enum ShopTypeEnum

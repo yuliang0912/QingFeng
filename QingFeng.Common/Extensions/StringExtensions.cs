@@ -1,5 +1,4 @@
 ﻿using System;
-using static QingFeng.Common.AgentEnums.MasterOrderStatus;
 
 namespace QingFeng.Common.Extensions
 {
@@ -54,31 +53,53 @@ namespace QingFeng.Common.Extensions
         {
             var difference = d1 - d2;
 
-            return $"{difference/d2:0.00%}";
+            return $"{difference / d2:0.00%}";
         }
 
         public static string GetOrderStyle(this AgentEnums.MasterOrderStatus orderStatus)
         {
             var style = string.Empty;
-            switch ((int) orderStatus)
+            switch (orderStatus)
             {
-                case (int) 待发货:
+                case AgentEnums.MasterOrderStatus.待发货:
                     style = "color:#428bca;";
                     break;
-                case (int) 已发货:
+                case AgentEnums.MasterOrderStatus.已发货:
                     style = "color:#5cb85c;";
                     break;
-                case (int) 已完成:
+                case AgentEnums.MasterOrderStatus.已完成:
                     style = "color:#5cb85c;";
                     break;
-                case (int) 已取消:
+                case AgentEnums.MasterOrderStatus.已取消:
                     style = "color:#ccc;";
                     break;
-                case (int) 异常:
+                case AgentEnums.MasterOrderStatus.异常:
                     style = "color:#f00;";
                     break;
-                case (int) 待支付:
+                case AgentEnums.MasterOrderStatus.待支付:
                     style = "color:#f89406;";
+                    break;
+            }
+            return style;
+        }
+
+
+        public static string GetOrderStyle(this AgentEnums.OrderDetailStatus orderStatus)
+        {
+            var style = string.Empty;
+            switch (orderStatus)
+            {
+                case AgentEnums.OrderDetailStatus.待发货:
+                    style = "color:#428bca;";
+                    break;
+                case AgentEnums.OrderDetailStatus.已发货:
+                    style = "color:#5cb85c;";
+                    break;
+                case AgentEnums.OrderDetailStatus.无货取消:
+                    style = "color:#5cb85c;";
+                    break;
+                case AgentEnums.OrderDetailStatus.已取消:
+                    style = "color:#ccc;";
                     break;
             }
             return style;

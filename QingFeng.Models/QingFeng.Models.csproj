@@ -64,7 +64,6 @@
     <Compile Include="DTO\CreateProductDTO.cs" />
     <Compile Include="DTO\ProductStockExcelDTO.cs" />
     <Compile Include="DTO\UserPriceExcelDTO.cs" />
-    <Compile Include="DTO\UserPriceSetDTO.cs" />
     <Compile Include="LogisticsInfo.cs" />
     <Compile Include="OrderDetail.cs" />
     <Compile Include="OrderLogs.cs" />

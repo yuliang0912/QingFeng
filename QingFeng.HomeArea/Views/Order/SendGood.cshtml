@@ -1,0 +1,63 @@
+﻿
+@{
+    ViewBag.Title = "SendGood";
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+
+    var complanyList = ViewBag.ComplanyList as List<KeyValuePair<int, string>>;
+}
+@model QingFeng.Models.OrderMaster
+
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="edit-model-label">商品发货</h4>
+        </div>
+        <form class="form-horizontal" role="form" id="address-form" method="post" action="http://www.qingfeng.cn/order/setDespatched?orderId=1">
+            <div class="panel panel-info">
+                <!-- Default panel contents -->
+                <div class="panel-heading">物流资料</div>
+                <div class="panel-body">
+                    <div class="row">
+                        <label class="col-sm-3">物流公司：</label>
+                        <div class="col-sm-9">
+                            <select id="logistics_id" name="logistics_id" class="form-control input-sm">
+                                <option value="0">请选择物流公司</option>
+                                @foreach (var item in complanyList)
+                                {
+                                    <option value="@item.Key">@item.Value</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <label class="col-sm-3">物流费用：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control input-sm" type="text" id="postage" name="postage" value="" placeholder="请填写金额">
+                        </div>
+                    </div>
+                    <br>
+                    <div class="row">
+                        <label class="col-sm-3">运单号码：</label>
+                        <div class="col-sm-9">
+                            <input class="form-control input-sm" type="text" name="shipping_code" value="" placeholder="请填写运单号码">
+                        </div>
+                    </div>
+                </div>
+                <div class="panel panel-info">
+                    <!-- Default panel contents -->
+                    <div class="panel-heading">添加备注</div>
+                    <div class="panel-body">
+                        <textarea name="note" id="content" class="form-control"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer" style="text-align:center;">
+                    <input type="hidden" name="orderId" value="@Model.OrderId">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
