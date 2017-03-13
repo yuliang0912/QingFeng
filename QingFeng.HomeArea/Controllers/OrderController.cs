@@ -284,8 +284,16 @@ namespace QingFeng.WebArea.Controllers
             if (result)
             {
                 OrderService.Instance.UpdateOrderDetail(new { orderStatus = AgentEnums.OrderDetailStatus.已取消 }, new { orderId });
+                OrderLogsService.Instance.CreateLog(new OrderLogs
+                {
+                    OrderId = orderId,
+                    UserId = user.UserId,
+                    UserName = user.UserName,
+                    Title = "取消订单",
+                    Content = user.UserName + "取消了订单",
+                    CreateDate = DateTime.Now
+                });
             }
-
             return Json(new ApiResult<bool>(result));
         }
 
@@ -365,6 +373,18 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(2) { ErrorCode = 5, Message = "已发货和已取消的订单不能做无货标记" });
             }
             var result = OrderService.Instance.UpdateOrderDetail(new { orderStatus = AgentEnums.OrderDetailStatus.无货取消 }, new { flowId });
+            if (result)
+            {
+                OrderLogsService.Instance.CreateLog(new OrderLogs
+                {
+                    OrderId = orderId,
+                    UserId = user.UserId,
+                    UserName = user.UserName,
+                    Title = "缺货标记",
+                    Content = user.UserName + "对商品" + flowInfo.ProductNo + "设置了缺货标记",
+                    CreateDate = DateTime.Now
+                });
+            }
             return Json(new ApiResult<bool>(result));
         }
         #endregion

@@ -138,10 +138,16 @@ namespace QingFeng.Common
             /// 已取消
             /// </summary>
             已取消 = 3,
+
             /// <summary>
             /// 无货标记
             /// </summary>
             无货取消 = 4,
+
+            /// <summary>
+            /// 无货异常
+            /// </summary>
+            无货异常 = 4,
         }
 
         public enum ShopTypeEnum
