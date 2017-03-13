@@ -379,7 +379,7 @@ namespace QingFeng.WebArea.Controllers
                 {
                     OrderId = orderId,
                     UserId = user.UserId,
-                    UserName = user.UserName,
+                    UserName = user.NickName,
                     Title = "缺货标记",
                     Content = user.UserName + "对商品" + flowInfo.ProductNo + "设置了缺货标记",
                     CreateDate = DateTime.Now
