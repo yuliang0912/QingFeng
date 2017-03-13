@@ -69,6 +69,7 @@
     <Compile Include="SkuItemService.cs" />
     <Compile Include="StoreService.cs" />
     <Compile Include="UserLogService.cs" />
+    <Compile Include="UserMenuService.cs" />
     <Compile Include="UserService.cs" />
     <Compile Include="V2\ProductService.cs" />
   </ItemGroup>
