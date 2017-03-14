@@ -3,6 +3,7 @@ using QingFeng.Common.Extensions;
 using QingFeng.DataAccessLayer.Repository;
 using QingFeng.Models;
 using System;
+using System.Collections.Generic;
 
 namespace QingFeng.Business
 {
@@ -10,8 +11,7 @@ namespace QingFeng.Business
     {
         private PayOrderService() { }
 
-
-        private readonly PayOrderRepository _ayOrderRepository = new PayOrderRepository();
+        private readonly PayOrderRepository _payOrderRepository = new PayOrderRepository();
 
         public PayOrder CreatePayOrder(OrderMaster orderInfo)
         {
@@ -28,7 +28,22 @@ namespace QingFeng.Business
                 CreateDate = DateTime.Now
             };
 
-            return _ayOrderRepository.Insert(model) > 0 ? model : null;
+            return _payOrderRepository.Insert(model) > 0 ? model : null;
+        }
+
+
+        public IEnumerable<PayOrder> SearchPayOrder(int status, int verifyStatus, DateTime beginDate, DateTime endDate,
+          string keyWords,
+          int page,
+          int pageSize, out int totalItem)
+        {
+            return _payOrderRepository.SearchPayOrder(status, verifyStatus, beginDate, endDate, keyWords, page, pageSize, out totalItem);
+        }
+
+
+        public bool Update(object model, object condition)
+        {
+            return _payOrderRepository.Update(model, condition);
         }
     }
 }
