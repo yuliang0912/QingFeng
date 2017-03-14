@@ -101,6 +101,9 @@ namespace QingFeng.Common.Extensions
                 case AgentEnums.OrderDetailStatus.已取消:
                     style = "color:#ccc;";
                     break;
+                case AgentEnums.OrderDetailStatus.无货异常:
+                    style = "color:#f00;";
+                    break;
             }
             return style;
         }

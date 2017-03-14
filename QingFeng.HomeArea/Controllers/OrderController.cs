@@ -387,6 +387,48 @@ namespace QingFeng.WebArea.Controllers
             }
             return Json(new ApiResult<bool>(result));
         }
+
+
+        /// <summary>
+        /// 取消子订单
+        /// </summary>
+        /// <param name="flowId"></param>
+        /// <returns></returns>
+        public ActionResult SetCancel(UserInfo user, long orderId, int flowId)
+        {
+            var orderInfo = OrderService.Instance.Get(new { orderId });
+            if (orderInfo == null)
+            {
+                return Json(new ApiResult<int>(2) { ErrorCode = 2, Message = "未找到订单" });
+            }
+            if (orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.异常)
+            {
+                return Json(new ApiResult<int>(2) { ErrorCode = 3, Message = "已发货和已完成的订单不能做无货标记" });
+            }
+            var flowInfo = orderInfo.OrderDetails.FirstOrDefault(t => t.FlowId == flowId);
+            if (flowInfo == null)
+            {
+                return Json(new ApiResult<int>(2) { ErrorCode = 4, Message = "参数flowId错误" });
+            }
+            if (flowInfo.OrderStatus == AgentEnums.OrderDetailStatus.已发货 || flowInfo.OrderStatus == AgentEnums.OrderDetailStatus.已取消)
+            {
+                return Json(new ApiResult<int>(2) { ErrorCode = 5, Message = "已发货和已取消的订单不能做无货标记" });
+            }
+            var result = OrderService.Instance.UpdateOrderDetail(new { orderStatus = AgentEnums.OrderDetailStatus.已取消 }, new { flowId });
+            if (result)
+            {
+                OrderLogsService.Instance.CreateLog(new OrderLogs
+                {
+                    OrderId = orderId,
+                    UserId = user.UserId,
+                    UserName = user.NickName,
+                    Title = "取消订单",
+                    Content = user.UserName + "取消了子订单,商品ID:" + flowInfo.ProductNo,
+                    CreateDate = DateTime.Now
+                });
+            }
+            return Json(new ApiResult<bool>(result));
+        }
         #endregion
     }
 }

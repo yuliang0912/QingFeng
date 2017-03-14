@@ -456,6 +456,7 @@
     <Compile Include="Controllers\GoodsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
+    <Compile Include="Controllers\PayController.cs" />
     <Compile Include="Controllers\PriceController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\StockController.cs" />
@@ -580,7 +581,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Views\Pay\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\QingFeng.Business\QingFeng.Business.csproj">
       <Project>{d8906a58-c9da-4cf6-ac7f-0adf00b3ed56}</Project>

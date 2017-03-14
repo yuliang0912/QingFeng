@@ -9,6 +9,9 @@
         case AgentEnums.OrderDetailStatus.待发货:
             <a href="http://www.qingdfeng.com/order/setDefect?orderId=@(Model.OrderId)&flowId=@(Model.FlowId)" class="op-confirm" data-id="2568" data-name="7-26SPW1021" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="无货" data-original-title="" title="">无货标记</a>
             break;
+        case AgentEnums.OrderDetailStatus.无货异常:
+            <a href="http://www.qingfeng.com/order/SetCancel?orderId=@(Model.OrderId)&flowId=@(Model.FlowId)" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单" data-original-title="取消订单">取消</a>
+            break;
         default:
             break;
     }

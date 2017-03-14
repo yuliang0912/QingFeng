@@ -6,12 +6,17 @@ namespace QingFeng.Models
     {
         public string PayNo { get; set; }
 
-        public string OrderId { get; set; }
+
+        public long OrderId { get; set; }
+
+
+        public string OrderNo { get; set; }
 
         /// <summary>
         /// 支付平台ID
         /// </summary>
         public string OutsideId { get; set; }
+
 
         public decimal ActualPrice { get; set; }
 
@@ -20,7 +25,10 @@ namespace QingFeng.Models
         /// </summary>
         public decimal CounterFee { get; set; }
 
-        public int PayType { get; set; }
+        /// <summary>
+        /// 
+        /// </summary>
+        public Common.AgentEnums.PayType PayType { get; set; }
 
         /// <summary>
         /// 支付状态
@@ -32,6 +40,12 @@ namespace QingFeng.Models
         /// </summary>
         public int VerifyStatus { get; set; }
 
+
+        public int UserId { get; set; }
+
+
         public DateTime CreateDate { get; set; }
+
+        public DateTime VerifyDate { get; set; }
     }
 }

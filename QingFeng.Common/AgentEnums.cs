@@ -164,5 +164,10 @@ namespace QingFeng.Common
             工商银行 = 10,
             苏宁 = 11,
         }
+
+        public enum PayType
+        {
+            智付 = 1
+        }
     }
 }
