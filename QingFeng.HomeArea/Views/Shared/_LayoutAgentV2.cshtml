@@ -102,12 +102,12 @@
                 var that = $(this);
                 var url = that.attr('href');
                 $('.popover-footer button.btn-primary').off('click').on('click', function () {
-                    $.getJSON(that.attr('href') + '?action=submit', function (response) {
-                        if (response.error == 0) {
+                    $.getJSON(that.attr('href'), function (response) {
+                        if (response.errcode == 0) {
                             $.pageReload();
                         }
                         else {
-                            layer.alert(response.msg, { icon: 5 });
+                            layer.alert(response.message);
                         }
                     });
                 });
@@ -248,18 +248,6 @@
                     <li>
                         <a hrfe="#" class="dropdown-toggle">
                             <!-- 图标 -->
-                            <i class="icon-list-ol"></i>
-                            <span class="menu-text">分类管理</span> <b class="arrow icon-angle-down"></b>
-                        </a>
-                        <ul class="submenu">
-                            <li class="menu">
-                                <a href="http://www.qingfeng.com/category/index">分类列表<i class="icon-double-angle-right"></i></a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a hrfe="#" class="dropdown-toggle">
-                            <!-- 图标 -->
                             <i class="icon-cogs"></i>
                             <span class="menu-text">人员管理</span> <b class="arrow icon-angle-down"></b>
                         </a>
@@ -292,9 +280,7 @@
                         <ul class="submenu">
                             <li class="menu">
                                 <a href="http://www.qingfeng.com/menu/index">菜单管理<i class="icon-double-angle-right"></i></a>
-                                <a href="http://www.qingfeng.com/region/index">地区管理<i class="icon-double-angle-right"></i></a>
                                 <a href="http://www.qingfeng.com/shop/index">店铺管理<i class="icon-double-angle-right"></i></a>
-                                <a href="http://www.qingfeng.com/config/index">配置管理<i class="icon-double-angle-right"></i></a>
                             </li>
                         </ul>
                     </li>

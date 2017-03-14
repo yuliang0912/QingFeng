@@ -56,6 +56,7 @@ namespace QingFeng.WebArea.Controllers
             ViewBag.endDateStr = endDateStr;
             ViewBag.keyWords = keyWords;
             ViewBag.storeId = storeId;
+            ViewBag.title = orderStatus == 0 ? "订单列表" : ((AgentEnums.MasterOrderStatus) orderStatus).ToString() + "订单";
 
             var data = new ApiPageList<OrderMaster>()
             {
@@ -165,7 +166,7 @@ namespace QingFeng.WebArea.Controllers
         {
             var orderInfo = OrderService.Instance.Get(new { orderId });
 
-            if (orderInfo.OrderStatus == AgentEnums.MasterOrderStatus.待发货)
+            if (orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.待发货)
             {
                 return Content("只有待发货状态的订单,才能发货");
             }
@@ -256,13 +257,13 @@ namespace QingFeng.WebArea.Controllers
         }
 
         //取消订单
-        [HttpPost]
+        [HttpGet]
         public ActionResult CancelOrder(UserInfo user, long orderId)
         {
             var order = OrderService.Instance.Get(new { orderId });
             if (order == null)
             {
-                return Json(new ApiResult<int>(2) { ErrorCode = 1, Message = "未找到指定的订单" });
+                return Json(new ApiResult<int>(2) { ErrorCode = 2, Message = "未找到订单" });
             }
             if (user.UserRole == AgentEnums.UserRole.StoreUser)
             {
@@ -305,7 +306,7 @@ namespace QingFeng.WebArea.Controllers
         [HttpPost]
         public ActionResult SetDespatched(UserInfo user)
         {
-            var orderId = Convert.ToInt32(Request.Form["orderId"] ?? string.Empty);
+            var orderId = Convert.ToInt64(Request.Form["orderId"] ?? string.Empty);
 
             var orderInfo = OrderService.Instance.Get(new { orderId });
 
@@ -317,7 +318,7 @@ namespace QingFeng.WebArea.Controllers
             {
                 return Json(new ApiResult<int>(2) { ErrorCode = 3, Message = "没有操作权限" });
             }
-            if (orderInfo.OrderStatus == AgentEnums.MasterOrderStatus.待发货)
+            if (orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.待发货)
             {
                 return Json(new ApiResult<int>(2) { ErrorCode = 4, Message = "只有待发货状态的订单,才能发货" });
             }
@@ -329,6 +330,10 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(2) { ErrorCode = 5, Message = "物流信息错误" });
             }
             var price = Convert.ToDecimal(Request.Form["postage"] ?? string.Empty);
+            if (price < 0)
+            {
+                return Json(new ApiResult<int>(2) { ErrorCode = 6, Message = "物流金额错误" });
+            }
             var oddNumber = Request.Form["shipping_code"] ?? string.Empty;
             var note = Request.Form["note"] ?? string.Empty;
 
@@ -350,6 +355,7 @@ namespace QingFeng.WebArea.Controllers
         /// <summary>
         /// 缺货标记
         /// </summary>
+        /// <param name="orderId"></param>
         /// <param name="flowId"></param>
         /// <returns></returns>
         public ActionResult SetDefect(UserInfo user, long orderId, int flowId)
@@ -372,6 +378,18 @@ namespace QingFeng.WebArea.Controllers
             {
                 return Json(new ApiResult<int>(2) { ErrorCode = 5, Message = "已发货和已取消的订单不能做无货标记" });
             }
+            flowInfo.OrderStatus = AgentEnums.OrderDetailStatus.无货取消;
+
+            //如果子订单全部取消,则主订单也设置为取消状态
+            if (!orderInfo.OrderDetails.Any(t =>
+                t.OrderStatus == AgentEnums.OrderDetailStatus.待发货 ||
+                t.OrderStatus == AgentEnums.OrderDetailStatus.已发货 ||
+                t.OrderStatus == AgentEnums.OrderDetailStatus.无货异常))
+            {
+                OrderService.Instance.UpdateOrder(new {orderStatus = AgentEnums.MasterOrderStatus.已取消.GetHashCode()},
+                    new {orderId});
+            }
+
             var result = OrderService.Instance.UpdateOrderDetail(new { orderStatus = AgentEnums.OrderDetailStatus.无货取消 }, new { flowId });
             if (result)
             {
@@ -392,6 +410,8 @@ namespace QingFeng.WebArea.Controllers
         /// <summary>
         /// 取消子订单
         /// </summary>
+        /// <param name="user"></param>
+        /// <param name="orderId"></param>
         /// <param name="flowId"></param>
         /// <returns></returns>
         public ActionResult SetCancel(UserInfo user, long orderId, int flowId)
@@ -403,7 +423,7 @@ namespace QingFeng.WebArea.Controllers
             }
             if (orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.异常)
             {
-                return Json(new ApiResult<int>(2) { ErrorCode = 3, Message = "已发货和已完成的订单不能做无货标记" });
+                return Json(new ApiResult<int>(2) {ErrorCode = 3, Message = "只有异常状态下的订单才能取消"});
             }
             var flowInfo = orderInfo.OrderDetails.FirstOrDefault(t => t.FlowId == flowId);
             if (flowInfo == null)

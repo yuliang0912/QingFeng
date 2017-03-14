@@ -96,8 +96,6 @@ namespace QingFeng.Common.Extensions
                     style = "color:#5cb85c;";
                     break;
                 case AgentEnums.OrderDetailStatus.无货取消:
-                    style = "color:#5cb85c;";
-                    break;
                 case AgentEnums.OrderDetailStatus.已取消:
                     style = "color:#ccc;";
                     break;

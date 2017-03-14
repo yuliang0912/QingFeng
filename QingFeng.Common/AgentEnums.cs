@@ -147,7 +147,7 @@ namespace QingFeng.Common
             /// <summary>
             /// 无货异常
             /// </summary>
-            无货异常 = 4,
+            无货异常 = 5,
         }
 
         public enum ShopTypeEnum
