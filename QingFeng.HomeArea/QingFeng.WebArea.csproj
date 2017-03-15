@@ -459,6 +459,7 @@
     <Compile Include="Controllers\PayController.cs" />
     <Compile Include="Controllers\PriceController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\StaffController.cs" />
     <Compile Include="Controllers\StockController.cs" />
     <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Fillter\AdminAuthorize.cs" />
@@ -575,6 +576,7 @@
     <Content Include="Views\Order\SendGood.cshtml" />
     <Content Include="Views\Shared\_PartialOrderDetail.cshtml" />
     <Content Include="Views\Pay\Index.cshtml" />
+    <Content Include="Views\Staff\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
