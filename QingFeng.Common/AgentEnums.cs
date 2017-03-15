@@ -169,5 +169,12 @@ namespace QingFeng.Common
         {
             智付 = 1
         }
+
+        public enum PayStatus
+        {
+            待支付 = 1,
+            支付成功 = 2,
+            支付失败 = 3
+        }
     }
 }

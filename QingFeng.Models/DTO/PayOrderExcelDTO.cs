@@ -10,7 +10,7 @@ namespace QingFeng.Models.DTO
     public class PayOrderExcelDTO
     {
         [JsonProperty(PropertyName = "支付流水号")]
-        public int PayNo { get; set; }
+        public string PayNo { get; set; }
 
         [JsonProperty(PropertyName = "支付类型")]
         public string PayType { get; set; }

@@ -33,7 +33,7 @@ namespace QingFeng.Models
         /// <summary>
         /// 支付状态
         /// </summary>
-        public int Status { get; set; }
+        public Common.AgentEnums.PayStatus Status { get; set; }
 
         /// <summary>
         /// 审核状态
@@ -45,6 +45,8 @@ namespace QingFeng.Models
 
 
         public DateTime CreateDate { get; set; }
+
+        public DateTime PayDate { get; set; }
 
         public DateTime VerifyDate { get; set; }
     }

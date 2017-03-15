@@ -1,10 +1,13 @@
-﻿using QingFeng.Business;
+﻿using ClosedXML.Excel;
+using QingFeng.Business;
 using QingFeng.Common;
 using QingFeng.Common.ApiCore;
 using QingFeng.Common.ApiCore.Result;
 using QingFeng.Models;
+using QingFeng.Models.DTO;
 using QingFeng.WebArea.Fillter;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -56,7 +59,7 @@ namespace QingFeng.WebArea.Controllers
             ViewBag.endDateStr = endDateStr;
             ViewBag.keyWords = keyWords;
             ViewBag.storeId = storeId;
-            ViewBag.title = orderStatus == 0 ? "订单列表" : ((AgentEnums.MasterOrderStatus) orderStatus).ToString() + "订单";
+            ViewBag.title = orderStatus == 0 ? "订单列表" : ((AgentEnums.MasterOrderStatus)orderStatus).ToString() + "订单";
 
             var data = new ApiPageList<OrderMaster>()
             {
@@ -174,6 +177,98 @@ namespace QingFeng.WebArea.Controllers
             ViewBag.ComplanyList = LogisticsService.Instance.GetComplanyList();
 
             return View(orderInfo);
+        }
+
+
+        public ActionResult Export(UserInfo user, int storeId = 0, int brandId = 0, int orderStatus = 0,
+          string beginDateStr = "", string endDateStr = "")
+        {
+            DateTime beginDate, endDate;
+
+            if (!DateTime.TryParse(beginDateStr, out beginDate))
+            {
+                beginDate = DateTime.MinValue;
+            }
+            if (!DateTime.TryParse(endDateStr, out endDate))
+            {
+                endDate = DateTime.Now;
+            }
+            endDate = endDate.AddDays(1).AddSeconds(-1);
+
+            int totalItem;
+            var list = OrderService.Instance.SearchOrderList(0, storeId, orderStatus, beginDate, endDate, string.Empty, 1, int.MaxValue, out totalItem).ToList();
+
+            var workbook = new XLWorkbook();
+            workbook.Worksheets.Add("Sheet1");
+            var workSheet = workbook.Worksheet(1);
+            workSheet.Cell(1, 1).Value = "订单流水号";
+            workSheet.Cell(1, 2).Value = "订单编号";
+            workSheet.Cell(1, 3).Value = "店铺";
+            workSheet.Cell(1, 4).Value = "联系人";
+            workSheet.Cell(1, 5).Value = "联系电话";
+            workSheet.Cell(1, 6).Value = "订单金额";
+            workSheet.Cell(1, 7).Value = "订单状态";
+            workSheet.Cell(1, 8).Value = "订单日期";
+            workSheet.Cell(1, 10).Value = "品牌";
+            workSheet.Cell(1, 10).Value = "货号";
+            workSheet.Cell(1, 11).Value = "颜色";
+            workSheet.Cell(1, 12).Value = "尺码";
+            workSheet.Cell(1, 13).Value = "数量";
+            workSheet.Cell(1, 14).Value = "单价";
+            workSheet.Cell(1, 15).Value = "子订单状态";
+
+            var rows = 2;
+            for (int i = 0; i < list.Count; i++)
+            {
+                var order = list[i];
+
+                workSheet.Cell(rows, 1).Value = order.OrderId;
+                workSheet.Cell(rows, 2).Value = order.OrderNo;
+                workSheet.Cell(rows, 3).Value = order.StoreName;
+                workSheet.Cell(rows, 4).Value = order.ContactName;
+                workSheet.Cell(rows, 5).Value = order.ContactPhone;
+                workSheet.Cell(rows, 6).Value = order.OrderAmount;
+                workSheet.Cell(rows, 7).Value = order.OrderStatus;
+                workSheet.Cell(rows, 8).Value = order.CreateDate;
+
+                workSheet.Range(rows, 1, rows - 1 + order.OrderDetails.Count(), 1).Merge();
+                workSheet.Range(rows, 2, rows - 1 + order.OrderDetails.Count(), 2).Merge();
+                workSheet.Range(rows, 3, rows - 1 + order.OrderDetails.Count(), 3).Merge();
+                workSheet.Range(rows, 4, rows - 1 + order.OrderDetails.Count(), 4).Merge();
+                workSheet.Range(rows, 5, rows - 1 + order.OrderDetails.Count(), 5).Merge();
+                workSheet.Range(rows, 6, rows - 1 + order.OrderDetails.Count(), 6).Merge();
+                workSheet.Range(rows, 7, rows - 1 + order.OrderDetails.Count(), 7).Merge();
+                workSheet.Range(rows, 8, rows - 1 + order.OrderDetails.Count(), 8).Merge();
+
+                for (int j = 0; j < order.OrderDetails.Count(); j++)
+                {
+                    var orderDetail = order.OrderDetails.ToList()[j];
+
+                    workSheet.Cell(j + rows, 9).Value = orderDetail.BrandId.ToString();
+                    workSheet.Cell(j + rows, 10).Value = orderDetail.BaseNo;
+                    workSheet.Cell(j + rows, 11).Value = orderDetail.ProductNo;
+                    workSheet.Cell(j + rows, 12).Value = orderDetail.SkuName;
+                    workSheet.Cell(j + rows, 13).Value = orderDetail.Quantity;
+                    workSheet.Cell(j + rows, 14).Value = orderDetail.Price;
+                    workSheet.Cell(j + rows, 15).Value = orderDetail.OrderStatus;
+                }
+
+                rows += order.OrderDetails.Count();
+            }
+
+            workSheet.Rows(1, 1000).Height = 20;
+            workSheet.Columns(1, 100).Width = 25;
+            workSheet.Range("A1:O1").Style.Fill.BackgroundColor = XLColor.Green;
+            workSheet.Range("A1:O1").Style.Font.SetFontColor(XLColor.Yellow);
+            workSheet.Range("A1:O1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            workSheet.Range("A2:H100").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            workSheet.Range("A2:O100").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+
+            return new Common.ActionResultExtensions.ExportExcelResult
+            {
+                workBook = workbook,
+                FileName = string.Concat("order-export-", DateTime.Now.ToString("yyyy-MM-dd"), ".xlsx")
+            };
         }
 
         #region Ajax
@@ -386,8 +481,8 @@ namespace QingFeng.WebArea.Controllers
                 t.OrderStatus == AgentEnums.OrderDetailStatus.已发货 ||
                 t.OrderStatus == AgentEnums.OrderDetailStatus.无货异常))
             {
-                OrderService.Instance.UpdateOrder(new {orderStatus = AgentEnums.MasterOrderStatus.已取消.GetHashCode()},
-                    new {orderId});
+                OrderService.Instance.UpdateOrder(new { orderStatus = AgentEnums.MasterOrderStatus.已取消.GetHashCode() },
+                    new { orderId });
             }
 
             var result = OrderService.Instance.UpdateOrderDetail(new { orderStatus = AgentEnums.OrderDetailStatus.无货取消 }, new { flowId });
@@ -423,16 +518,16 @@ namespace QingFeng.WebArea.Controllers
             }
             if (orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.异常)
             {
-                return Json(new ApiResult<int>(2) {ErrorCode = 3, Message = "只有异常状态下的订单才能取消"});
+                return Json(new ApiResult<int>(2) { ErrorCode = 3, Message = "只有异常状态下的订单才能取消" });
             }
             var flowInfo = orderInfo.OrderDetails.FirstOrDefault(t => t.FlowId == flowId);
             if (flowInfo == null)
             {
                 return Json(new ApiResult<int>(2) { ErrorCode = 4, Message = "参数flowId错误" });
             }
-            if (flowInfo.OrderStatus == AgentEnums.OrderDetailStatus.已发货 || flowInfo.OrderStatus == AgentEnums.OrderDetailStatus.已取消)
+            if (flowInfo.OrderStatus != AgentEnums.OrderDetailStatus.无货异常)
             {
-                return Json(new ApiResult<int>(2) { ErrorCode = 5, Message = "已发货和已取消的订单不能做无货标记" });
+                return Json(new ApiResult<int>(2) { ErrorCode = 5, Message = "只有无货异常的订单才能取消" });
             }
             var result = OrderService.Instance.UpdateOrderDetail(new { orderStatus = AgentEnums.OrderDetailStatus.已取消 }, new { flowId });
             if (result)
@@ -443,7 +538,7 @@ namespace QingFeng.WebArea.Controllers
                     UserId = user.UserId,
                     UserName = user.NickName,
                     Title = "取消订单",
-                    Content = user.UserName + "取消了子订单,商品ID:" + flowInfo.ProductNo,
+                    Content = user.UserName + "取消了子订单,商品编号:" + flowInfo.ProductNo,
                     CreateDate = DateTime.Now
                 });
             }

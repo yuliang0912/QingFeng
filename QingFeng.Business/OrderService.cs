@@ -213,7 +213,7 @@ namespace QingFeng.Business
             if (!list.Any()) return list;
             var orderDetails = _orderDetail.GetBatchOrderDetails(list.Select(t => t.OrderId).ToArray())
                 .GroupBy(t => t.OrderId)
-                .ToDictionary(c => c.Key, c => c);
+                .ToDictionary(c => c.Key, c => c.ToList());
 
             list.ForEach(t =>
             {
@@ -224,6 +224,12 @@ namespace QingFeng.Business
             });
 
             return list;
+        }
+
+        public Dictionary<long, List<OrderDetail>> GetOrderDetailList(params long[] orderId)
+        {
+            return _orderDetail.GetBatchOrderDetails(orderId).GroupBy(t => t.OrderId)
+                               .ToDictionary(c => c.Key, c => c.ToList());
         }
     }
 }

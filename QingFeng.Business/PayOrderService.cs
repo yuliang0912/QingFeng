@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace QingFeng.Business
 {
-    class PayOrderService : Singleton<PayOrderService>
+    public class PayOrderService : Singleton<PayOrderService>
     {
         private PayOrderService() { }
 
