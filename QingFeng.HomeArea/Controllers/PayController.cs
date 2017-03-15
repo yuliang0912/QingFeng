@@ -10,6 +10,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using QingFeng.Common.ApiCore.Result;
 
 namespace QingFeng.WebArea.Controllers
 {
@@ -21,12 +22,18 @@ namespace QingFeng.WebArea.Controllers
         {
             int totalItem;
 
-            var list = PayOrderService.Instance.SearchPayOrder(payStatus, 0, new DateTime(2017, 1, 1), DateTime.MaxValue, keyWords, page, pageSize, out totalItem);
+            var list = PayOrderService.Instance.SearchPayOrder(payStatus, 0, new DateTime(2017, 1, 1), DateTime.MaxValue,
+                keyWords, page, pageSize, out totalItem);
 
             ViewBag.payStatus = payStatus;
             ViewBag.keyWords = keyWords;
 
-            return View(list);
+            return View(new ApiPageList<PayOrder>
+            {
+                Page = page,
+                PageSize = pageSize,
+                PageList = list
+            });
         }
 
 
@@ -109,7 +116,7 @@ namespace QingFeng.WebArea.Controllers
                 workSheet.Cell(rows, 3).Value = payOrder.ActualPrice;
                 workSheet.Cell(rows, 4).Value = payOrder.CounterFee;
                 workSheet.Cell(rows, 5).Value = payOrder.OutsideId;
-                workSheet.Cell(rows, 6).Value = payOrder.Status;
+                workSheet.Cell(rows, 6).Value = payOrder.PayStatus;
                 workSheet.Cell(rows, 7).Value = payOrder.PayDate;
                 workSheet.Cell(rows, 8).Value = payOrder.VerifyDate;
                 workSheet.Cell(rows, 9).Value = payOrder.VerifyStatus.ToString();

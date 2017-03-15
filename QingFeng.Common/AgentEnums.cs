@@ -19,14 +19,17 @@ namespace QingFeng.Common
             /// 超级管理员
             /// </summary>
             Administrator = 1,
+
             /// <summary>
             /// 员工(普通管理员)
             /// </summary>
             Staff = 2,
+
             /// <summary>
             /// 分销商
             /// </summary>
             StoreUser = 3,
+
             /// <summary>
             /// 所有人
             /// </summary>
@@ -175,6 +178,13 @@ namespace QingFeng.Common
             待支付 = 1,
             支付成功 = 2,
             支付失败 = 3
+        }
+
+        public enum VerifyStatus
+        {
+            未审核 = 1,
+            已审核 = 2,
+            审核失败 = 3
         }
     }
 }

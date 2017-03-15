@@ -23,7 +23,7 @@ namespace QingFeng.Business
                 PayType = AgentEnums.PayType.智付,
                 ActualPrice = orderInfo.OrderAmount,
                 UserId = orderInfo.UserId,
-                Status = 0,
+                PayStatus = 0,
                 VerifyStatus = 0,
                 CreateDate = DateTime.Now
             };

@@ -103,6 +103,7 @@ namespace QingFeng.Business
         /// <summary>
         /// 发货
         /// </summary>
+        /// <param name="user"></param>
         /// <param name="orderInfo"></param>
         /// <param name="flowIds"></param>
         /// <param name="model"></param>
@@ -125,9 +126,8 @@ namespace QingFeng.Business
                 _orderDetail.BatchUpdateOrderStatus(orderInfo.OrderId, flowIds,
                     AgentEnums.OrderDetailStatus.已发货);
                 _logistics.Insert(model); //物流
-                var waitDeliverGoodsCount =
-                    _orderDetail.Count(
-                        new { orderInfo.OrderId, orderStatus = AgentEnums.OrderDetailStatus.待发货 });
+                _orderDetail.Count(
+                    new { orderInfo.OrderId, orderStatus = AgentEnums.OrderDetailStatus.待发货 });
                 _orderMaster.Update(
                     new
                     {
