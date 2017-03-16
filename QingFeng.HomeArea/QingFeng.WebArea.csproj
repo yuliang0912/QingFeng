@@ -577,6 +577,8 @@
     <Content Include="Views\Shared\_PartialOrderDetail.cshtml" />
     <Content Include="Views\Pay\Index.cshtml" />
     <Content Include="Views\Staff\Index.cshtml" />
+    <Content Include="Views\Pay\Export.cshtml" />
+    <Content Include="Views\Order\Export.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

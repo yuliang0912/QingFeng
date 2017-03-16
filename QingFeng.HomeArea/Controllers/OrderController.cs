@@ -36,6 +36,7 @@ namespace QingFeng.WebArea.Controllers
             var userId = user.UserId;
             if (user.UserRole == AgentEnums.UserRole.Administrator || user.UserRole == AgentEnums.UserRole.Staff)
             {
+                user.StoreList = StoreService.Instance.GetList(new { status = 0 }).ToList();
                 userId = 0;
             }
 
@@ -177,6 +178,13 @@ namespace QingFeng.WebArea.Controllers
             return View(orderInfo);
         }
 
+
+        public ActionResult Export(UserInfo user)
+        {
+            var storeList = StoreService.Instance.GetList(new { status = 0 }).ToList();
+
+            return View(storeList);
+        }
 
         public ActionResult Export(UserInfo user, int storeId = 0, int brandId = 0, int orderStatus = 0,
           string beginDateStr = "", string endDateStr = "")

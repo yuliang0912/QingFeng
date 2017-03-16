@@ -20,12 +20,16 @@ namespace QingFeng.Business
                 PayNo = "M" + GuidConvert.ToUniqueId(),
                 OrderNo = orderInfo.OrderNo,
                 OrderId = orderInfo.OrderId,
+                OutsideId = string.Empty,
                 PayType = AgentEnums.PayType.智付,
                 ActualPrice = orderInfo.OrderAmount,
+                CounterFee = orderInfo.OrderAmount * 0.01m,
                 UserId = orderInfo.UserId,
-                PayStatus = 0,
-                VerifyStatus = 0,
-                CreateDate = DateTime.Now
+                PayStatus = AgentEnums.PayStatus.待支付,
+                VerifyStatus = AgentEnums.VerifyStatus.未审核,
+                CreateDate = DateTime.Now,
+                PayDate = DateTime.MinValue,
+                VerifyDate = DateTime.MinValue,
             };
 
             return _payOrderRepository.Insert(model) > 0 ? model : null;

@@ -46,7 +46,7 @@ namespace QingFeng.WebArea.Controllers
                 return Content("未找到订单");
             }
 
-            if (orderInfo.OrderStatus != Common.AgentEnums.MasterOrderStatus.待支付)
+            if (orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.待支付)
             {
                 return Content("只有待支付的订单才能支付");
             }
@@ -55,6 +55,8 @@ namespace QingFeng.WebArea.Controllers
             {
                 return Content("只能支付自己的订单");
             }
+
+            var model = PayOrderService.Instance.CreatePayOrder(orderInfo);
 
             return Redirect("");
         }
