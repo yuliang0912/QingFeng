@@ -6,42 +6,43 @@ using System.Web.Mvc;
 using QingFeng.Common.ApiCore;
 using QingFeng.Common.ApiCore.Result;
 using QingFeng.WebArea.Controllers;
+using static QingFeng.Common.AgentEnums;
 
 namespace QingFeng.WebArea.Fillter
 {
     public class AdminAuthorize : FilterAttribute, IAuthorizationFilter, IActionFilter
     {
-        readonly Common.AgentEnums.UserRole _allowRole;
+        readonly UserRole _allowRole;
+        readonly SubMenuEnum _subMenu;
+        protected UserInfo CurrentUser;
 
-        public AdminAuthorize(Common.AgentEnums.UserRole allowRole)
+        public AdminAuthorize(SubMenuEnum subMenu, UserRole allowRole = UserRole.AllUser)
         {
+            _subMenu = subMenu;
             _allowRole = allowRole;
         }
-
-        protected UserInfo CurrentUser;
 
         public void OnAuthorization(AuthorizationContext filterContext)
         {
             var userId = FormsAuthenticationService.Instance.UserId;
 
-            CurrentUser = string.IsNullOrEmpty(userId) ? null : UserService.Instance.GetUserInfo(new {userId});
+            CurrentUser = string.IsNullOrEmpty(userId) ? null : UserService.Instance.GetUserInfo(new { userId });
 
-            if (CurrentUser != null &&
-                (CurrentUser.UserRole == _allowRole || _allowRole == Common.AgentEnums.UserRole.AllUser))
+            if (CurrentUser == null
+                || (CurrentUser.UserRole != _allowRole && _allowRole != UserRole.AllUser)
+                || !CurrentUser.AllUserMenus.Any(t => t == _subMenu))
             {
-                CurrentUser.StoreList = CurrentUser.StoreList.Where(t => t.Status == 0).ToList();
-                return;
-            }
-            if (filterContext.HttpContext.Request.IsAjaxRequest())
-            {
-                filterContext.Result = new CustomJsonResult()
+                if (filterContext.HttpContext.Request.IsAjaxRequest())
                 {
-                    Data = new ApiResult(RetEum.AuthenticationFailure, -1, "未检测到登陆用户")
-                };
-            }
-            else
-            {
-                filterContext.Result = new RedirectResult("/home/login");
+                    filterContext.Result = new CustomJsonResult()
+                    {
+                        Data = new ApiResult(RetEum.AuthenticationFailure, -1, "未检测到登陆用户")
+                    };
+                }
+                else
+                {
+                    filterContext.Result = new RedirectResult("/home/login");
+                }
             }
         }
 

@@ -186,5 +186,15 @@ namespace QingFeng.Common
             已审核 = 2,
             审核失败 = 3
         }
+
+        public enum MenuEnum
+        {
+            用户管理 = 1
+        }
+
+        public enum SubMenuEnum
+        {
+            添加 = 101
+        }
     }
 }
