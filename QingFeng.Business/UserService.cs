@@ -227,6 +227,11 @@ namespace QingFeng.Business
         {
             return _userProductPriceRepository.BatchInsert(userId, baseId, list);
         }
+
+        public IEnumerable<UserInfo> Search(AgentEnums.UserRole userRole, string keyWords)
+        {
+            return _userInfoRepository.Search(keyWords, userRole);
+        }
     }
 }
 
