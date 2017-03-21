@@ -1,6 +1,8 @@
-﻿using QingFeng.Common;
+﻿using System.Linq;
+using QingFeng.Common;
 using QingFeng.WebArea.Fillter;
 using System.Web.Mvc;
+using QingFeng.Business;
 
 namespace QingFeng.WebArea.Controllers
 {
@@ -8,9 +10,13 @@ namespace QingFeng.WebArea.Controllers
     public class StaffController : CustomerController
     {
         // GET: Staff
-        public ActionResult Index()
+        public ActionResult Index(string keyWords = "")
         {
-            return View();
+            var list = UserService.Instance.Search(AgentEnums.UserRole.Staff, keyWords).ToList();
+
+            ViewBag.keyWords = keyWords;
+
+            return View(list);
         }
     }
 }

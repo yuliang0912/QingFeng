@@ -21,6 +21,14 @@ namespace QingFeng.Models
 
         public string NickName { get; set; }
 
+        public string Phone { get; set; }
+
+        public string Email { get; set; }
+
+        public DateTime LastLoginDate { get; set; }
+
+        public string LastLoginIp { get; set; }
+
         public AgentEnums.UserRole UserRole { get; set; }
 
         public string Avatar { get; set; }
