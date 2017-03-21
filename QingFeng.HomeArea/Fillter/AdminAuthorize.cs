@@ -16,7 +16,7 @@ namespace QingFeng.WebArea.Fillter
         readonly SubMenuEnum _subMenu;
         protected UserInfo CurrentUser;
 
-        public AdminAuthorize(SubMenuEnum subMenu, UserRole allowRole = UserRole.AllUser)
+        public AdminAuthorize(SubMenuEnum subMenu = SubMenuEnum.全部, UserRole allowRole = UserRole.AllUser)
         {
             _subMenu = subMenu;
             _allowRole = allowRole;

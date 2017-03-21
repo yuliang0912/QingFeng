@@ -5,6 +5,7 @@ using QingFeng.Common;
 using QingFeng.Common.ApiCore.Result;
 using QingFeng.Models;
 using QingFeng.Models.DTO;
+using QingFeng.WebArea.Fillter;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -16,7 +17,7 @@ namespace QingFeng.WebArea.Controllers
 {
     public class StockController : CustomerController
     {
-
+        [AdminAuthorize(AgentEnums.SubMenuEnum.库存查询)]
         public ActionResult Search(int baseId = 0, int brandId = 0, int sexId = 0, int warehouseId = 0, int page = 1,
             int pageSize = 20)
         {
@@ -54,7 +55,7 @@ namespace QingFeng.WebArea.Controllers
                 }
             }
 
-            ViewBag.allSkus = productStocks.SelectMany(t => t.Value).OrderBy(t=>t.SkuId)
+            ViewBag.allSkus = productStocks.SelectMany(t => t.Value).OrderBy(t => t.SkuId)
                 .GroupBy(t => t.SkuId)
                 .ToDictionary(t => t.Key, t => t.First().SkuName);
 
@@ -72,22 +73,7 @@ namespace QingFeng.WebArea.Controllers
             });
         }
 
-
-        public JsonResult SearchGoods(string keyWords)
-        {
-            if (string.IsNullOrWhiteSpace(keyWords))
-            {
-                return Json(Enumerable.Empty<object>());
-            }
-
-            var list = ProductService.Instance.SearchBaseProduct(0, 0, keyWords).Select(t => new
-            {
-                baseId = t.BaseId,
-                baseNo = t.BaseNo
-            });
-            return Json(list, JsonRequestBehavior.AllowGet);
-        }
-
+        [AdminAuthorize(AgentEnums.SubMenuEnum.导入库存)]
         public ActionResult Import()
         {
             return View();
@@ -97,6 +83,7 @@ namespace QingFeng.WebArea.Controllers
         //导入EXCEL数据(IIS-32位运行)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.导入库存)]
         public JsonResult StockFileImport(HttpPostedFileBase file)
         {
             if (string.Empty.Equals(file.FileName) || ".xlsx" != System.IO.Path.GetExtension(file.FileName))
@@ -162,6 +149,7 @@ namespace QingFeng.WebArea.Controllers
             }
         }
 
+        [AdminAuthorize(AgentEnums.SubMenuEnum.导入库存)]
         //导出模板文件
         public ActionResult StockExportExcel(int brandId)
         {
@@ -228,6 +216,7 @@ namespace QingFeng.WebArea.Controllers
 
 
         #region Ajax
+        [AdminAuthorize]
         public JsonResult GetProductStock(int productId)
         {
             var list = ProductStockService.Instance.GetList(new { productId })
@@ -235,6 +224,23 @@ namespace QingFeng.WebArea.Controllers
                     .Where(t => t.StockNum > 0);
 
             return Json(list);
+        }
+
+
+        [AdminAuthorize]
+        public JsonResult SearchGoods(string keyWords)
+        {
+            if (string.IsNullOrWhiteSpace(keyWords))
+            {
+                return Json(Enumerable.Empty<object>());
+            }
+
+            var list = ProductService.Instance.SearchBaseProduct(0, 0, keyWords).Select(t => new
+            {
+                baseId = t.BaseId,
+                baseNo = t.BaseNo
+            });
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
         #endregion
     }

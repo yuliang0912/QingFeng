@@ -15,9 +15,9 @@ using System.Web.Mvc;
 
 namespace QingFeng.WebArea.Controllers
 {
-    [AdminAuthorize(AgentEnums.UserRole.AllUser)]
     public class PriceController : CustomerController
     {
+        [AdminAuthorize(AgentEnums.SubMenuEnum.代理商价格)]
         public ActionResult Index(int userId = 0, string keyWord = "", int brandId = 1, int categoryId = 0, int page = 1,
             int pageSize = 30)
         {
@@ -51,6 +51,7 @@ namespace QingFeng.WebArea.Controllers
             });
         }
 
+        [AdminAuthorize(AgentEnums.SubMenuEnum.设置代理商价格)]
         //设置价格
         public ActionResult DistributorSet(int userId, int baseId)
         {
@@ -78,6 +79,7 @@ namespace QingFeng.WebArea.Controllers
         }
 
         [HttpPost]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.设置代理商价格)]
         public ActionResult SetUserPrice(int userId, int baseId)
         {
             var baseInfo = ProductService.Instance.GetProductBase(baseId);
@@ -113,6 +115,7 @@ namespace QingFeng.WebArea.Controllers
 
         //批量EXCEL导入
         [HttpGet]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.代理商导入)]
         public ActionResult DistributorImport()
         {
             var allUsers = UserService.Instance.GetList(new { UserRole = 3 }).ToList();
@@ -124,6 +127,7 @@ namespace QingFeng.WebArea.Controllers
         //导入EXCEL数据(IIS-32位运行)
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.代理商导入)]
         public JsonResult DistributorFileImport(HttpPostedFileBase file)
         {
             if (string.Empty.Equals(file.FileName) || ".xlsx" != System.IO.Path.GetExtension(file.FileName))
@@ -199,6 +203,7 @@ namespace QingFeng.WebArea.Controllers
         }
 
         //导出模板文件
+        [AdminAuthorize(AgentEnums.SubMenuEnum.代理商导入)]
         public ActionResult DistributorImportExcel(int brandId, int userId)
         {
             var baseProductList = ProductService.Instance.GetBaseProductList(new { brandId, status = 0 });

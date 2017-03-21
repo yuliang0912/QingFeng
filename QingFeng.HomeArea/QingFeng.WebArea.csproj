@@ -459,6 +459,7 @@
     <Compile Include="Controllers\PayController.cs" />
     <Compile Include="Controllers\PriceController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
+    <Compile Include="Controllers\ShopController.cs" />
     <Compile Include="Controllers\StaffController.cs" />
     <Compile Include="Controllers\StockController.cs" />
     <Compile Include="Controllers\TestController.cs" />
@@ -579,6 +580,9 @@
     <Content Include="Views\Staff\Index.cshtml" />
     <Content Include="Views\Pay\Export.cshtml" />
     <Content Include="Views\Order\Export.cshtml" />
+    <Content Include="Views\Staff\Edit.cshtml" />
+    <Content Include="Views\Staff\Add.cshtml" />
+    <Content Include="Views\Shop\Index.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

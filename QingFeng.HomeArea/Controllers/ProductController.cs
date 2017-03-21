@@ -13,7 +13,7 @@ namespace QingFeng.WebArea.Controllers
 {
     public class ProductController : CustomerController
     {
-        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        [HttpGet, AdminAuthorize]
         public ActionResult EditProduct(int productId)
         {
             var model = ProductService.Instance.GetProduct(productId);
@@ -32,14 +32,14 @@ namespace QingFeng.WebArea.Controllers
             return View(model);
         }
 
-        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        [HttpGet, AdminAuthorize]
         public ActionResult SubProducts(int baseId)
         {
             var list = ProductService.Instance.GetProductByBaseId(baseId);
             return View(list);
         }
 
-        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        [HttpGet, AdminAuthorize]
         public ActionResult ProductManger(int baseId)
         {
             var baseProduct = ProductService.Instance.GetProductBase(baseId);
@@ -62,7 +62,7 @@ namespace QingFeng.WebArea.Controllers
             return View(baseProduct);
         }
 
-        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        [HttpGet, AdminAuthorize]
         public ActionResult Products(string keyWords = "", int categoryId = 0, int page = 1, int pageSize = 20)
         {
             int totalItem;
@@ -81,7 +81,7 @@ namespace QingFeng.WebArea.Controllers
             });
         }
 
-        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        [HttpGet, AdminAuthorize]
         public ActionResult CreateProduct(int baseId)
         {
             var baseProduct = ProductService.Instance.GetProductBase(baseId);
@@ -102,20 +102,20 @@ namespace QingFeng.WebArea.Controllers
 
         #region Ajax
 
-        [HttpPost, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        [HttpPost, AdminAuthorize]
         public JsonResult AddProduct(Product model)
         {
             return Json(ProductService.Instance.CreateProduct(model));
         }
 
 
-        [HttpPost, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        [HttpPost, AdminAuthorize]
         public JsonResult EditProduct(Product model)
         {
             return Json(ProductService.Instance.EditProduct(model));
         }
 
-        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        [HttpGet, AdminAuthorize]
         public JsonResult UpdateBaserProductStatus(int baseId, int status)
         {
             var result = ProductService.Instance.UpdateBaseProductInfo(new {status}, new {baseId});
@@ -126,7 +126,7 @@ namespace QingFeng.WebArea.Controllers
             return Json(result);
         }
 
-        [HttpGet, AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        [HttpGet, AdminAuthorize]
         public JsonResult UpdateProductStatus(int productId, int status)
         {
             return Json(ProductService.Instance.UpdateProductInfo(new {status}, new {productId}));
@@ -137,7 +137,7 @@ namespace QingFeng.WebArea.Controllers
         /// </summary>
         /// <param name="baseNo"></param>
         /// <returns></returns>
-        [AdminAuthorize(AgentEnums.UserRole.AllUser)]
+        [AdminAuthorize]
         public JsonResult GetProductStock(string baseNo)
         {
             var model = ProductService.Instance.GetProductBase(baseNo);
@@ -183,7 +183,7 @@ namespace QingFeng.WebArea.Controllers
         }
 
         //搜索产品库
-        [AdminAuthorize(AgentEnums.UserRole.StoreUser)]
+        [AdminAuthorize]
         public JsonResult SearchProduct(int categoryId, string keyWords, int page, int pageSize)
         {
             int totalItem;

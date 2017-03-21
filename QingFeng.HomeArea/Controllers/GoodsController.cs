@@ -11,10 +11,10 @@ using QingFeng.WebArea.Fillter;
 
 namespace QingFeng.WebArea.Controllers
 {
-    [AdminAuthorize(AgentEnums.UserRole.AllUser)]
     public class GoodsController : CustomerController
     {
         // GET: Goods
+        [AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
         public ActionResult Index(string keyWord = "", int brandId = 1, int categoryId = 0, int page = 1,
             int pageSize = 30)
         {
@@ -35,7 +35,7 @@ namespace QingFeng.WebArea.Controllers
             });
         }
 
-
+        [AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
         public ActionResult Add()
         {
             var sizeList = SkuItemService.Instance.GetList(AgentEnums.SkuType.Size).ToList();
@@ -49,6 +49,7 @@ namespace QingFeng.WebArea.Controllers
         /// <param name="model"></param>
         /// <returns></returns>
         [HttpPost]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
         public JsonResult Add(CreateProductDto model)
         {
             var result = ProductService.Instance.AddProduct(model, new UserInfo() { UserId = 155014 });
@@ -60,6 +61,7 @@ namespace QingFeng.WebArea.Controllers
         /// 编辑商品
         /// </summary>
         /// <returns></returns>
+        [AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
         public ActionResult Edit(int baseId)
         {
             var baseInfo = ProductService.Instance.GetProductBase(baseId);
@@ -91,6 +93,7 @@ namespace QingFeng.WebArea.Controllers
         /// </summary>
         /// <param name="baseId"></param>
         /// <returns></returns>
+        [AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
         public ActionResult Set(int baseId)
         {
             var baseInfo = ProductService.Instance.GetProductBase(baseId);

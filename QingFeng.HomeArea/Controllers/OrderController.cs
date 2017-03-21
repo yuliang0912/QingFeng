@@ -11,10 +11,10 @@ using System.Web.Mvc;
 
 namespace QingFeng.WebArea.Controllers
 {
-    [AdminAuthorize(AgentEnums.UserRole.AllUser)]
     public class OrderController : CustomerController
     {
         // GET: Order
+        [AdminAuthorize(AgentEnums.SubMenuEnum.订单列表)]
         public ActionResult Index(UserInfo user, int storeId = 0, int brandId = 0, int orderStatus = 0,
             string beginDateStr = "",
             string endDateStr = "",
@@ -75,11 +75,13 @@ namespace QingFeng.WebArea.Controllers
         /// 添加订单
         /// </summary>
         /// <returns></returns>
+        [AdminAuthorize(AgentEnums.SubMenuEnum.添加订单)]
         public ActionResult Add()
         {
             return View();
         }
 
+        [AdminAuthorize(AgentEnums.SubMenuEnum.修改地址)]
         public ActionResult Address(UserInfo user, long orderId)
         {
             var order = OrderService.Instance.Get(new { orderId });
@@ -106,6 +108,7 @@ namespace QingFeng.WebArea.Controllers
         /// <param name="user"></param>
         /// <param name="orderId"></param>
         /// <returns></returns>
+        [AdminAuthorize(AgentEnums.SubMenuEnum.添加备注)]
         public ActionResult Note(UserInfo user, long orderId)
         {
             var order = OrderService.Instance.Get(new { orderId });
@@ -123,7 +126,7 @@ namespace QingFeng.WebArea.Controllers
 
             return View(order);
         }
-
+        [AdminAuthorize(AgentEnums.SubMenuEnum.查看订单)]
         public ActionResult Detail(UserInfo user, long orderId)
         {
             var order = OrderService.Instance.Get(new { orderId });
@@ -163,7 +166,7 @@ namespace QingFeng.WebArea.Controllers
             return View(order);
         }
 
-
+        [AdminAuthorize(AgentEnums.SubMenuEnum.发货)]
         public ActionResult SendGood(UserInfo user, long orderId)
         {
             var orderInfo = OrderService.Instance.Get(new { orderId });
@@ -178,7 +181,7 @@ namespace QingFeng.WebArea.Controllers
             return View(orderInfo);
         }
 
-
+        [AdminAuthorize(AgentEnums.SubMenuEnum.订单导出)]
         public ActionResult Export(UserInfo user)
         {
             var storeList = StoreService.Instance.GetList(new { status = 0 }).ToList();
@@ -186,6 +189,7 @@ namespace QingFeng.WebArea.Controllers
             return View(storeList);
         }
 
+        [AdminAuthorize(AgentEnums.SubMenuEnum.订单导出)]
         public ActionResult Export(UserInfo user, int storeId = 0, int brandId = 0, int orderStatus = 0,
           string beginDateStr = "", string endDateStr = "")
         {
@@ -280,6 +284,7 @@ namespace QingFeng.WebArea.Controllers
         #region Ajax
 
         [HttpPost]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.添加订单)]
         public JsonResult CreateOrder(UserInfo user, OrderMaster order)
         {
             if (string.IsNullOrWhiteSpace(order?.OrderNo))
@@ -321,6 +326,7 @@ namespace QingFeng.WebArea.Controllers
         }
 
         [HttpPost]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.添加备注)]
         public ActionResult CreateNote(UserInfo user, long orderId)
         {
             var order = OrderService.Instance.Get(new { orderId });
@@ -359,6 +365,7 @@ namespace QingFeng.WebArea.Controllers
 
         //取消订单
         [HttpGet]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.取消订单)]
         public ActionResult CancelOrder(UserInfo user, long orderId)
         {
             var order = OrderService.Instance.Get(new { orderId });
@@ -405,6 +412,7 @@ namespace QingFeng.WebArea.Controllers
         /// <param name="user"></param>
         /// <returns></returns>
         [HttpPost]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.发货)]
         public ActionResult SetDespatched(UserInfo user)
         {
             var orderId = Convert.ToInt64(Request.Form["orderId"] ?? string.Empty);
@@ -459,6 +467,7 @@ namespace QingFeng.WebArea.Controllers
         /// <param name="orderId"></param>
         /// <param name="flowId"></param>
         /// <returns></returns>
+        [AdminAuthorize(AgentEnums.SubMenuEnum.无货标记)]
         public ActionResult SetDefect(UserInfo user, long orderId, int flowId)
         {
             var orderInfo = OrderService.Instance.Get(new { orderId });
@@ -515,6 +524,7 @@ namespace QingFeng.WebArea.Controllers
         /// <param name="orderId"></param>
         /// <param name="flowId"></param>
         /// <returns></returns>
+        [AdminAuthorize(AgentEnums.SubMenuEnum.异常取消)]
         public ActionResult SetCancel(UserInfo user, long orderId, int flowId)
         {
             var orderInfo = OrderService.Instance.Get(new { orderId });
