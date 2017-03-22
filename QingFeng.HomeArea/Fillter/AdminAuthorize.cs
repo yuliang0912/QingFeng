@@ -8,6 +8,7 @@ using QingFeng.Common.ApiCore.Result;
 using QingFeng.WebArea.Controllers;
 using static QingFeng.Common.AgentEnums;
 using System;
+using System.Collections.Generic;
 
 namespace QingFeng.WebArea.Fillter
 {
@@ -31,10 +32,12 @@ namespace QingFeng.WebArea.Fillter
 
             if (CurrentUser != null && CurrentUser.UserRole == UserRole.Administrator)
             {
-                string.Join(",", Enum.GetValues(typeof(SubMenuEnum)));
-
-                //CurrentUser.UserMenus =
-                    
+                var menuList = new List<int>();
+                foreach (var item in Enum.GetValues(typeof(SubMenuEnum)))
+                {
+                    menuList.Add(item.GetHashCode());
+                }
+                CurrentUser.UserMenus = string.Join(",", menuList);
             }
 
             if (CurrentUser == null
