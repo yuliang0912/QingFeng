@@ -190,8 +190,8 @@ namespace QingFeng.WebArea.Controllers
         }
 
         [AdminAuthorize(AgentEnums.SubMenuEnum.订单导出)]
-        public ActionResult Export(UserInfo user, int storeId = 0, int brandId = 0, int orderStatus = 0,
-          string beginDateStr = "", string endDateStr = "")
+        public ActionResult ExportFile(UserInfo user, int storeId = 0, int brandId = 0, int orderStatus = 0,
+            string beginDateStr = "", string endDateStr = "")
         {
             DateTime beginDate, endDate;
 
@@ -206,7 +206,9 @@ namespace QingFeng.WebArea.Controllers
             endDate = endDate.AddDays(1).AddSeconds(-1);
 
             int totalItem;
-            var list = OrderService.Instance.SearchOrderList(0, storeId, orderStatus, beginDate, endDate, string.Empty, 1, int.MaxValue, out totalItem).ToList();
+            var list =
+                OrderService.Instance.SearchOrderList(0, storeId, orderStatus, beginDate, endDate, string.Empty, 1,
+                    int.MaxValue, out totalItem).ToList();
 
             var workbook = new XLWorkbook();
             workbook.Worksheets.Add("Sheet1");
