@@ -32,5 +32,37 @@ namespace QingFeng.WebArea.Controllers
         {
             return View();
         }
+
+        [AdminAuthorize(AgentEnums.SubMenuEnum.代理商列表)]
+        public ActionResult Agent()
+        {
+            var list = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, string.Empty).ToList();
+
+            return View(list);
+        }
+
+        [AdminAuthorize(AgentEnums.SubMenuEnum.重置代理商密码)]
+        public ActionResult ReSetAgentPwd()
+        {
+            var list = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, string.Empty).ToList();
+
+            return View(list);
+        }
+
+        [AdminAuthorize(AgentEnums.SubMenuEnum.删除代理商)]
+        public ActionResult SetAgentLogin()
+        {
+            var list = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, string.Empty).ToList();
+
+            return View(list);
+        }
+
+        #region Ajax
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.编辑员工)]
+        public JsonResult Edit()
+        {
+            return Json(null);
+        }
+        #endregion
     }
 }

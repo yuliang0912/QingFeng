@@ -11,13 +11,6 @@ namespace QingFeng.WebArea.Controllers
 {
     public class HomeController : CustomerController
     {
-        // GET: Home
-        [AdminAuthorize(AgentEnums.UserRole.Administrator)]
-        public ActionResult Index(UserInfo user)
-        {
-            return View();
-        }
-
         public ActionResult Login()
         {
             return View();
@@ -45,7 +38,7 @@ namespace QingFeng.WebArea.Controllers
         }
 
 
-        [AdminAuthorize(AgentEnums.UserRole.Administrator)]
+        [AdminAuthorize]
         public ActionResult UpdateUserStatus(UserInfo user, int userId, int status)
         {
             if (user.UserId == userId)
@@ -59,7 +52,7 @@ namespace QingFeng.WebArea.Controllers
         }
 
 
-        [AdminAuthorize(AgentEnums.UserRole.AllUser), HttpGet]
+        [AdminAuthorize, HttpGet]
         public ActionResult UpdatePassWord(UserInfo user, string oldPwd, string newPwd)
         {
             if (string.IsNullOrWhiteSpace(oldPwd) || string.IsNullOrWhiteSpace(newPwd))

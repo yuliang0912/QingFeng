@@ -200,7 +200,7 @@ namespace QingFeng.Common
 
         public enum SubMenuEnum
         {
-            全部 = 0
+            全部 = 0,
             删除店铺 = 101,
             编辑店铺 = 102,
             添加店铺 = 103,

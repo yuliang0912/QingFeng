@@ -13,9 +13,9 @@ namespace QingFeng.Business
         public Dictionary<MenuEnum, List<SubMenuEnum>> GetList()
         {
             var dict = new Dictionary<MenuEnum, List<SubMenuEnum>>();
-            dict.Add(MenuEnum.用户管理, new List<SubMenuEnum>()
+            dict.Add(MenuEnum.人员管理, new List<SubMenuEnum>()
             {
-                SubMenuEnum.添加
+                SubMenuEnum.删除员工
             });
             return dict;
         }

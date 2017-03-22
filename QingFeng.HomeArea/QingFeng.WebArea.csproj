@@ -450,19 +450,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\RouteConfig.cs" />
-    <Compile Include="Controllers\AdminController.cs" />
-    <Compile Include="Controllers\AgentController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\GoodsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\PayController.cs" />
     <Compile Include="Controllers\PriceController.cs" />
-    <Compile Include="Controllers\ProductController.cs" />
     <Compile Include="Controllers\ShopController.cs" />
     <Compile Include="Controllers\StaffController.cs" />
     <Compile Include="Controllers\StockController.cs" />
-    <Compile Include="Controllers\TestController.cs" />
     <Compile Include="Fillter\AdminAuthorize.cs" />
     <Compile Include="FormsAuth\FormsAuthenticationService.cs" />
     <Compile Include="FormsAuth\FormsAuthenticationWrapper.cs" />

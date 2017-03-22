@@ -7,6 +7,7 @@ using QingFeng.Common.ApiCore;
 using QingFeng.Common.ApiCore.Result;
 using QingFeng.WebArea.Controllers;
 using static QingFeng.Common.AgentEnums;
+using System;
 
 namespace QingFeng.WebArea.Fillter
 {
@@ -27,6 +28,14 @@ namespace QingFeng.WebArea.Fillter
             var userId = FormsAuthenticationService.Instance.UserId;
 
             CurrentUser = string.IsNullOrEmpty(userId) ? null : UserService.Instance.GetUserInfo(new { userId });
+
+            if (CurrentUser != null && CurrentUser.UserRole == UserRole.Administrator)
+            {
+                string.Join(",", Enum.GetValues(typeof(SubMenuEnum)));
+
+                //CurrentUser.UserMenus =
+                    
+            }
 
             if (CurrentUser == null
                 || (CurrentUser.UserRole != _allowRole && _allowRole != UserRole.AllUser)

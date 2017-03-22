@@ -14,7 +14,7 @@ using QingFeng.Common.ApiCore.Result;
 
 namespace QingFeng.WebArea.Controllers
 {
-    [AdminAuthorize(AgentEnums.UserRole.AllUser)]
+    [AdminAuthorize]
     public class PayController : Controller
     {
         // GET: Pay
