@@ -230,10 +230,8 @@ namespace QingFeng.WebArea.Controllers
             workSheet.Cell(1, 15).Value = "子订单状态";
 
             var rows = 2;
-            for (int i = 0; i < list.Count; i++)
+            foreach (var order in list)
             {
-                var order = list[i];
-
                 workSheet.Cell(rows, 1).Value = order.OrderId;
                 workSheet.Cell(rows, 2).Value = order.OrderNo;
                 workSheet.Cell(rows, 3).Value = order.StoreName;
@@ -252,7 +250,7 @@ namespace QingFeng.WebArea.Controllers
                 workSheet.Range(rows, 7, rows - 1 + order.OrderDetails.Count(), 7).Merge();
                 workSheet.Range(rows, 8, rows - 1 + order.OrderDetails.Count(), 8).Merge();
 
-                for (int j = 0; j < order.OrderDetails.Count(); j++)
+                for (var j = 0; j < order.OrderDetails.Count(); j++)
                 {
                     var orderDetail = order.OrderDetails.ToList()[j];
 
@@ -279,7 +277,9 @@ namespace QingFeng.WebArea.Controllers
             return new Common.ActionResultExtensions.ExportExcelResult
             {
                 workBook = workbook,
-                FileName = string.Concat("order-export-", DateTime.Now.ToString("yyyy-MM-dd"), ".xlsx")
+                FileName =
+                    string.Concat("order-export-", beginDate.ToString("yyyy-MM-dd"), "-", endDate.ToString("yyyy-MM-dd"),
+                        ".xlsx")
             };
         }
 

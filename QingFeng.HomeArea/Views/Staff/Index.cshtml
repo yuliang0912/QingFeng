@@ -56,7 +56,7 @@
                 </td>
                 <td>
                     <a href="http://www.qingfeng.com/staff/setrole/39" class="setting">设置权限</a>
-                    <a href="http://www.qingfeng.com/staff/edit/39" class="setting">编辑员工</a>
+                    <a href="http://www.qingfeng.com/staff/edit?userId=@(item.UserId)" class="setting">编辑员工</a>
                     <a href="http://www.qingfeng.com/staff/delete/off/39" title="" class="red delete-modal" data-goods-id="@item.UserId" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="禁止员工登录" data-original-title="禁止登录">禁止登录</a>
                 </td>
             </tr>
@@ -157,7 +157,7 @@
             url = "http://www.qingfeng.com/staff/index" + '?keyword=' + keyword;
             $.getPageContent({ url: url });
             return false;
-        })
+        });
 
         $('.pagination a').click(function () {
             var url = $(this).attr('href');
