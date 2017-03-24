@@ -22,7 +22,12 @@ namespace QingFeng.WebArea.Controllers
         [AdminAuthorize(AgentEnums.SubMenuEnum.编辑店铺)]
         public ActionResult Edit(int userId)
         {
-            var userInfo = UserService.Instance.GetUserInfo(new { userId = userId });
+            var userInfo = UserService.Instance.GetUserInfo(new {userId = userId});
+
+            if (null == userInfo)
+            {
+                return Content("参数错误");
+            }
 
             return View(userInfo);
         }
@@ -58,11 +63,19 @@ namespace QingFeng.WebArea.Controllers
         }
 
         #region Ajax
+
         [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.编辑员工)]
         public JsonResult Edit()
         {
             return Json(null);
         }
+
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.编辑员工)]
+        public JsonResult ProhibitLogin()
+        {
+            return Json(null);
+        }
+
         #endregion
     }
 }

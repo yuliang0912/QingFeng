@@ -48,20 +48,6 @@ namespace QingFeng.Models
 
 
         [IgnoreField]
-        public List<SubMenuEnum> AllUserMenus
-        {
-            get
-            {
-                var list = new List<SubMenuEnum>();
-                foreach (var menu in UserMenus.Split(',').Select(int.Parse))
-                {
-                    if (Enum.IsDefined(typeof(SubMenuEnum), menu))
-                    {
-                        list.Add((SubMenuEnum)menu);
-                    }
-                }
-                return list;
-            }
-        }
+        public List<SubMenuEnum> AllUserMenus => (from menu in UserMenus.Split(',').Select(int.Parse) where Enum.IsDefined(typeof (SubMenuEnum), menu) select (SubMenuEnum) menu).ToList();
     }
 }
