@@ -16,7 +16,7 @@ namespace QingFeng.Common.ActionResultExtensions
 
         public ExportExcelResult()
         {
-
+             
         }
 
         public override void ExecuteResult(ControllerContext context)

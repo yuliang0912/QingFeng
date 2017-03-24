@@ -234,7 +234,7 @@ namespace QingFeng.WebArea.Controllers
             {
                 var order = list[i];
 
-                workSheet.Cell(rows, 1).Value = order.OrderId;
+                workSheet.Cell(rows, 1).Value = order.OrderId.ToString();
                 workSheet.Cell(rows, 2).Value = order.OrderNo;
                 workSheet.Cell(rows, 3).Value = order.StoreName;
                 workSheet.Cell(rows, 4).Value = order.ContactName;
@@ -251,6 +251,7 @@ namespace QingFeng.WebArea.Controllers
                 workSheet.Range(rows, 6, rows - 1 + order.OrderDetails.Count(), 6).Merge();
                 workSheet.Range(rows, 7, rows - 1 + order.OrderDetails.Count(), 7).Merge();
                 workSheet.Range(rows, 8, rows - 1 + order.OrderDetails.Count(), 8).Merge();
+
 
                 for (int j = 0; j < order.OrderDetails.Count(); j++)
                 {
