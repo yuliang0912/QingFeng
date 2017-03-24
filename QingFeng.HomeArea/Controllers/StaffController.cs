@@ -3,6 +3,9 @@ using QingFeng.Common;
 using QingFeng.WebArea.Fillter;
 using System.Web.Mvc;
 using QingFeng.Business;
+using QingFeng.Models;
+using QingFeng.Common.ApiCore.Result;
+using QingFeng.Common.ApiCore;
 
 namespace QingFeng.WebArea.Controllers
 {
@@ -71,9 +74,16 @@ namespace QingFeng.WebArea.Controllers
         }
 
         [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.编辑员工)]
-        public JsonResult ProhibitLogin()
+        public JsonResult ProhibitLogin(UserInfo user, int userId, int status)
         {
-            return Json(null);
+            if (user.UserId == userId)
+            {
+                return Json(new ApiResult<int>(2) { Ret = RetEum.ApplicationError, Message = "不能更新自己的状态" });
+            }
+
+            var result = UserService.Instance.UpdateUserInfo(new UserInfo() { UserId = userId, Status = status });
+
+            return Json(new ApiResult<bool>(result));
         }
 
         #endregion
