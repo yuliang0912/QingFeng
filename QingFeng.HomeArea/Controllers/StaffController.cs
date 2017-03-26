@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using QingFeng.Common;
 using QingFeng.WebArea.Fillter;
 using System.Web.Mvc;
@@ -71,6 +72,18 @@ namespace QingFeng.WebArea.Controllers
         public JsonResult Edit()
         {
             return Json(null);
+        }
+
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.编辑员工)]
+        public JsonResult AddStaff(UserInfo model)
+        {
+            model.CreateDate = DateTime.Now;
+            model.Status = 0;
+            model.UserRole = AgentEnums.UserRole.Staff;
+            model.UserMenus = "210";
+
+            var result = UserService.Instance.RegisterUser(model);
+            return Json(result);
         }
 
         [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.编辑员工)]

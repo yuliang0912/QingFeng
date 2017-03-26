@@ -23,7 +23,7 @@
             </div>
             <button type="button" class="btn btn-primary btn-sm " id="staff-search">搜索</button>
         </small>
-        <a href="http://www.qingfeng.com/staff/add" class="btn btn-info btn-sm pull-right add-modal"> <i class="glyphicon glyphicon-plus"></i> 添加员工</a>
+        <a href="http://www.qingfeng.com/staff/add" class="btn btn-info btn-sm pull-right add-modal addStaff"> <i class="glyphicon glyphicon-plus"></i> 添加员工</a>
     </h1>
 </div>
 
@@ -131,30 +131,37 @@
                 return false;
             },
         });
+        
         $.showModal({
-            selector: '.setting',
+            selector: '.addStaff',
             formId: 'setting-form',
             beforeSubmit: function (formData, jqForm, options) {
+                var pwd1= jqForm.find("#passWord").val();
+                var pwd2 = jqForm.find("#confirmPassWord").val();
+                if (pwd1 != pwd2) {
+                    layer.msg("两次密码不一致");
+                    return false;
+                }
                 return true;
             },
-            success: function (response, status) {
-                alert(response.msg);
-                if (response.error == 0) {
+            success: function(response, status) {
+                if (response.data === 1) {
+                    layer.msg("添加成功");
                     $('#etop-modal').modal('hide');
                     $.pageReload();
                 }
-
+                else if (response.data === 2) {
+                    layer.msg("登录名已存在");
+                } else {
+                    layer.msg("添加失败");
+                }
                 return false;
-            },
+            }
         });
 
         $('#staff-search').click(function () {
             var keyword = $('#staff_keyword').val();
-            if (keyword == '') {
-                alert('搜索条件不能为空');
-                return false;
-            }
-            url = "http://www.qingfeng.com/staff/index" + '?keyword=' + keyword;
+            var url = "http://www.qingfeng.com/staff/index" + '?keywords=' + keyword;
             $.getPageContent({ url: url });
             return false;
         });

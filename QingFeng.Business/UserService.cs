@@ -54,9 +54,10 @@ namespace QingFeng.Business
             }
 
             model.Avatar = model.Avatar ?? "/content/agent/img/user.jpg";
-            model.NickName = model.NickName ?? model.UserName;
-            model.UserRole = AgentEnums.UserRole.StoreUser;
+            model.NickName = model.NickName ?? string.Empty;
             model.Salt = StringExtensions.GetRandomString();
+            model.LastLoginDate = new DateTime(2000, 1, 1);
+            model.LastLoginIp = "0.0.0.0";
 
             model.PassWord =
                 string.Concat(model.UserName, PassWordSplitString, model.UserRole.GetHashCode(), model.PassWord)

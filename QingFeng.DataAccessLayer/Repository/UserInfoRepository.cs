@@ -28,7 +28,8 @@ namespace QingFeng.DataAccessLayer.Repository
 
             using (var connection = GetReadConnection)
             {
-                return connection.QueryList<UserInfo>(new {userRole = userRole.GetHashCode()}, TableName, buildWhereSql);
+                return connection.QueryList<UserInfo>(new {keyWords, userRole = userRole.GetHashCode()}, TableName,
+                    buildWhereSql);
             }
         }
     }
