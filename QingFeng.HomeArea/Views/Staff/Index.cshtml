@@ -138,8 +138,17 @@
             beforeSubmit: function (formData, jqForm, options) {
                 var pwd1= jqForm.find("#passWord").val();
                 var pwd2 = jqForm.find("#confirmPassWord").val();
-                if (pwd1 != pwd2) {
+                if (pwd1 !== pwd2) {
                     layer.msg("两次密码不一致");
+                    return false;
+                }
+                var userName = jqForm.find("#userName").val();
+                if (userName.length < 6) {
+                    layer.msg("请输入6位以上长度的用户名");
+                    return false;
+                }
+                if (pwd1.length<6) {
+                    layer.msg("请输入6位以上长度的密码");
                     return false;
                 }
                 return true;

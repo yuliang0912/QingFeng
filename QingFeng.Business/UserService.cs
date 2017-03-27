@@ -58,6 +58,8 @@ namespace QingFeng.Business
             model.Salt = StringExtensions.GetRandomString();
             model.LastLoginDate = new DateTime(2000, 1, 1);
             model.LastLoginIp = "0.0.0.0";
+            model.Phone = model.Phone ?? string.Empty;
+            model.Email = model.Email ?? string.Empty;
 
             model.PassWord =
                 string.Concat(model.UserName, PassWordSplitString, model.UserRole.GetHashCode(), model.PassWord)
@@ -111,8 +113,20 @@ namespace QingFeng.Business
             {
                 return false;
             }
+            model.Phone = model.Phone ?? string.Empty;
+            model.Email = model.Email ?? string.Empty;
+            model.NickName = model.NickName ?? userInfo.NickName;
 
-            model.NickName = model.NickName ?? userInfo.UserName;
+            if (!string.IsNullOrWhiteSpace(model.PassWord))
+            {
+                var newPassWord =
+                    string.Concat(userInfo.UserName, PassWordSplitString, userInfo.UserRole.GetHashCode(),
+                            model.PassWord)
+                        .Hmacsha1(userInfo.Salt);
+                model.PassWord = newPassWord;
+
+            }
+
             return _userInfoRepository.Update(new {model.NickName}, new {model.UserId});
         }
 

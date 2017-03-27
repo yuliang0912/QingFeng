@@ -87,6 +87,24 @@ namespace QingFeng.WebArea.Controllers
         }
 
         [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.编辑员工)]
+        public JsonResult EditStaff(UserInfo model)
+        {
+            var userInfo = UserService.Instance.GetUserInfo(new {model.UserId});
+
+            if (userInfo == null || userInfo.UserRole == AgentEnums.UserRole.Administrator)
+            {
+                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "参数错误"});
+            }
+            userInfo.Phone = model.Phone;
+            userInfo.Email = model.Email;
+            userInfo.PassWord = model.PassWord;
+            userInfo.NickName = model.NickName;
+
+            var result = UserService.Instance.UpdateUserInfo(userInfo);
+            return Json(result);
+        }
+
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.编辑员工)]
         public JsonResult ProhibitLogin(UserInfo user, int userId, int status)
         {
             if (user.UserId == userId)
