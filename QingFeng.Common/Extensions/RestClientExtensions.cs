@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Web;
 using RestSharp;
-using QingFeng.Common;
 
-namespace CiWong.OpenAPI.Core.Extensions
+namespace QingFeng.Common.Extensions
 {
 
     #region RestClient扩展方法
@@ -13,13 +11,11 @@ namespace CiWong.OpenAPI.Core.Extensions
     /// </summary>
     public class RestClientExtension
     {
-        private int _currentUserId;
         private readonly string _baseUrl;
 
-        public RestClientExtension(int userId, string apiServer)
+        public RestClientExtension(string apiServer)
         {
             _baseUrl = apiServer;
-            _currentUserId = userId;
         }
 
         public T ExecuteGet<T>(string resource, object body = null) where T : new()
@@ -53,8 +49,7 @@ namespace CiWong.OpenAPI.Core.Extensions
         public T Execute<T>(string resource, Method method = Method.GET, object body = null)
             where T : new()
         {
-            var client = new RestClient(_baseUrl);
-            client.CookieContainer = new System.Net.CookieContainer();
+            var client = new RestClient(_baseUrl) {CookieContainer = new System.Net.CookieContainer()};
             client.AddHandler("application/json", new CustomJsonDeserializer());
             var request = BuildRequest(resource, method, body);
             return client.Execute<T>(request).Data;

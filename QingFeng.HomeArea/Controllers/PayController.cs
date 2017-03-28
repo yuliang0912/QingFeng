@@ -11,6 +11,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using QingFeng.Common.ApiCore.Result;
+using QingFeng.WebArea.Codes;
 
 namespace QingFeng.WebArea.Controllers
 {
@@ -39,7 +40,7 @@ namespace QingFeng.WebArea.Controllers
 
         public ActionResult PayRedirect(UserInfo user, long orderId)
         {
-            var orderInfo = OrderService.Instance.Get(new { orderId });
+            var orderInfo = OrderService.Instance.Get(new {orderId});
 
             if (orderInfo == null)
             {
@@ -58,7 +59,7 @@ namespace QingFeng.WebArea.Controllers
 
             var model = PayOrderService.Instance.CreatePayOrder(orderInfo);
 
-            return Redirect("");
+            return Redirect(PayHelper.GetPayUrl(model, orderInfo.StoreName));
         }
 
 
