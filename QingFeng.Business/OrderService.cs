@@ -76,8 +76,6 @@ namespace QingFeng.Business
 
             orderMaster.OrderId = orderId;
             orderMaster.CreateDate = DateTime.Now;
-            orderMaster.PayStatus = 1;
-            orderMaster.PayDate = new DateTime(1970, 1, 1);
             orderMaster.OrderDetailCount = orderDetails.Count;
             orderMaster.OrderAmount = orderDetails.Sum(t => t.Amount);
 

@@ -96,24 +96,9 @@ namespace QingFeng.Models
         public AgentEnums.MasterOrderStatus OrderStatus { get; set; }
 
         /// <summary>
-        /// 支付方式
-        /// </summary>	
-        public int PayType { get; set; }
-
-        /// <summary>
-        /// 支付手续费
-        /// </summary>	
-        public decimal PayFee { get; set; }
-
-        /// <summary>
-        /// 支付状态,1未付款，2已付款
-        /// </summary>		
-        public int PayStatus { get; set; }
-
-        /// <summary>
-        /// 支付时间
-        /// </summary>		
-        public DateTime PayDate { get; set; }
+        /// 支付流水号
+        /// </summary>
+        public string PayNo { get; set; }
 
         /// <summary>
         /// 备注

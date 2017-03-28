@@ -2,23 +2,18 @@
 using QingFeng.Business;
 using QingFeng.Common;
 using QingFeng.Models;
-using QingFeng.Models.DTO;
 using QingFeng.WebArea.Fillter;
 using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 using QingFeng.Common.ApiCore.Result;
 using QingFeng.WebArea.Codes;
 
 namespace QingFeng.WebArea.Controllers
 {
-    [AdminAuthorize]
     public class PayController : Controller
     {
-        // GET: Pay
+        [AdminAuthorize]
         public ActionResult Index(string keyWords = "", int payStatus = 0, int page = 1, int pageSize = 20)
         {
             int totalItem;
@@ -37,7 +32,7 @@ namespace QingFeng.WebArea.Controllers
             });
         }
 
-
+        [AdminAuthorize]
         public ActionResult PayRedirect(UserInfo user, long orderId)
         {
             var orderInfo = OrderService.Instance.Get(new {orderId});
@@ -59,11 +54,39 @@ namespace QingFeng.WebArea.Controllers
 
             var model = PayOrderService.Instance.CreatePayOrder(orderInfo);
 
-            return Redirect(PayHelper.GetPayUrl(model, orderInfo.StoreName));
+            var dateNow = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+            var productName = string.Join(",", orderInfo.OrderDetails.Select(t => t.ProductName));
+
+            ViewBag.dateTime = dateNow;
+            ViewBag.sign = PayHelper.GetPaySign(model, productName, dateNow);
+            ViewBag.productName = productName;
+
+            return View(model);
         }
 
+        [HttpPost]
+        public ActionResult Notify()
+        {
+            var orderAmount = Request.Form["order_amount"].Trim();
+            var extraReturnParam = Request.Form["extra_return_param"];
+            var tradeNo = Request.Form["trade_no"].Trim();
+            var tradeTime = Request.Form["trade_time"].Trim();
+            var tradeStatus = Request.Form["trade_status"].Trim();
 
+            if (!PayHelper.CheckSign(Request))
+            {
+                return Content("签名验证失败");
+            }
 
+            var model = PayOrderService.Instance.Get(new {payNo = extraReturnParam});
+            model.ActualPrice = Convert.ToDecimal(orderAmount);
+
+            var result = PayOrderService.Instance.SetPayed(model, tradeTime, tradeNo, tradeStatus);
+
+            return Content(result.ToString());
+        }
+
+        [AdminAuthorize]
         public ActionResult Export(int payStatus = 0, string beginDateStr = "", string endDateStr = "")
         {
             DateTime beginDate, endDate;
@@ -81,7 +104,9 @@ namespace QingFeng.WebArea.Controllers
 
             int totalItem;
 
-            var list = PayOrderService.Instance.SearchPayOrder(payStatus, 0, beginDate, endDate, string.Empty, 1, int.MaxValue, out totalItem).ToList();
+            var list =
+                PayOrderService.Instance.SearchPayOrder(payStatus, 0, beginDate, endDate, string.Empty, 1, int.MaxValue,
+                    out totalItem).ToList();
 
             var orderDetailDict = OrderService.Instance.GetOrderDetailList(list.Select(t => t.OrderId).ToArray());
 
@@ -105,7 +130,7 @@ namespace QingFeng.WebArea.Controllers
             workSheet.Cell(1, 15).Value = "数量";
 
             var rows = 2;
-            for (int i = 0; i < list.Count; i++)
+            for (var i = 0; i < list.Count; i++)
             {
                 var payOrder = list[i];
                 if (!orderDetailDict.ContainsKey(payOrder.OrderId))
@@ -136,7 +161,7 @@ namespace QingFeng.WebArea.Controllers
                 workSheet.Range(rows, 9, rows - 1 + orderDetail.Count(), 9).Merge();
                 workSheet.Range(rows, 10, rows - 1 + orderDetail.Count(), 10).Merge();
 
-                for (int j = 0; j < orderDetail.Count; j++)
+                for (var j = 0; j < orderDetail.Count; j++)
                 {
                     var detail = orderDetail[j];
 
@@ -161,7 +186,9 @@ namespace QingFeng.WebArea.Controllers
             return new Common.ActionResultExtensions.ExportExcelResult
             {
                 workBook = workbook,
-                FileName = string.Concat(beginDate.ToString("yyyy-MM-dd"), "-", endDate.ToString("yyyy-MM-dd"), "-pay-order", ".xlsx")
+                FileName =
+                    string.Concat(beginDate.ToString("yyyy-MM-dd"), "-", endDate.ToString("yyyy-MM-dd"), "-pay-order",
+                        ".xlsx")
             };
         }
     }
