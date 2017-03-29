@@ -1,0 +1,45 @@
+﻿
+@{
+    Layout = null;
+}
+@model QingFeng.Models.PayOrder
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>智付支付</title>
+</head>
+<body>
+    <h1>支付跳转中...</h1>
+    <form method="POST" action="https://pay.dinpay.com/gateway?input_charset=UTF-8" id="dinpayForm" style="display: none">
+
+        <input name="sign" type="hidden" id="sign" value="@ViewBag.sign" />
+        <input name="merchant_code" type="hidden" id="merchant_code" value="1118015066" />
+        <input name="bank_code" type="hidden" id="bank_code" />
+        <input name="order_no" type="hidden" id="order_no" value="@Model.OrderNo" />
+        <input name="order_amount" type="hidden" id="order_amount" value="@Model.ActualPrice" />
+        <input name="service_type" type="hidden" id="service_type" value="direct_pay" />
+        <input name="input_charset" type="hidden" id="input_charset" value="UTF-8" />
+        <input name="notify_url" type="hidden" id="notify_url" value="http://www.tonyzu.com/pay/notify" />
+        <input name="interface_version" type="hidden" id="interface_version" value="V3.0" />
+        <input name="sign_type" type="hidden" id="sign_type" value="RSA-S" />
+        <input name="order_time" type="hidden" id="order_time" value="@(ViewBag.dateTime)" />
+        <input name="product_name" type="hidden" id="product_name" value="@(ViewBag.productName)" />
+        <input name="client_ip" type="hidden" id="client_ip" value="" />
+        <input name="extend_param" type="hidden" id="extend_param" value="@Model.PayNo" />
+        <input name="extra_return_param" type="hidden" id="extra_return_param" value="@Model.PayNo" />
+        <input name="product_code" type="hidden" id="product_code" value="" />
+        <input name="product_desc" type="hidden" id="product_desc" />
+        <input name="product_num" type="hidden" id="product_num" />
+        <input name="return_url" type="hidden" id="return_url" value="http://www.tonyzu.com/pay/return" />
+        <input name="show_url" type="hidden" id="show_url" />
+        <input name="redo_flag" type="hidden" id="redo_flag" />
+        <input name="pay_type" type="hidden" id="pay_type" />
+        <script type="text/javascript">
+            document.getElementById("dinpayForm").submit();
+        </script>
+    </form>
+</body>
+</html>
+
