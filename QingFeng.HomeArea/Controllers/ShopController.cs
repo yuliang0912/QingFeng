@@ -1,6 +1,7 @@
 ﻿using QingFeng.Business;
 using System.Web.Mvc;
 using System.Linq;
+using QingFeng.Models;
 
 namespace QingFeng.WebArea.Controllers
 {
@@ -28,6 +29,12 @@ namespace QingFeng.WebArea.Controllers
             var result = StoreService.Instance.UpdateStoreStatus(storeId, status);
 
             return Json(result);
+        }
+
+        [HttpPost]
+        public JsonResult EditShop(StoreInfo model)
+        {
+            return Json(null);
         }
         #endregion
     }

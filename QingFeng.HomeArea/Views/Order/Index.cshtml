@@ -113,9 +113,11 @@
         @if (Model.PageCount > 1)
         {
             <tfoot>
-            <tr align="center">
-                <td colspan="11" style="text-align: center;"></td>
-            </tr>
+                <tr align="center">
+                    <td colspan="11">
+                        @(Html.Raw(Model.GetPagerHtml(string.Format("/orer/index?brandId={0}&storeId={1}&orderStatus={2}&beginDateStr={3}&endDateStr={4}&keyWords={5}&page={6}", ViewBag.brandId, ViewBag.storeId, ViewBag.orderStatus, ViewBag.beginDateStr, ViewBag.endDateStr, ViewBag.keyWords, "{0}"))))
+                    </td>
+                </tr>
             </tfoot>
         }
     </table>

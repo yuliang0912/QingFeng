@@ -58,6 +58,7 @@ namespace QingFeng.WebArea.Controllers
             ViewBag.endDateStr = endDateStr;
             ViewBag.keyWords = keyWords;
             ViewBag.storeId = storeId;
+            ViewBag.orderStatus = orderStatus;
             ViewBag.title = orderStatus == 0 ? "订单列表" : ((AgentEnums.MasterOrderStatus)orderStatus).ToString() + "订单";
 
             var data = new ApiPageList<OrderMaster>()
