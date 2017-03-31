@@ -7,6 +7,7 @@ using System;
 using System.Linq;
 using System.Web.Mvc;
 using QingFeng.Common.ApiCore.Result;
+using QingFeng.Common.Extensions;
 using QingFeng.WebArea.Codes;
 
 namespace QingFeng.WebArea.Controllers
@@ -30,6 +31,12 @@ namespace QingFeng.WebArea.Controllers
                 PageSize = pageSize,
                 PageList = list
             });
+        }
+
+        [AdminAuthorize]
+        public ActionResult Export()
+        {
+            return View();
         }
 
         [AdminAuthorize]
@@ -86,8 +93,8 @@ namespace QingFeng.WebArea.Controllers
             return Content(result.ToString());
         }
 
-        [AdminAuthorize]
-        public ActionResult Export(int payStatus = 0, string beginDateStr = "", string endDateStr = "")
+        [AdminAuthorize(AgentEnums.SubMenuEnum.导出支付流水)]
+        public ActionResult ExportFile(int payStatus = 0, string beginDateStr = "", string endDateStr = "")
         {
             DateTime beginDate, endDate;
 
@@ -145,10 +152,10 @@ namespace QingFeng.WebArea.Controllers
                 workSheet.Cell(rows, 4).Value = payOrder.CounterFee;
                 workSheet.Cell(rows, 5).Value = payOrder.OutsideId;
                 workSheet.Cell(rows, 6).Value = payOrder.PayStatus;
-                workSheet.Cell(rows, 7).Value = payOrder.PayDate;
-                workSheet.Cell(rows, 8).Value = payOrder.VerifyDate;
+                workSheet.Cell(rows, 7).Value = payOrder.PayDate.ToInitialValue();
+                workSheet.Cell(rows, 8).Value = payOrder.VerifyDate.ToInitialValue();
                 workSheet.Cell(rows, 9).Value = payOrder.VerifyStatus.ToString();
-                workSheet.Cell(rows, 10).Value = payOrder.OrderId;
+                workSheet.Cell(rows, 10).Value = payOrder.OrderId.ToString();
 
                 workSheet.Range(rows, 1, rows - 1 + orderDetail.Count(), 1).Merge();
                 workSheet.Range(rows, 2, rows - 1 + orderDetail.Count(), 2).Merge();
@@ -165,7 +172,7 @@ namespace QingFeng.WebArea.Controllers
                 {
                     var detail = orderDetail[j];
 
-                    workSheet.Cell(j + rows, 11).Value = detail.BrandId.ToString();
+                    workSheet.Cell(j + rows, 11).Value = detail.BrandId;
                     workSheet.Cell(j + rows, 12).Value = detail.BaseNo;
                     workSheet.Cell(j + rows, 13).Value = detail.ProductNo;
                     workSheet.Cell(j + rows, 14).Value = detail.Price;

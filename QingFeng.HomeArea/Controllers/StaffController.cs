@@ -23,17 +23,6 @@ namespace QingFeng.WebArea.Controllers
             return View(list);
         }
 
-
-        [AdminAuthorize(AgentEnums.SubMenuEnum.代理商列表)]
-        public ActionResult Agent(string keyWords = "")
-        {
-            var list = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, keyWords).ToList();
-
-            ViewBag.keyWords = keyWords;
-
-            return View(list);
-        }
-
         [AdminAuthorize(AgentEnums.SubMenuEnum.编辑店铺)]
         public ActionResult Edit(int userId)
         {

@@ -32,20 +32,20 @@ namespace QingFeng.Business
                 PayStatus = AgentEnums.PayStatus.待支付,
                 VerifyStatus = AgentEnums.VerifyStatus.未审核,
                 CreateDate = DateTime.Now,
-                PayDate = DateTime.MinValue,
-                VerifyDate = DateTime.MinValue,
+                PayDate = new DateTime(2000, 1, 1),
+                VerifyDate = new DateTime(2000, 1, 1),
             };
 
             return _payOrderRepository.Insert(model) > 0 ? model : null;
         }
 
 
-        public IEnumerable<PayOrder> SearchPayOrder(int status, int verifyStatus, DateTime beginDate, DateTime endDate,
+        public IEnumerable<PayOrder> SearchPayOrder(int payStatus, int verifyStatus, DateTime beginDate, DateTime endDate,
             string keyWords,
             int page,
             int pageSize, out int totalItem)
         {
-            return _payOrderRepository.SearchPayOrder(status, verifyStatus, beginDate, endDate, keyWords, page, pageSize,
+            return _payOrderRepository.SearchPayOrder(payStatus, verifyStatus, beginDate, endDate, keyWords, page, pageSize,
                 out totalItem);
         }
 

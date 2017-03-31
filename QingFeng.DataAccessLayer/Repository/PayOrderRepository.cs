@@ -15,7 +15,7 @@ namespace QingFeng.DataAccessLayer.Repository
 
         }
 
-        public IEnumerable<PayOrder> SearchPayOrder(int status, int verifyStatus, DateTime beginDate, DateTime endDate,
+        public IEnumerable<PayOrder> SearchPayOrder(int payStatus, int verifyStatus, DateTime beginDate, DateTime endDate,
            string keyWords,
            int page,
            int pageSize, out int totalItem)
@@ -26,9 +26,9 @@ namespace QingFeng.DataAccessLayer.Repository
 
             additional += "AND CreateDate Between @beginDate AND @endDate ";
 
-            if (status > 0)
+            if (payStatus > 0)
             {
-                additional += $"AND status = {status} ";
+                additional += $"AND payStatus = {payStatus} ";
             }
             if (verifyStatus > 0)
             {

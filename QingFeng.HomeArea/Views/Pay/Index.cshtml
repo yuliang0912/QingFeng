@@ -53,7 +53,6 @@
                 <th class="center">审核状态</th>
                 <th class="center">操作</th>
             </tr>
-
         </thead>
 
         <tbody>
@@ -73,11 +72,16 @@
                 </tr>
             }
         </tbody>
+       @if (Model.PageCount > 1)
+       {
         <tfoot>
             <tr align="center">
-                <td colspan="8"><ul class="pagination"><li class="active"><a class="" href="http://www.findshoes.cn/#">1</a></li><li><a href="http://www.findshoes.cn/payment/listing?order_sn=&amp;pay_status=99&amp;page=2">2</a></li><li><a href="http://www.findshoes.cn/payment/listing?order_sn=&amp;pay_status=99&amp;page=3">3</a></li><li><a href="http://www.findshoes.cn/payment/listing?order_sn=&amp;pay_status=99&amp;page=4">4</a></li><li><a href="http://www.findshoes.cn/payment/listing?order_sn=&amp;pay_status=99&amp;page=5">5</a></li><li><a href="http://www.findshoes.cn/payment/listing?order_sn=&amp;pay_status=99&amp;page=6">6</a></li><li><a href="http://www.findshoes.cn/payment/listing?order_sn=&amp;pay_status=99&amp;page=7">7</a></li><li><a href="http://www.findshoes.cn/payment/listing?order_sn=&amp;pay_status=99&amp;page=8">8</a></li><li><a href="http://www.findshoes.cn/payment/listing?order_sn=&amp;pay_status=99&amp;page=9">9</a></li><li><a href="http://www.findshoes.cn/payment/listing?order_sn=&amp;pay_status=99&amp;page=2">下一页</a></li><li><a href="http://www.findshoes.cn/payment/listing?order_sn=&amp;pay_status=99&amp;page=17">末页</a></li></ul></td>
+                <td colspan="8">
+                    @(Html.Raw(Model.GetPagerHtml(string.Format("/pay/index?keyWords={0}&payStatus={1}&page={2}", ViewBag.keyWords, ViewBag.payStatus, "{0}"))))
+                </td>
             </tr>
         </tfoot>
+       }
     </table>
 </div>
 <!-- /.table-responsive -->

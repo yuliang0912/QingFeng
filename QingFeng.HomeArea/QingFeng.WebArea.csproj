@@ -502,7 +502,6 @@
     <Content Include="Content\js\plugins\layer\laydate-v1.1\layDate官网.url" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Shared\_LayoutAgent.cshtml" />
     <Content Include="Views\Agent\OrderList.cshtml" />
     <Content Include="Views\Agent\AddOrder.cshtml" />
@@ -588,7 +587,7 @@
     <Content Include="Views\Pay\PayRedirect.cshtml" />
     <Content Include="Views\Staff\Agent.cshtml" />
     <Content Include="Views\Menu\Index.cshtml" />
-    <Content Include="Views\Home\Login1.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Home\WelCome.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
