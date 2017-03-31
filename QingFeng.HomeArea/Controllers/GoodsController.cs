@@ -20,7 +20,8 @@ namespace QingFeng.WebArea.Controllers
         {
 
             var totalItem = 0;
-            var list = ProductService.Instance.SearchBaseProduct(brandId, 0, categoryId, keyWord, -1, page, pageSize, out totalItem);
+            var list = ProductService.Instance.SearchBaseProduct(brandId, 0, categoryId, keyWord, -1, page, pageSize,
+                out totalItem);
 
             ViewBag.brandId = brandId;
             ViewBag.categoryId = categoryId;
@@ -52,7 +53,7 @@ namespace QingFeng.WebArea.Controllers
         [AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
         public JsonResult Add(CreateProductDto model)
         {
-            var result = ProductService.Instance.AddProduct(model, new UserInfo() { UserId = 155014 });
+            var result = ProductService.Instance.AddProduct(model, new UserInfo() {UserId = 155014});
 
             return Json(result);
         }
@@ -216,6 +217,7 @@ namespace QingFeng.WebArea.Controllers
         }
 
         #region Ajax
+
         public JsonResult SearchProduct(string keyWords)
         {
             var list = ProductService.Instance.SearchProduct(keyWords);
@@ -236,6 +238,7 @@ namespace QingFeng.WebArea.Controllers
                 categoryName = baseList[x.BaseId].CategoryId.ToString()
             }));
         }
+
         #endregion
     }
 }

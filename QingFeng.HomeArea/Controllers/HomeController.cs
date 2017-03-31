@@ -1,8 +1,8 @@
 ﻿using System.Web.Mvc;
 using QingFeng.Business;
-using QingFeng.Common;
 using QingFeng.Common.ApiCore;
 using QingFeng.Common.ApiCore.Result;
+using QingFeng.Common.Captcha;
 using QingFeng.Models;
 using QingFeng.WebArea.Fillter;
 using QingFeng.WebArea.FormsAuth;
@@ -11,6 +11,12 @@ namespace QingFeng.WebArea.Controllers
 {
     public class HomeController : CustomerController
     {
+        [AdminAuthorize]
+        public ActionResult WelCome()
+        {
+            return View();
+        }
+
         public ActionResult Login()
         {
             return View();
@@ -22,35 +28,35 @@ namespace QingFeng.WebArea.Controllers
             return Redirect("/home/login");
         }
 
-        public JsonResult LoginCheck(string loginName, string passWord)
+        [CaptchaValidation("login", "captcha")]
+        public ActionResult CheckLogin(bool captchaValid)
         {
+            if (!captchaValid)
+            {
+                ViewBag.message = "验证码错误";
+                return View("Login");
+            }
+
             bool isPass;
-            var userInfo = UserService.Instance.Login(loginName, passWord, out isPass);
-            if (userInfo != null && userInfo.Status != 0)
+            var userName = Request.Form["username"] ?? string.Empty;
+            var password = Request.Form["password"] ?? string.Empty;
+
+            var ip = HttpContext.Request.UserHostAddress;
+            var userInfo = UserService.Instance.Login(userName, password, ip, out isPass);
+
+            if (userInfo == null || !isPass)
             {
-                return Json(new {isPass = 2, userRole = userInfo?.UserRole}, JsonRequestBehavior.AllowGet);
+                ViewBag.message = "用户名或密码错误";
+                return View("Login");
             }
-            if (isPass)
+            if (userInfo.Status != 0)
             {
-                FormsAuthenticationWrapper.Instance.SetAuthCookie(userInfo.UserId.ToString(), false);
+                ViewBag.message = "此用户已被禁止登陆";
+                return View("Login");
             }
-            return Json(new {isPass, userRole = userInfo?.UserRole}, JsonRequestBehavior.AllowGet);
+            FormsAuthenticationWrapper.Instance.SetAuthCookie(userInfo.UserId.ToString(), false);
+            return Redirect("/home/welcome");
         }
-
-
-        [AdminAuthorize]
-        public ActionResult UpdateUserStatus(UserInfo user, int userId, int status)
-        {
-            if (user.UserId == userId)
-            {
-                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "不能更新自己的状态"});
-            }
-
-            var result = UserService.Instance.UpdateUserInfo(new UserInfo() {UserId = userId, Status = status});
-
-            return Json(new ApiResult<bool>(result));
-        }
-
 
         [AdminAuthorize, HttpGet]
         public ActionResult UpdatePassWord(UserInfo user, string oldPwd, string newPwd)

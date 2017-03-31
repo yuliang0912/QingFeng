@@ -35,8 +35,8 @@ namespace QingFeng.WebArea.FormsAuth
             };
             if (createPersistentCookie)
             {
-                authCookie.Expires = DateTime.Now.AddDays(30);
-                sKey.Expires = DateTime.Now.AddDays(30);
+                authCookie.Expires = DateTime.Now.AddDays(15);
+                sKey.Expires = DateTime.Now.AddDays(15);
             }
 
             HttpContext.Current.Response.Cookies.Add(authCookie);

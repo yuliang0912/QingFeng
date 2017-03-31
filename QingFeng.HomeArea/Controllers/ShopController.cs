@@ -1,6 +1,7 @@
 ﻿using QingFeng.Business;
 using System.Web.Mvc;
 using System.Linq;
+using QingFeng.Common;
 using QingFeng.Models;
 
 namespace QingFeng.WebArea.Controllers
@@ -11,6 +12,8 @@ namespace QingFeng.WebArea.Controllers
         public ActionResult Index()
         {
             var stopList = StoreService.Instance.GetList(null).OrderBy(t => t.CreateDate).ToList();
+
+            ViewBag.list = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, string.Empty).ToList();
 
             return View(stopList);
         }

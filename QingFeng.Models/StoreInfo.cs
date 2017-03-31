@@ -11,6 +11,8 @@ namespace QingFeng.Models
 
         public string StoreName { get; set; }
 
+        public string StoreCode { get; set; }
+
         public AgentEnums.ShopTypeEnum StoreType { get; set; }
 
         /// <summary>

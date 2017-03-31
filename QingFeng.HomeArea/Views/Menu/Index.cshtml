@@ -1,0 +1,341 @@
+﻿
+@{
+    Layout = null;
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+}
+
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="edit-model-label">用户授权</h4>
+    </div>
+    <form class="form-horizontal" role="form" id="setting-form" method="post" action="http://www.qingfeng.com/staff/setrole/39">
+        <div class="modal-body">
+            <div class="panel panel-info">
+                <div class="panel-heading">系统配置</div>
+                <div class="panel-body">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-201" name="role[100001][]" checked="checked" depend="198" class="checkbox-100001 role-checkbox" value="201">
+                        删除地区
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-200" name="role[100001][]" checked="checked" depend="198" class="checkbox-100001 role-checkbox" value="200">
+                        编辑地区
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-199" name="role[100001][]" checked="checked" depend="198" class="checkbox-100001 role-checkbox" value="199">
+                        添加地区
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-198" name="role[100001][]" checked="checked" depend="0" class="checkbox-100001 role-checkbox" value="198">
+                        地区管理
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-192" name="role[100001][]" checked="checked" depend="189" class="checkbox-100001 role-checkbox" value="192">
+                        删除店铺
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-191" name="role[100001][]" checked="checked" depend="0" class="checkbox-100001 role-checkbox" value="191">
+                        编辑店铺
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-190" name="role[100001][]" checked="checked" depend="189" class="checkbox-100001 role-checkbox" value="190">
+                        添加店铺
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-189" name="role[100001][]" checked="checked" depend="0" class="checkbox-100001 role-checkbox" value="189">
+                        店铺管理
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-175" name="role[100001][]" checked="checked" depend="158" class="checkbox-100001 role-checkbox" value="175">
+                        配置系统数据
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-174" name="role[100001][]" checked="checked" depend="158" class="checkbox-100001 role-checkbox" value="174">
+                        编辑系统配置
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-173" name="role[100001][]" checked="checked" depend="158" class="checkbox-100001 role-checkbox" value="173">
+                        删除系统配置
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-172" name="role[100001][]" checked="checked" depend="158" class="checkbox-100001 role-checkbox" value="172">
+                        添加系统配置
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-171" name="role[100001][]" checked="checked" depend="159" class="checkbox-100001 role-checkbox" value="171">
+                        删除菜单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-170" name="role[100001][]" checked="checked" depend="159" class="checkbox-100001 role-checkbox" value="170">
+                        编辑菜单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-169" name="role[100001][]" checked="checked" depend="159" class="checkbox-100001 role-checkbox" value="169">
+                        添加菜单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-159" name="role[100001][]" checked="checked" depend="0" class="checkbox-100001 role-checkbox" value="159">
+                        菜单管理
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-158" name="role[100001][]" checked="checked" depend="0" class="checkbox-100001 role-checkbox" value="158">
+                        配置管理
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" class="check-all" value="100001" checked=""> 全选
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="panel panel-info">
+                <div class="panel-heading">人员管理</div>
+                <div class="panel-body">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-188" name="role[100002][]" checked="checked" depend="179" class="checkbox-100002 role-checkbox" value="188">
+                        删除代理商
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-187" name="role[100002][]" checked="checked" depend="179" class="checkbox-100002 role-checkbox" value="187">
+                        重置代理商密码
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-186" name="role[100002][]" checked="checked" depend="179" class="checkbox-100002 role-checkbox" value="186">
+                        编辑代理商
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-185" name="role[100002][]" checked="checked" depend="179" class="checkbox-100002 role-checkbox" value="185">
+                        添加代理商
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-179" name="role[100002][]" checked="checked" depend="0" class="checkbox-100002 role-checkbox" value="179">
+                        代理商列表
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-178" name="role[100002][]" checked="checked" depend="166" class="checkbox-100002 role-checkbox" value="178">
+                        删除员工
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-177" name="role[100002][]" checked="checked" depend="166" class="checkbox-100002 role-checkbox" value="177">
+                        编辑员工
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-176" name="role[100002][]" checked="checked" depend="166" class="checkbox-100002 role-checkbox" value="176">
+                        添加员工
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-167" name="role[100002][]" checked="checked" depend="166" class="checkbox-100002 role-checkbox" value="167">
+                        设置权限
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-166" name="role[100002][]" checked="checked" depend="0" class="checkbox-100002 role-checkbox" value="166">
+                        员工列表
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" class="check-all" value="100002" checked=""> 全选
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="panel panel-info">
+                <div class="panel-heading">商品中心</div>
+                <div class="panel-body">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-205" name="role[100003][]" checked="checked" depend="202" class="checkbox-100003 role-checkbox" value="205">
+                        代理商导入
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-204" name="role[100003][]" checked="checked" depend="202" class="checkbox-100003 role-checkbox" value="204">
+                        设置代理商价格
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-202" name="role[100003][]" checked="checked" depend="0" class="checkbox-100003 role-checkbox" value="202">
+                        代理商价格
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-184" name="role[100003][]" checked="checked" depend="180" class="checkbox-100003 role-checkbox" value="184">
+                        查看商品
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-180" name="role[100003][]" checked="checked" depend="0" class="checkbox-100003 role-checkbox" value="180">
+                        商品列表
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" class="check-all" value="100003" checked=""> 全选
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="panel panel-info">
+                <div class="panel-heading">分类管理</div>
+                <div class="panel-body">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-196" name="role[100004][]" checked="checked" depend="193" class="checkbox-100004 role-checkbox" value="196">
+                        删除分类
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-195" name="role[100004][]" checked="checked" depend="193" class="checkbox-100004 role-checkbox" value="195">
+                        编辑分类
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-194" name="role[100004][]" checked="checked" depend="193" class="checkbox-100004 role-checkbox" value="194">
+                        添加分类
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-193" name="role[100004][]" checked="checked" depend="0" class="checkbox-100004 role-checkbox" value="193">
+                        分类列表
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" class="check-all" value="100004" checked=""> 全选
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="panel panel-info">
+                <div class="panel-heading">库存中心</div>
+                <div class="panel-body">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-225" name="role[100005][]" checked="checked" depend="0" class="checkbox-100005 role-checkbox" value="225">
+                        导入库存
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-212" name="role[100005][]" checked="checked" depend="203" class="checkbox-100005 role-checkbox" value="212">
+                        编辑库存
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-206" name="role[100005][]" checked="checked" depend="203" class="checkbox-100005 role-checkbox" value="206">
+                        添加库存
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-203" name="role[100005][]" checked="checked" depend="0" class="checkbox-100005 role-checkbox" value="203">
+                        库存查询
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" class="check-all" value="100005" checked=""> 全选
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="panel panel-info">
+                <div class="panel-heading">订单中心</div>
+                <div class="panel-body">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-238" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="238">
+                        订单导出
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-234" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="234">
+                        订单完成
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-233" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="233">
+                        发货
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-230" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="230">
+                        取消订单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-229" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="229">
+                        异常取消
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-228" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="228">
+                        无货标记
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-227" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="227">
+                        修改地址
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-224" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="224">
+                        查看订单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-223" name="role[100006][]" checked="checked" depend="222" class="checkbox-100006 role-checkbox" value="223">
+                        添加备注
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-222" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="222">
+                        查看备注
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-221" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="221">
+                        已取消订单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-220" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="220">
+                        待支付订单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-219" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="219">
+                        进行中订单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-218" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="218">
+                        待发货订单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-217" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="217">
+                        已完成订单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-216" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="216">
+                        待审核订单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-215" name="role[100006][]" checked="checked" depend="214" class="checkbox-100006 role-checkbox" value="215">
+                        异常订单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-214" name="role[100006][]" checked="checked" depend="0" class="checkbox-100006 role-checkbox" value="214">
+                        订单列表
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-210" name="role[100006][]" checked="checked" depend="0" class="checkbox-100006 role-checkbox" value="210">
+                        添加订单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" class="check-all" value="100006" checked=""> 全选
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-body">
+            <div class="panel panel-info">
+                <div class="panel-heading">财务中心</div>
+                <div class="panel-body">
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-239" name="role[100007][]" checked="checked" depend="0" class="checkbox-100007 role-checkbox" value="239">
+                        导出支付流水
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-237" name="role[100007][]" checked="checked" depend="235" class="checkbox-100007 role-checkbox" value="237">
+                        财务审核
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-236" name="role[100007][]" checked="checked" depend="235" class="checkbox-100007 role-checkbox" value="236">
+                        支付详情
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" id="role-235" name="role[100007][]" checked="checked" depend="0" class="checkbox-100007 role-checkbox" value="235">
+                        支付订单
+                    </label>
+                    <label class="checkbox-inline">
+                        <input type="checkbox" class="check-all" value="100007" checked=""> 全选
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer" style="text-align:center;">
+            <input type="hidden" name="action" value="dosubmit">
+            <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            <button type="submit" class="btn btn-primary">提交</button>
+        </div>
+    </form>
+</div>

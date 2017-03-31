@@ -154,6 +154,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="ContentV2\css\ace.min.css" />
+    <Content Include="ContentV2\css\bootstrap-theme.min.css" />
     <Content Include="ContentV2\css\bootstrap.min.css" />
     <Content Include="ContentV2\css\font-awesome-ie7.min.css" />
     <Content Include="ContentV2\css\font-awesome.min.css" />
@@ -458,6 +459,7 @@
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\GoodsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MenuController.cs" />
     <Compile Include="Controllers\OrderController.cs" />
     <Compile Include="Controllers\PayController.cs" />
     <Compile Include="Controllers\PriceController.cs" />
@@ -465,6 +467,7 @@
     <Compile Include="Controllers\StaffController.cs" />
     <Compile Include="Controllers\StockController.cs" />
     <Compile Include="Fillter\AdminAuthorize.cs" />
+    <Compile Include="Fillter\MenuAuthorize.cs" />
     <Compile Include="FormsAuth\FormsAuthenticationService.cs" />
     <Compile Include="FormsAuth\FormsAuthenticationWrapper.cs" />
     <Compile Include="Global.asax.cs">
@@ -481,7 +484,6 @@
     <Content Include="Config\ConnectionStrings.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Content\css\plugins\footable\fonts\footable.eot" />
     <Content Include="Content\css\plugins\footable\fonts\footable.ttf" />
     <Content Include="Content\css\plugins\footable\fonts\footable.woff" />
@@ -500,7 +502,6 @@
     <Content Include="Content\js\plugins\layer\laydate-v1.1\layDate官网.url" />
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\Register.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Shared\_LayoutAgent.cshtml" />
     <Content Include="Views\Agent\OrderList.cshtml" />
@@ -585,6 +586,10 @@
     <Content Include="Views\Staff\Add.cshtml" />
     <Content Include="Views\Shop\Index.cshtml" />
     <Content Include="Views\Pay\PayRedirect.cshtml" />
+    <Content Include="Views\Staff\Agent.cshtml" />
+    <Content Include="Views\Menu\Index.cshtml" />
+    <Content Include="Views\Home\Login1.cshtml" />
+    <Content Include="Views\Home\WelCome.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

@@ -1,13 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Drawing.Imaging;
 using System.Drawing;
-using CiWong.Framework.Captcha; 
+using System.Drawing.Imaging;
+using System.Web.Mvc;
 
-namespace CiWong.Framework.Captcha.Controllers
+namespace QingFeng.Common.Captcha.Controllers
 {
     public class CaptchaController : Controller
     {
@@ -15,8 +10,8 @@ namespace CiWong.Framework.Captcha.Controllers
         // GET: /Captcha/ID
         public ActionResult Index(string aid)
         {
-            CaptchaImage ci = CaptchaImage.CreateCaptcha(aid);
-            using (Bitmap b = ci.RenderImage())
+            var ci = CaptchaImage.CreateCaptcha(aid);
+            using (var b = ci.RenderImage())
             {
                 b.Save(Response.OutputStream, ImageFormat.Jpeg);
             }

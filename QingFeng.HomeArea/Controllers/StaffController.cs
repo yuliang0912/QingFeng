@@ -23,6 +23,17 @@ namespace QingFeng.WebArea.Controllers
             return View(list);
         }
 
+
+        [AdminAuthorize(AgentEnums.SubMenuEnum.代理商列表)]
+        public ActionResult Agent(string keyWords = "")
+        {
+            var list = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, keyWords).ToList();
+
+            ViewBag.keyWords = keyWords;
+
+            return View(list);
+        }
+
         [AdminAuthorize(AgentEnums.SubMenuEnum.编辑店铺)]
         public ActionResult Edit(int userId)
         {
@@ -104,15 +115,28 @@ namespace QingFeng.WebArea.Controllers
             return Json(result);
         }
 
-        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.编辑员工)]
-        public JsonResult ProhibitLogin(UserInfo user, int userId, int status)
+        [HttpPost, MenuAuthorize(AgentEnums.SubMenuEnum.编辑员工, AgentEnums.SubMenuEnum.编辑代理商)]
+        public JsonResult ProhibitLogin(UserInfo user, int userId)
         {
             if (user.UserId == userId)
             {
-                return Json(new ApiResult<int>(2) { Ret = RetEum.ApplicationError, Message = "不能更新自己的状态" });
+                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "不能更新自己的状态"});
             }
 
-            var result = UserService.Instance.UpdateUserInfo(new UserInfo() { UserId = userId, Status = status });
+            var result = UserService.Instance.UpdateUserInfo(new UserInfo() {UserId = userId, Status = 1});
+
+            return Json(new ApiResult<bool>(result));
+        }
+
+        [HttpPost, MenuAuthorize(AgentEnums.SubMenuEnum.编辑员工, AgentEnums.SubMenuEnum.编辑代理商)]
+        public JsonResult AllowLogin(UserInfo user, int userId)
+        {
+            if (user.UserId == userId)
+            {
+                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "不能更新自己的状态"});
+            }
+
+            var result = UserService.Instance.UpdateUserInfo(new UserInfo() {UserId = userId, Status = 0});
 
             return Json(new ApiResult<bool>(result));
         }

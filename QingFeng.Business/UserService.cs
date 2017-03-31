@@ -140,7 +140,7 @@ namespace QingFeng.Business
             return _userInfoRepository.Update(new {status = userInfo.Status == 0 ? 1 : 0}, new {userId});
         }
 
-        public UserInfo Login(string userName, string passWord, out bool isPass)
+        public UserInfo Login(string userName, string passWord, string ip, out bool isPass)
         {
             var user = _userInfoRepository.Get(new {userName});
 
@@ -154,6 +154,16 @@ namespace QingFeng.Business
                 string.Concat(user.UserName, PassWordSplitString, user.UserRole.GetHashCode(), passWord)
                     .Hmacsha1(user.Salt)
                     .Equals(user.PassWord);
+
+            if (isPass)
+            {
+                _userInfoRepository.Update(new
+                {
+                    lastLoginIp = ip,
+                    lastLoginDate = DateTime.Now,
+                }, new {user.UserId});
+            }
+
             return user;
         }
 

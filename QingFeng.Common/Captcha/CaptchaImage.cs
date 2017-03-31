@@ -2,11 +2,11 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using System.Web;
 using System.Text;
+using System.Web;
 using QingFeng.Common.Utilities;
 
-namespace CiWong.Framework.Captcha
+namespace QingFeng.Common.Captcha
 {
 	/// <summary>
 	/// Amount of random font warping to apply to rendered text
@@ -102,7 +102,7 @@ namespace CiWong.Framework.Captcha
         {
             var captch = new CaptchaImage() { Height = 42, Width = 180 };
             var verifysession = new HttpCookie("verifysession");
-            var text = string.Format("{0}{1}", guid, captch.Text.Trim());
+            var text = $"{guid}{captch.Text.Trim()}";
             verifysession.Value = text.ToLower().EncryptOneWay<System.Security.Cryptography.SHA256CryptoServiceProvider>().ToLower();
             //verifysession.Domain = "ciwong.com";
             HttpContext.Current.Response.Cookies.Remove("verifysession");

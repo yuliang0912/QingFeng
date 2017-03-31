@@ -1,110 +1,96 @@
 ﻿@{
     Layout = null;
 }
-
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <meta content="IE=11.0000" http-equiv="X-UA-Compatible" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="GENERATOR" content="MSHTML 11.00.9600.17496" />
-    <title>登录页面</title>
-    <script src="~/Content/js/jquery.min.js"></script>
-    <script src="/content/scripts/qingfeng.core.js"></script>
-    <link href="/content/css/login.css" type="text/css" rel="stylesheet" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Micro-ERP 统一认证系统</title>
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- Bootstrap -->
+    <link href="/contentV2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/contentV2/css/bootstrap-theme.min.css" rel="stylesheet">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="http://cdn.bootcss.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="http://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style type="text/css">
+        .login-panel {
+            width: 600px;
+            margin: 80px auto;
+            border: 1px solid #ddd;
+        }
+
+        h1 {
+            font-family: Microsoft YaHei, "微软雅黑", simsun, "宋体", Arial;
+            line-height: 68px;
+            font-weight: bold;
+            font-size: 28px;
+            border-bottom: 1px solid #f1f1f1;
+            width: 598px;
+        }
+    </style>
 </head>
 <body>
-    <div class="top_div"></div>
-    <div style="background: rgb(255, 255, 255); margin: -100px auto auto; border: 1px solid rgb(231, 231, 231); border-image: none; width: 400px; height: 200px; text-align: center;">
-        <div style="width: 165px; height: 96px; position: absolute;">
-            <div class="tou"></div>
-            <div class="initial_left_hand" id="left_hand"></div>
-            <div class="initial_right_hand" id="right_hand"></div>
-        </div>
-        <p style="padding: 30px 0px 10px; position: relative;">
-            <span class="u_logo"></span>
-            <input class="ipt" id="username" name="username" type="text" placeholder="请输入用户名或邮箱" value="" />
-        </p>
-        <p style="position: relative;">
-            <span class="p_logo"></span>
-            <input class="ipt" id="password" name="password" type="password" placeholder="请输入密码" value="" />
-        </p>
-        <div style="height: 50px; line-height: 50px; margin-top: 30px; border-top-color: rgb(231, 231, 231); border-top-width: 1px; border-top-style: solid;">
-            <p style="margin: 0px 35px 20px 45px;">
-                <span style="float: left;">
-                    <a id="result" style="color: read(204, 204, 204);"
-                       href="javascript:void(0)"></a>
-                </span>
-                <span style="float: right;">
-                    <a style="background: rgb(0, 142, 173); padding: 7px 10px; border-radius: 4px; border: 1px solid rgb(26, 117, 152); border-image: none; color: rgb(255, 255, 255); font-weight: bold;"
-                       href="javascript:adminLogin()">登录</a>
-                </span>
-            </p>
-        </div>
-    </div>
-    <script type="text/javascript">
-        function adminLogin() {
-            var username = $("#username").val();
-            var pwd = $("#password").val();
-            var result = $("#result");
-            if (username === "") {
-                result.text("请输入用户名");
-                return;
-            } else if (pwd === "") {
-                result.text("请输入密码");
-                return;
-            }
-
-            $core.ajax.getJSON("/Home/LoginCheck", { loginName: username, passWord: pwd }, function (data) {
-                if (data.isPass === 0) {
-                    result.text("账号密码错误");
-                }
-                else if (data.isPass === 2) {
-                    result.text("账号已被冻结,请联系管理员");
-                }
-                else if (data.userRole === 1) {
-                    location.href = "/home/index";
-                } else {
-                    location.href = "/agent/orderList";
-                }
-            });
+    <div class="login-panel">
+        <h1 class="text-center">统一认证</h1>
+        @if (ViewBag.message != null)
+        {
+            <div class="alert alert-danger alert-dismissible" role="alert" style="width: 570px; margin: 10px auto;">
+                <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                @ViewBag.message
+            </div>
         }
+        <form class="form-horizontal" role="form" id="login-form" method="post" action="http://www.qingfeng.com/home/checkLogin">
+            <div class="form-group">
+                <label for="username" class="col-sm-2 control-label">帐号:</label>
+                <div class="col-sm-8">
+                    <input type="text" class="form-control" name="username" id="username" placeholder="请输入帐号" check-type="required" required-message="">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-sm-2 control-label">密码:</label>
+                <div class="col-sm-8">
+                    <input type="password" class="form-control" name="password" id="password" placeholder="请输入密码" check-type="required" required-message="">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="captcha" class="col-sm-2 control-label">验证码:</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" name="captcha" id="captcha" placeholder="请输入验证码" check-type="required" required-message="">
+                </div>
+                <div class="col-sm-2"><img src="http://www.qingfeng.com/captcha?aid=login&@(DateTime.Now.Millisecond)" style="cursor:pointer;" onclick="javascript: this.src = '/captcha?aid=login&' + new Date().getTime();"></div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-info btn-lg">登录</button>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script type="text/javascript" src="/contentV2/js/jquery.min.js"></script>
+    <script src="/contentV2/js/bootstrap.min.js"></script>
+    <script type="text/javascript">
         $(function () {
-            $('#password,#username').bind('keypress', function (event) {
-                if (event.keyCode === 13) {
-                    adminLogin();
-                }
-            });
-            $("#password").focus(function () {
-                $("#left_hand").animate({
-                    left: "150",
-                    top: " -38"
-                }, {
-                    step: function () {
-                        if (parseInt($("#left_hand").css("left")) > 140) {
-                            $("#left_hand").attr("class", "left_hand");
-                        }
+            $('#login-form').submit(function () {
+                var hasError = true;
+                $('input').each(function (index, elem) {
+                    if ($(elem).val() === '') {
+                        $(elem).parents('.form-group').addClass('has-error');
+                        hasError = false;
                     }
-                }, 2000);
-                $("#right_hand").animate({
-                    right: "-64",
-                    top: "-38px"
-                }, {
-                    step: function () {
-                        if (parseInt($("#right_hand").css("right")) > -70) {
-                            $("#right_hand").attr("class", "right_hand");
-                        }
+                    else {
+                        $(elem).parents('.form-group').removeClass('has-error').addClass('has-success');
                     }
-                }, 2000);
+                });
+                return hasError;
             });
-            //失去焦点
-            $("#password").blur(function () {
-                $("#left_hand").attr("class", "initial_left_hand");
-                $("#left_hand").attr("style", "left:100px;top:-12px;");
-                $("#right_hand").attr("class", "initial_right_hand");
-                $("#right_hand").attr("style", "right:-112px;top:-12px");
-            });
-        });
+        })
     </script>
 </body>
 </html>

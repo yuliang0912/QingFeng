@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using QingFeng.Common;
 using QingFeng.Common.Dapper;
+using QingFeng.Common.Extensions;
 using QingFeng.Models;
 
 namespace QingFeng.DataAccessLayer.Repository
@@ -28,8 +29,10 @@ namespace QingFeng.DataAccessLayer.Repository
 
             using (var connection = GetReadConnection)
             {
-                return connection.QueryList<UserInfo>(new {keyWords, userRole = userRole.GetHashCode()}, TableName,
-                    buildWhereSql);
+                return
+                    connection.QueryList<UserInfo>(
+                        new {keyWords = keyWords.FormatSqlLikeString(), userRole = userRole.GetHashCode()}, TableName,
+                        buildWhereSql);
             }
         }
     }

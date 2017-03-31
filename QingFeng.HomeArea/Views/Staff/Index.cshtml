@@ -19,7 +19,7 @@
             <i class="icon-search"></i>
             <div class="form-group">
                 <label class="sr-only" for="staff_keyword">关键字</label>
-                <input type="text" name="staff_keyword" id="staff_keyword" value="@(ViewBag.keyWords)" style="width: 160px;" class="form-control input-sm" placeholder="请输入用户姓名">
+                <input type="text" name="staff_keyword" id="staff_keyword" value="@(ViewBag.keyWords)" style="width: 160px;" class="form-control input-sm" placeholder="请输入员工姓名">
             </div>
             <button type="button" class="btn btn-primary btn-sm " id="staff-search">搜索</button>
         </small>
@@ -57,7 +57,7 @@
                 <td>
                     <a href="http://www.qingfeng.com/staff/setrole/39" class="setting">设置权限</a>
                     <a href="http://www.qingfeng.com/staff/edit?userId=@(item.UserId)" class="setting">编辑员工</a>
-                    <a href="http://www.qingfeng.com/staff/delete/off/39" title="" class="red delete-modal" data-goods-id="@item.UserId" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="禁止员工登录" data-original-title="禁止登录">禁止登录</a>
+                    <a href="http://www.qingfeng.com/staff/ProhibitLogin?userId=@(item.UserId)" title="" class="red delete-modal" data-goods-id="@item.UserId" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="禁止员工登录" data-original-title="禁止登录">禁止登录</a>
                 </td>
             </tr>
         }
