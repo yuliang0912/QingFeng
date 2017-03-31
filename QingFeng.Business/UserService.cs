@@ -57,7 +57,7 @@ namespace QingFeng.Business
             model.NickName = model.NickName ?? string.Empty;
             model.Salt = StringExtensions.GetRandomString();
             model.LastLoginDate = new DateTime(2000, 1, 1);
-            model.LastLoginIp = "0.0.0.0";
+            model.LastLoginIp = "-";
             model.Phone = model.Phone ?? string.Empty;
             model.Email = model.Email ?? string.Empty;
 
