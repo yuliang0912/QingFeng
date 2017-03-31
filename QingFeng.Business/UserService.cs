@@ -108,26 +108,24 @@ namespace QingFeng.Business
             {
                 return false;
             }
-            var userInfo = _userInfoRepository.Get(new {model.UserId});
-            if (userInfo == null)
-            {
-                return false;
-            }
             model.Phone = model.Phone ?? string.Empty;
             model.Email = model.Email ?? string.Empty;
-            model.NickName = model.NickName ?? userInfo.NickName;
-
+            model.NickName = model.NickName ?? string.Empty;
             if (!string.IsNullOrWhiteSpace(model.PassWord))
             {
                 var newPassWord =
-                    string.Concat(userInfo.UserName, PassWordSplitString, userInfo.UserRole.GetHashCode(),
-                            model.PassWord)
-                        .Hmacsha1(userInfo.Salt);
+                    string.Concat(model.UserName, PassWordSplitString, model.UserRole.GetHashCode(),
+                        model.PassWord)
+                        .Hmacsha1(model.Salt);
                 model.PassWord = newPassWord;
-
             }
 
-            return _userInfoRepository.Update(new {model.NickName}, new {model.UserId});
+            return _userInfoRepository.Update(model, new {model.UserId});
+        }
+
+        public bool Update(object model, object conditon)
+        {
+            return _userInfoRepository.Update(model, conditon);
         }
 
         public bool DelOrRecoveryStatus(int userId)

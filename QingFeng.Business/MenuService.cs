@@ -13,7 +13,7 @@ namespace QingFeng.Business
         public Dictionary<MenuEnum, List<SubMenuEnum>> GetList()
         {
             var dict = new Dictionary<MenuEnum, List<SubMenuEnum>>();
-            dict.Add(MenuEnum.系统配置, new List<SubMenuEnum>()
+            dict.Add(MenuEnum.店铺管理, new List<SubMenuEnum>()
             {
                 SubMenuEnum.删除店铺,
                 SubMenuEnum.编辑店铺,
@@ -68,7 +68,7 @@ namespace QingFeng.Business
                 SubMenuEnum.待支付订单,
                 SubMenuEnum.待发货订单,
                 SubMenuEnum.已完成订单,
-                SubMenuEnum.待审核订单,
+                SubMenuEnum.已发货订单,
                 SubMenuEnum.异常订单,
                 SubMenuEnum.订单列表,
                 SubMenuEnum.添加订单
@@ -77,7 +77,6 @@ namespace QingFeng.Business
             dict.Add(MenuEnum.财务中心, new List<SubMenuEnum>()
             {
                 SubMenuEnum.导出支付流水,
-                SubMenuEnum.财务审核,
                 SubMenuEnum.支付详情,
                 SubMenuEnum.支付订单
             });

@@ -589,6 +589,7 @@
     <Content Include="Views\Menu\Index.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Home\WelCome.cshtml" />
+    <Content Include="Views\Menu\SetRole.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

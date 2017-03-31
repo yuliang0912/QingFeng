@@ -35,7 +35,7 @@ namespace QingFeng.WebArea
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}",
-                defaults: new {controller = "Home", action = "Welcome"}
+                defaults: new {controller = "Home", action = "Index"}
             );
         }
     }

@@ -12,6 +12,7 @@ namespace QingFeng.Business
         private StoreService() { }
 
         private readonly StoreRepository _storeRepository = new StoreRepository();
+        private readonly UserInfoRepository _userInfoRepository = new UserInfoRepository();
 
         public int CreateStore(StoreInfo model)
         {

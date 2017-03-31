@@ -119,9 +119,7 @@
                             if (dict.ContainsKey(sku.Key))
                             {
                                 skuCounts[sku.Key] += dict[sku.Key];
-                                <td class="center">
-                                    <a href="http://www.qingfeng.com/stock/edit?stockId=&warehouse_id=7" class="center edit-modal">@dict[sku.Key]</a>
-                                </td>
+                                <td class="center">@dict[sku.Key]</td>
                             }
                             else
                             {

@@ -11,6 +11,11 @@ namespace QingFeng.WebArea.Controllers
 {
     public class HomeController : CustomerController
     {
+        public ActionResult Index()
+        {
+            return RedirectToAction("WelCome");
+        }
+
         [AdminAuthorize]
         public ActionResult WelCome()
         {

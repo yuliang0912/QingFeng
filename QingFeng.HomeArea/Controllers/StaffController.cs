@@ -97,14 +97,13 @@ namespace QingFeng.WebArea.Controllers
             }
             userInfo.Phone = model.Phone;
             userInfo.Email = model.Email;
-            userInfo.PassWord = model.PassWord;
             userInfo.NickName = model.NickName;
 
             var result = UserService.Instance.UpdateUserInfo(userInfo);
             return Json(result);
         }
 
-        [HttpPost, MenuAuthorize(AgentEnums.SubMenuEnum.编辑员工, AgentEnums.SubMenuEnum.编辑代理商)]
+        [HttpGet, MenuAuthorize(AgentEnums.SubMenuEnum.编辑员工, AgentEnums.SubMenuEnum.编辑代理商)]
         public JsonResult ProhibitLogin(UserInfo user, int userId)
         {
             if (user.UserId == userId)
@@ -112,12 +111,12 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "不能更新自己的状态"});
             }
 
-            var result = UserService.Instance.UpdateUserInfo(new UserInfo() {UserId = userId, Status = 1});
+            var result = UserService.Instance.Update(new {Status = 1}, new {userId});
 
             return Json(new ApiResult<bool>(result));
         }
 
-        [HttpPost, MenuAuthorize(AgentEnums.SubMenuEnum.编辑员工, AgentEnums.SubMenuEnum.编辑代理商)]
+        [HttpGet, MenuAuthorize(AgentEnums.SubMenuEnum.编辑员工, AgentEnums.SubMenuEnum.编辑代理商)]
         public JsonResult AllowLogin(UserInfo user, int userId)
         {
             if (user.UserId == userId)
@@ -125,7 +124,7 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "不能更新自己的状态"});
             }
 
-            var result = UserService.Instance.UpdateUserInfo(new UserInfo() {UserId = userId, Status = 0});
+            var result = UserService.Instance.Update(new { Status = 0 }, new { userId });
 
             return Json(new ApiResult<bool>(result));
         }
