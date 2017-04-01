@@ -66,7 +66,7 @@
                 <input type="text" name="order_keyword" id="goods_keyword" value="@ViewBag.keyWord" style="width:160px;" class="form-control input-sm" placeholder="商品名称或货号">
             </div>
             <button type="button" class="btn btn-primary btn-sm " id="order-search">搜索</button>
-            <a href="http://www.qingfeng.com/price/distributorImport" class="btn btn-success btn-sm load-content"> <i class="glyphicon glyphicon-plus"></i> 导入价格</a>
+            <a href="http://www.tonyzu.com/price/distributorImport" class="btn btn-success btn-sm load-content"> <i class="glyphicon glyphicon-plus"></i> 导入价格</a>
         </small>
     </h1>
 </div>
@@ -134,7 +134,7 @@ else
                             }
                             @if (index == 0)
                         {
-                                <td rowspan="@productCount"><a href="http://www.qingfeng.com/price/distributorSet?userId=@(ViewBag.userId)&baseId=@item.BaseId" class="set-modal">设置</a></td>
+                                <td rowspan="@productCount"><a href="http://www.tonyzu.com/price/distributorSet?userId=@(ViewBag.userId)&baseId=@item.BaseId" class="set-modal">设置</a></td>
                             }
                         </tr>
                         index++;
@@ -187,7 +187,7 @@ else
                 return false;
             }
 
-            var url = 'http://www.qingfeng.com/price/index';
+            var url = 'http://www.tonyzu.com/price/index';
             var query_str = 'brandId=' + brand_id;
             query_str += '&categoryId=' + category_id;
             query_str += '&keyWord=' + keyword;

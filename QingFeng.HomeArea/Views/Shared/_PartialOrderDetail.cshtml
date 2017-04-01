@@ -7,10 +7,10 @@
     @switch (Model.OrderStatus)
     {
         case AgentEnums.OrderDetailStatus.待发货:
-            <a href="http://www.qingfeng.com/order/setDefect?orderId=@(Model.OrderId)&flowId=@(Model.FlowId)" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="无货标记" data-original-title="无货标记">无货标记</a>
+            <a href="http://www.tonyzu.com/order/setDefect?orderId=@(Model.OrderId)&flowId=@(Model.FlowId)" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="无货标记" data-original-title="无货标记">无货标记</a>
             break;
         case AgentEnums.OrderDetailStatus.无货异常:
-            <a href="http://www.qingfeng.com/order/SetCancel?orderId=@(Model.OrderId)&flowId=@(Model.FlowId)" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单" data-original-title="取消订单">取消</a>
+            <a href="http://www.tonyzu.com/order/SetCancel?orderId=@(Model.OrderId)&flowId=@(Model.FlowId)" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单" data-original-title="取消订单">取消</a>
             break;
         default:
             break;

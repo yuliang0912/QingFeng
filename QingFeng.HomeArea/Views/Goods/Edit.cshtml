@@ -59,11 +59,11 @@
 <div class="page-header">
     <h1 class="form-inline">
         商品基本信息(编辑商品)
-        <a href="http://www.qingfeng.com/goods/index" data-url="http://www.qingfeng.com/goods/index" class="btn btn-info btn-sm pull-right back-to-list"> <i class="glyphicon glyphicon-circle-arrow-left"></i> 返回列表</a>
+        <a href="http://www.tonyzu.com/goods/index" data-url="http://www.tonyzu.com/goods/index" class="btn btn-info btn-sm pull-right back-to-list"> <i class="glyphicon glyphicon-circle-arrow-left"></i> 返回列表</a>
     </h1>
 </div>
 
-<form class="form-horizontal" role="form" id="goods-base" method="post" action="http://www.qingfeng.com/goods/edit">
+<form class="form-horizontal" role="form" id="goods-base" method="post" action="http://www.tonyzu.com/goods/edit">
     <div class="page-content" id="page-content">
         <div class="base-info">
             <p class="block-title"><span class="red-star">*</span> 基础信息：<span class="gray-words">为保证物品的正确性，请认真填写！</span></p>
@@ -250,7 +250,7 @@
         <!-- /#goods -->
         <div class="botton-group">
             <input type="hidden" name="action" value="dosubmit">
-            <a type="button" class="btn btn-default" href="http://www.qingfeng.com/goods/index">后退</a>
+            <a type="button" class="btn btn-default" href="http://www.tonyzu.com/goods/index">后退</a>
             <button type="button" class="btn btn-primary">提交</button>
         </div>
         <!-- /.botton-group -->
@@ -444,7 +444,7 @@
             success: function(response, status) {
                 if (response.errcode === 0) {
                     layer.msg('保存成功！');
-                    $.getPageContent({ url: 'http://www.qingfeng.com/goods/index' });
+                    $.getPageContent({ url: 'http://www.tonyzu.com/goods/index' });
                     return false;
                 } else {
                     layer.alert(response.message);

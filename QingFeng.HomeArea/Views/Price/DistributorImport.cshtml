@@ -13,7 +13,7 @@
         <a href="/price/index" class="btn btn-info btn-sm pull-right back-to-list"><i class="icon-circle-arrow-left"></i> 返回列表</a>
     </h1>
 </div>
-<form class="form-horizontal" role="form" id="goods-price-form" enctype="multipart/form-data" method="post" action="http://www.qingfeng.com/price/distributorFileImport">
+<form class="form-horizontal" role="form" id="goods-price-form" enctype="multipart/form-data" method="post" action="http://www.tonyzu.com/price/distributorFileImport">
     @Html.AntiForgeryToken()
     <div class="row" style="width:700px; margin:15px auto;">
         <div class="col-lg-10">
@@ -91,7 +91,7 @@
                 return false;
             }
             var user_id = $('#user_id').val();
-            location.href = "http://www.qingfeng.com/price/DistributorImportExcel?brandId=" + brand_id + '&userId=' + user_id;
+            location.href = "http://www.tonyzu.com/price/DistributorImportExcel?brandId=" + brand_id + '&userId=' + user_id;
         });
         $('.back-to-list').off('click').on('click', function () {
             var url = $('#page-content').attr('data-back-url');

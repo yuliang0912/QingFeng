@@ -25,7 +25,7 @@
             </div>
             <button type="button" class="btn btn-primary btn-sm " id="staff-search">搜索</button>
         </small>
-        <a href="http://www.qingfeng.com/staff/add" class="btn btn-info btn-sm pull-right add-modal addStaff"> <i class="glyphicon glyphicon-plus"></i> 添加员工</a>
+        <a href="http://www.tonyzu.com/staff/add" class="btn btn-info btn-sm pull-right add-modal addStaff"> <i class="glyphicon glyphicon-plus"></i> 添加员工</a>
     </h1>
 </div>
 
@@ -59,15 +59,15 @@
                         <span class="label @(item.Status == 0 ? "label-success" : "label-warning")">@(item.Status == 0 ? "正常" : "关闭")</span>
                     </td>
                     <td>
-                        <a href="http://www.qingfeng.com/menu/setrole?userId=@(item.UserId)" class="setting">设置权限</a>
-                        <a href="http://www.qingfeng.com/staff/edit?userId=@(item.UserId)" class="setting">编辑员工</a>
+                        <a href="http://www.tonyzu.com/menu/setrole?userId=@(item.UserId)" class="setting">设置权限</a>
+                        <a href="http://www.tonyzu.com/staff/edit?userId=@(item.UserId)" class="setting">编辑员工</a>
                         @if (item.Status == 0)
                         {
-                            <a href="http://www.qingfeng.com/staff/ProhibitLogin?userId=@(item.UserId)" title="" class="red delete-modal" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="禁止员工登录" data-original-title="禁止登录">禁止登录</a>
+                            <a href="http://www.tonyzu.com/staff/ProhibitLogin?userId=@(item.UserId)" title="" class="red delete-modal" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="禁止员工登录" data-original-title="禁止登录">禁止登录</a>
                         }
                         else
                         {
-                            <a href="http://www.qingfeng.com/staff/AllowLogin?userId=@(item.UserId)" title="" class="green delete-modal" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="允许员工登录" data-original-title="允许登录">允许登录</a>
+                            <a href="http://www.tonyzu.com/staff/AllowLogin?userId=@(item.UserId)" title="" class="green delete-modal" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="允许员工登录" data-original-title="允许登录">允许登录</a>
                         }
                     </td>
                 </tr>
@@ -167,7 +167,7 @@
 
         $('#staff-search').click(function () {
             var keyword = $('#staff_keyword').val();
-            var url = "http://www.qingfeng.com/staff/index" + '?keywords=' + keyword;
+            var url = "http://www.tonyzu.com/staff/index" + '?keywords=' + keyword;
             $.getPageContent({ url: url });
             return false;
         });
