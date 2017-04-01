@@ -115,7 +115,7 @@ namespace QingFeng.Business
             {
                 var newPassWord =
                     string.Concat(model.UserName, PassWordSplitString, model.UserRole.GetHashCode(),
-                        model.PassWord)
+                            model.PassWord)
                         .Hmacsha1(model.Salt);
                 model.PassWord = newPassWord;
             }
@@ -174,14 +174,9 @@ namespace QingFeng.Business
                 return null;
             }
 
-            if (userInfo.UserRole == AgentEnums.UserRole.StoreUser)
-            {
-                userInfo.StoreList = _storeRepository.GetBatchStoreInfos(userInfo.UserId).ToList();
-            }
-            else
-            {
-                userInfo.StoreList = _storeRepository.GetList(new {status = 0, isSelfSupport = 1}).ToList();
-            }
+            userInfo.StoreList = userInfo.UserRole == AgentEnums.UserRole.StoreUser
+                ? _storeRepository.GetBatchStoreInfos(userInfo.UserId).ToList()
+                : _storeRepository.GetList(new {status = 0, isSelfSupport = 1}).ToList();
 
             return userInfo;
         }

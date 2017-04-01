@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
 using QingFeng.Business;
 using QingFeng.Common;
@@ -23,6 +20,13 @@ namespace QingFeng.WebArea.Controllers
             var userInfo = UserService.Instance.GetUserInfo(new {userId});
             ViewBag.userRoles = string.Join(",", userInfo.AllUserMenus.Select(t => t.GetHashCode()));
             return View();
+        }
+
+        [AdminAuthorize(AgentEnums.SubMenuEnum.设置权限)]
+        public JsonResult SetUserRole(int userId)
+        {
+            var userRoles = Request.Form["userRoles"] ?? string.Empty;
+            return Json(true);
         }
     }
 }

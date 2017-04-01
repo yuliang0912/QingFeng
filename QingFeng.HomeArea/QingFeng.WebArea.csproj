@@ -590,6 +590,8 @@
     <Content Include="Views\Home\Login.cshtml" />
     <Content Include="Views\Home\WelCome.cshtml" />
     <Content Include="Views\Menu\SetRole.cshtml" />
+    <Content Include="Views\Shop\Add.cshtml" />
+    <Content Include="Views\Shop\Edit.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

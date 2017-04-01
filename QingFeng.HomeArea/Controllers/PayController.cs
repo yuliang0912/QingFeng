@@ -190,6 +190,8 @@ namespace QingFeng.WebArea.Controllers
             workSheet.Range("A2:J100").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
             workSheet.Range("A2:O100").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
 
+            workSheet.Range("A1:O1").Style.NumberFormat.SetNumberFormatId(0);
+
             return new Common.ActionResultExtensions.ExportExcelResult
             {
                 workBook = workbook,
