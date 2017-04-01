@@ -2,7 +2,7 @@
 
 namespace QingFeng.Models.DTO
 {
-    public class UserPriceExcelDTO
+    public class UserPriceExcelDto
     {
         [JsonProperty(PropertyName = "商品ID")]
         public int BaseId { get; set; }

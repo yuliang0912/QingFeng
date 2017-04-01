@@ -196,7 +196,7 @@ namespace QingFeng.Business
             return _userProductPriceRepository.GetListByBaseIds(userId, baseId);
         }
 
-        public int ResetUserPrice(int userId, int brandId, List<UserPriceExcelDTO> list)
+        public int ResetUserPrice(int userId, int brandId, List<UserPriceExcelDto> list)
         {
             if (list == null || !list.Any())
             {

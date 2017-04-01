@@ -160,14 +160,14 @@ namespace QingFeng.WebArea.Controllers
 
                 var execelfile = new ExcelQueryFactory(savePath);
 
-                execelfile.AddMapping<UserPriceExcelDTO>(x => x.BaseId, "商品ID");
-                execelfile.AddMapping<UserPriceExcelDTO>(x => x.ProductId, "spu_id");
-                execelfile.AddMapping<UserPriceExcelDTO>(x => x.BaseNo, "货号");
-                execelfile.AddMapping<UserPriceExcelDTO>(x => x.ProductNo, "颜色");
-                execelfile.AddMapping<UserPriceExcelDTO>(x => x.OriginalPrice, "市场价");
-                execelfile.AddMapping<UserPriceExcelDTO>(x => x.ActualPrice, "供货价");
+                execelfile.AddMapping<UserPriceExcelDto>(x => x.BaseId, "商品ID");
+                execelfile.AddMapping<UserPriceExcelDto>(x => x.ProductId, "spu_id");
+                execelfile.AddMapping<UserPriceExcelDto>(x => x.BaseNo, "货号");
+                execelfile.AddMapping<UserPriceExcelDto>(x => x.ProductNo, "颜色");
+                execelfile.AddMapping<UserPriceExcelDto>(x => x.OriginalPrice, "市场价");
+                execelfile.AddMapping<UserPriceExcelDto>(x => x.ActualPrice, "供货价");
 
-                var lineItems = execelfile.Worksheet<UserPriceExcelDTO>(0).ToList();
+                var lineItems = execelfile.Worksheet<UserPriceExcelDto>(0).ToList();
 
                 if (lineItems.Any(t => t.ActualPrice < 0 || t.OriginalPrice < 0))
                 {
@@ -216,7 +216,7 @@ namespace QingFeng.WebArea.Controllers
                     .ToDictionary(c => c.ProductId, c => c);
             }
 
-            var excelDataList = baseProductList.SelectMany(t => t.SubProduct).Where(t => t.Status == 0).OrderBy(t => t.BaseId).Select(t => new UserPriceExcelDTO()
+            var excelDataList = baseProductList.SelectMany(t => t.SubProduct).Where(t => t.Status == 0).OrderBy(t => t.BaseId).Select(t => new UserPriceExcelDto()
             {
                 BaseId = t.BaseId,
                 BaseNo = t.BaseNo,
