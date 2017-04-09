@@ -1,0 +1,179 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAgent.cshtml";
+    var userPrice = ViewBag.userPrice as Dictionary<int, UserProductPrice>;
+    var index = 0;
+}
+@using QingFeng.Common
+@using QingFeng.Models
+@using QingFeng.Common.Extensions
+@model QingFeng.Common.ApiCore.Result.ApiPageList<ProductBase>
+
+<style type="text/css">
+    #order-table-list thead tr {
+        background: none;
+    }
+
+    th {
+        text-align: center;
+    }
+
+    #order-table-list td {
+        vertical-align: middle;
+    }
+</style>
+<div class="page-header">
+    <h1 class="form-inline">
+        代理商价格列表
+        <small>
+            <i class="icon-search"></i> 筛选:
+            <div class="form-group">
+                <label class="sr-only" for="brand_id">品牌</label>
+                <select name="brand_id" id="brand_id" class="form-control input-sm">
+                    <option value="0">品牌</option>
+                    @foreach (var item in Enum.GetValues(typeof(AgentEnums.Brand)))
+                    {
+                        <option value="@item.GetHashCode()" @(ViewBag.brandId == item.GetHashCode() ? "selected" : "")>@item.ToString()</option>
+                    }
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="category_id">分类</label>
+                <select name="category_id" id="category_id" class="form-control input-sm">
+                    <option value="0">分类</option>
+                    <optgroup label="鞋">
+                        @foreach (var item in Enum.GetValues(typeof(AgentEnums.Category)))
+                        {
+                            <option value="@item.GetHashCode()" @(ViewBag.categoryId == item.GetHashCode() ? "selected" : "")>@item.ToString()</option>
+                        }
+                    </optgroup>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="sr-only" for="order_keyword">关键字</label>
+                <input type="text" name="order_keyword" id="goods_keyword" value="@ViewBag.keyWord" style="width:160px;" class="form-control input-sm" placeholder="商品名称或货号">
+            </div>
+            <button type="button" class="btn btn-primary btn-sm " id="order-search">搜索</button>
+            <a href="http://www.tonyzu.com/price/distributorImport" class="btn btn-success btn-sm load-content"> <i class="glyphicon glyphicon-plus"></i> 导入价格</a>
+        </small>
+    </h1>
+</div>
+
+@if (!Model.PageList.Any())
+{
+    <div class="panel panel-default" style="width:500px; margin:20px auto;">
+        <div class="panel-heading">
+            <h3 class="panel-title">系统提示</h3>
+        </div>
+        <div class="panel-body"> 暂无相关记录, 马上选择过滤条件！！！</div>
+    </div>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-bordered" id="order-table-list">
+            <thead>
+                <tr>
+                    <th rowspan="2" class="center">品名</th>
+                    <th rowspan="2" class="center">货号</th>
+                    <th rowspan="2" class="center">品牌</th>
+                    <th rowspan="2" class="center">分类</th>
+                    <th rowspan="2" class="center">性别</th>
+                    <th colspan="5" class="center">spu</th>
+                </tr>
+                <tr>
+                    <th>颜色</th>
+                    <th>市场价</th>
+                    <th>采购价</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var item in Model.PageList)
+                {
+                    index = 0;
+                    int productCount = item.SubProduct.Count();
+                    foreach (var product in item.SubProduct)
+                    {
+                        <tr align="center">
+                            @if (index == 0)
+                        {
+                                <td rowspan="@productCount" id="goods-name-@item.BaseId">7-@item.BaseName</td>
+                                <td rowspan="@productCount">@item.BaseNo</td>
+                                <td rowspan="@productCount">@item.BrandId.ToString()</td>
+                                <td rowspan="@productCount">@item.CategoryId.ToString()</td>
+                                <td rowspan="@productCount">@item.SexId.ToString()</td>
+                            }
+                            <td>@product.ProductNo</td>
+                            <td>@product.OriginalPrice</td>
+                            @if (userPrice.ContainsKey(product.ProductId))
+                            {
+                                <td>@(userPrice[product.ProductId].ActualPrice)</td>
+                            }
+                            else
+                            {
+                                <td>@(product.ActualPrice)</td>
+                            }
+                        </tr>
+                        index++;
+                    }
+                }
+            </tbody>
+            @if (Model.PageCount > 1)
+            {
+                <tfoot>
+                    <tr align="center">
+                        <td colspan="11">
+                            @(Html.Raw(Model.GetPagerHtml(string.Format("/price/agent?brandId={0}&categoryId={1}&keyWord={2}&page={3}", ViewBag.brandId, ViewBag.categoryId, ViewBag.keyWord,"{0}"))))
+                        </td>
+                    </tr>
+                </tfoot>
+            }
+        </table>
+    </div>
+}
+
+<script type="text/javascript">
+    $(function () {
+        $.showModal({
+            formId: 'price-set-form',
+            'selector': '.add-modal,.set-modal',
+            beforeSubmit: function (formData, jqForm, options) {
+                return true;
+            },
+            success: function (response, status) {
+                if (response.ret == 0) {
+                    $('#etop-modal').modal('hide');
+                    $('#etop-modal').off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
+                        $.pageReload();
+                    });
+                    layer.msg("保存成功");
+                } else {
+                    layer.msg(response.message);
+                }
+            }
+        });
+
+        $('#order-search').click(function () {
+            var brand_id = $('#brand_id').val() * 1;
+            var category_id = $('#category_id').val() * 1;
+            var keyword = $('#goods_keyword').val();
+
+            var url = 'http://www.tonyzu.com/price/agent';
+            var query_str = 'brandId=' + brand_id;
+            query_str += '&categoryId=' + category_id;
+            query_str += '&keyWord=' + keyword;
+
+            url = url + '?' + query_str;
+            $.getPageContent({ url: url });
+
+        });
+    });
+
+    $('.pagination a,a.load-content').click(function () {
+        var url = $(this).attr('href');
+        $.getPageContent({ url: url });
+        return false;
+    });
+</script>
