@@ -124,7 +124,7 @@ namespace QingFeng.WebArea.Controllers
             model.CreateDate = DateTime.Now;
             model.Status = 0;
             model.UserRole = AgentEnums.UserRole.StoreUser;
-            model.UserMenus = string.Empty;
+            model.UserMenus = "508,518"; //添加订单
 
             var result = UserService.Instance.RegisterUser(model);
             return Json(result);

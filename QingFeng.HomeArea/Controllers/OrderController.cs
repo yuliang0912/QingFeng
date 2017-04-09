@@ -72,6 +72,58 @@ namespace QingFeng.WebArea.Controllers
             return View(data);
         }
 
+        [AdminAuthorize(allowRole: AgentEnums.UserRole.StoreUser)]
+        public ActionResult AgentOrderList(UserInfo user, int storeId = 0, int brandId = 0, int orderStatus = 0,
+            string beginDateStr = "",
+            string endDateStr = "",
+            string keyWords = "", int page = 1,
+            int pageSize = 20)
+        {
+            DateTime beginDate, endDate;
+
+            if (!DateTime.TryParse(beginDateStr, out beginDate))
+            {
+                beginDate = DateTime.MinValue;
+            }
+            if (!DateTime.TryParse(endDateStr, out endDate))
+            {
+                endDate = DateTime.Now;
+            }
+            endDate = endDate.AddDays(1).AddSeconds(-1);
+
+            int totalItem;
+            var list = OrderService.Instance.SearchOrderList(user.UserId, storeId, orderStatus, beginDate, endDate,
+                keyWords,
+                page,
+                pageSize, out totalItem);
+
+            ViewBag.ProductBase = ProductService.Instance.GetProductBaseList(
+                list.SelectMany(t => t.OrderDetails).Select(t => t.BaseId).ToArray())
+                .ToDictionary(c => c.BaseId, c => c);
+
+            ViewBag.PorductList = ProductService.Instance.GetProduct(
+                list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
+                .ToDictionary(c => c.ProductId, c => c);
+
+            ViewBag.brandId = brandId;
+            ViewBag.beginDateStr = beginDateStr;
+            ViewBag.endDateStr = endDateStr;
+            ViewBag.keyWords = keyWords;
+            ViewBag.storeId = storeId;
+            ViewBag.orderStatus = orderStatus;
+            ViewBag.title = orderStatus == 0 ? "订单列表" : (AgentEnums.MasterOrderStatus) orderStatus + "订单";
+
+            var data = new ApiPageList<OrderMaster>()
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalItem,
+                PageList = list
+            };
+
+            return View(data);
+        }
+
         /// <summary>
         /// 添加订单
         /// </summary>

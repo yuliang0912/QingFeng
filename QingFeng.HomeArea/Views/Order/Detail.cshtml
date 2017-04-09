@@ -1,310 +1,235 @@
 ﻿
 @{
-    ViewBag.Title = "Detail";
-    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+    ViewBag.Title = "OrderDetail";
+    var user = ViewBag.User as UserInfo;
+    Layout = user.UserRole == AgentEnums.UserRole.StoreUser ? "~/Views/Shared/_LayoutAgent.cshtml" : "~/Views/Shared/_LayoutAgentV2.cshtml";
+    var productBase = (ViewBag.ProductBase as Dictionary<int, ProductBase>) ?? new Dictionary<int, ProductBase>();
+    var porductList = (ViewBag.PorductList as Dictionary<int, Product>) ?? new Dictionary<int, Product>();
+    var orderLogs = (ViewBag.OrderLogs as IEnumerable<OrderLogs>) ?? new List<OrderLogs>();
 }
+@using QingFeng.Common
+@using QingFeng.Common.Extensions
+@using QingFeng.Models
+@model OrderMaster
 
-<style type="text/css">
-    .panel {
-        width: 99%;
-        margin: 10px auto;
-    }
+<div class="page-content" id="page-content" data-back-url="/agent/orderList" data-cureent-url="/agent/orderList">
+    <style type="text/css">
+        .panel {
+            width: 99%;
+            margin: 10px auto;
+        }
 
-    .td_title {
-        width: 100px;
-        text-align: center;
-    }
+        .td_title {
+            width: 100px;
+            text-align: center;
+        }
 
-    .td_input {
-        width: 200px;
-    }
+        .td_input {
+            width: 200px;
+        }
 
-    .td-left {
-        width: 350px;
-    }
+        .td-left {
+            width: 350px;
+        }
 
-    th {
-        text-align: center;
-    }
-</style>
+        th {
+            text-align: center;
+        }
+    </style>
+    <div class="page-header">
+        <h1 class="form-inline">
+            查看订单详情
+            <a href="/agent/orderList" class="btn btn-info btn-sm pull-right back-to-list"> <i class="icon-circle-arrow-left"></i> 返回列表</a>
+        </h1>
 
-<div class="page-header">
-    <h1 class="form-inline">
-        查看订单详情
-        <a href="http://www.tonyzu.com/order" class="btn btn-info btn-sm pull-right back-to-list"> <i class="icon-circle-arrow-left"></i> 返回列表</a>
-    </h1>
+    </div>
+    <div class="panel panel-info">
+        <!-- Default panel contents -->
+        <div class="panel-heading">订单基本信息</div>
 
-</div>
-<div class="panel panel-info">
-    <!-- Default panel contents -->
-    <div class="panel-heading">订单基本信息</div>
+        <table class="table table-bordered">
+            <tbody>
+                <tr>
+                    <td class="td_title">订单编号：</td>
+                    <td width="300">@Model.OrderNo</td>
+                    <td class="td_title">订单状态：</td>
+                    <td>
+                        <span style="@Model.OrderStatus.GetOrderStyle()">@Model.OrderStatus</span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="td_title">联系人：</td>
+                    <td>@Model.ContactName</td>
+                    <td class="td_title">联系电话：</td>
+                    <td>@Model.ContactPhone</td>
+                </tr>
+                <tr>
+                    <td class="td_title">店铺：</td>
+                    <td>@Model.StoreName</td>
+                    <td class="td_title">邮编：</td>
+                    <td>@Model.PostCode</td>
+                </tr>
+                <tr>
+                    <td class="td_title">订单总金额：</td>
+                    <td>@Model.OrderAmount</td>
+                    <td class="td_title">收货地址：</td>
+                    <td>@(Model.AreaName + Model.Address)</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="panel panel-info">
+        <!-- Default panel contents -->
+        <div class="panel-heading">订单商品</div>
 
-    <table class="table table-bordered">
-        <tbody>
-            <tr>
-                <td class="td_title">订单编号：</td>
-                <td width="300">49498119484 </td>
-                <td class="td_title">所属店铺：</td>
-                <td>J01</td>
-            </tr>
-            <tr>
-                <td class="td_title">联系人：</td>
-                <td> 官娟</td>
-                <td class="td_title">联系电话：</td>
-                <td> 13368350007</td>
-            </tr>
-            <tr>
-                <td class="td_title">邮编：</td>
-                <td>400039</td>
-                <td class="td_title">收货地址：</td>
-                <td>重庆市 重庆市 九龙坡区 内环以内火炬大道101号城市日记楼下</td>
-            </tr>
-            <tr>
-                <td class="td_title">订单状态：</td>
-                <td><span style="color:#0F0">正常进行</span></td>
-            </tr>
-            <!--
-            <tr>
-                <td class="td_title">平台状态：</td>
-                <td colspan="3"></td>
-            </tr> -->
-        </tbody>
-    </table>
-</div>
-<div class="panel panel-info">
-    <!-- Default panel contents -->
-    <div class="panel-heading">订单商品</div>
+        <!-- Table -->
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th width="180">商品名称</th>
+                    <th width="70">商品分类</th>
+                    <th width="70">商品品牌</th>
+                    <th width="150">商品货号</th>
+                    <th width="150">商品颜色</th>
+                    <th width="80">尺码</th>
+                    <th width="150">市场价</th>
+                    <th width="150">采购价</th>
+                    <th width="150">购买数量</th>
+                    <th>订单金额</th>
+                    <th>状态</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderDetails)
+            {
+                    <tr align="center">
+                        <td>@item.ProductName</td>
+                        <td>@productBase[item.BaseId].CategoryId.ToString()</td>
+                        <td>Locaste</td>
+                        <td>@productBase[item.BaseId].BaseNo</td>
+                        <td>@item.ProductNo</td>
+                        <td>@item.SkuName</td>
+                        <td>@porductList[item.ProductId].OriginalPrice</td>
+                        <td>@item.Price</td>
+                        <td>@item.Quantity</td>
+                        <th>@item.Amount</th>
+                        <td><span style="@item.OrderStatus.GetOrderStyle()">@item.OrderStatus</span></td>
 
-    <!-- Table -->
-    <table class="table table-bordered" id="table-order-goods">
-        <thead>
-            <tr>
-                <th width="180">商品名称</th>
-                <th width="70">商品分类</th>
-                <th width="70">商品品牌</th>
-                <th width="150">商品货号</th>
-                <th width="150">商品颜色</th>
-                <th width="80">尺码</th>
-                <th>配货仓库</th>
-                <th>市场价</th>
-                <th width="150">成本价</th>
-                <th>卖出价</th>
-                <th>状态</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr align="center">
-                <td width="180">7-26SPW1021</td>
-                <td width="70">休闲鞋</td>
-                <td width="70">Locaste</td>
-                <td width="150">7-26SPW1021</td>
-                <td width="150">7-26SPW102121G</td>
-                <td width="70">37.5</td>
-                <td>E-TOP(XH)</td>
-                <td>599.00</td>
-                <td>
-                    599.00
-                </td>
-                <td>469.00</td>
-                <td><span style="color:#f00">无货待处理</span>                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-<div class="panel panel-info">
-    <!-- Default panel contents -->
-    <div class="panel-heading">配送信息</div>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="panel panel-info">
+        <!-- Default panel contents -->
+        <div class="panel-heading">配送信息</div>
 
-    <!-- Table -->
-    <table class="table table-bordered" id="table-order-goods">
-        <thead>
-            <tr>
-                <th width="180">商品名称</th>
-                <th width="150">商品货号</th>
-                <th width="150">商品颜色</th>
-                <th width="80">尺码</th>
-                <th>物流公司</th>
-                <th>运单号</th>
-                <th>运费</th>
-            </tr>
-        </thead>
-        <tbody>
+        <!-- Table -->
+        <table class="table table-bordered" id="table-order-goods">
+            <thead>
+                <tr>
+                    <th>商品名称</th>
+                    <th>商品货号</th>
+                    <th>商品颜色</th>
+                    <th>尺码</th>
+                    <th>物流公司</th>
+                    <th>运单号</th>
+                    <th>运费</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderDetails)
+                {
+                    <tr align="center" valign="middle">
+                        <td>@item.BaseName</td>
+                        <td>@item.BaseId</td>
+                        <td>@item.ProductNo</td>
+                        <td>@item.SkuName</td>
+                        <td>@(item.LogisticsInfo == null ? "-" : item.LogisticsInfo.CompanyName)</td>
+                        <td>@(item.LogisticsInfo == null ? "-" : item.LogisticsInfo.OddNumber)</td>
+                        <td>@(item.LogisticsInfo == null ? "-" : item.LogisticsInfo.Price.ToString())</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
 
-            <tr align="center" valign="middle">
-                <td width="180" rowspan="1">7-26SPW1021</td>
-                <td width="150" rowspan="1">7-26SPW1021</td>
-                <td width="150" rowspan="1">7-26SPW102121G</td>
-                <td width="70" rowspan="1">37.5</td>
-                <td>--</td>
-                <td>--</td>
-                <td>--</td>
-            </tr>
-
-        </tbody>
-    </table>
-</div>
-<div class="panel panel-success" style="width:600px; margin-left:10px;">
-    <!-- Default panel contents -->
-    <div class="panel-heading">操作日志</div>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th width="70">操作人</th>
-                <th width="80">操作</th>
-                <th>备注</th>
-                <th>操作时间</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr align="center">
-                <td>eling</td>
-                <td>缺货</td>
-                <td></td>
-                <td>2017-02-21 14:04:02</td>
-            </tr>
-            <tr align="center">
-                <td>yehuiqiong</td>
-                <td>添加订单</td>
-                <td>7-26SPW1021 102121G 37.5琼0220：XH琼0220：已录入</td>
-                <td>2017-02-20 17:23:08</td>
-            </tr>
-        </tbody>
-    </table>
-    <!-- /.row -->
-</div>
-<script type="text/javascript">
-$.etopConfirm({selector:'.order-canceled2,.order-cancelReturned,.order-nostock,.order-nostockCancel'});
-$("[data-toggle='tooltip']").tooltip({html: true});
-$('.back-to-list').off('click').on('click', function(){
-    var url = $('#page-content').attr('data-back-url');
-    if (!url)
-    {
-        url = $(this).attr('href');
-    }
-
-    $.getPageContent({url : url});
-    return false;
-})
-</script>
-
-<!-- /.main-container-inner -->
-<!-- Modal 弹出层 -->
-<div class="modal fade" id="etop-modal" tabindex="-1" role="dialog" aria-labelledby="etop-modal-label" style="display: none;">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="edit-model-label">备注</h4>
-            </div>
-            <div class="modal-body">
-                <div class="panel panel-info">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading">订单基本信息</div>
-
-                    <table class="table table-bordered">
-                        <tbody>
-                            <tr>
-                                <td class="td_title">订单编号：</td>
-                                <td width="300">49498119484 </td>
-                                <td class="td_title">所属店铺：</td>
-                                <td>J01</td>
-                            </tr>
-                            <tr>
-                                <td class="td_title">联系人：</td>
-                                <td> 官娟</td>
-                                <td class="td_title">联系电话：</td>
-                                <td> 13368350007</td>
-                            </tr>
-                            <tr>
-                                <td class="td_title">邮编：</td>
-                                <td>400039</td>
-                                <td class="td_title">收货地址：</td>
-                                <td>重庆市 重庆市 九龙坡区 内环以内火炬大道101号城市日记楼下</td>
-                            </tr>
-                            <tr>
-                                <td class="td_title">订单状态：</td>
-                                <td><span style="color:#0F0">正常进行</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <div class="panel panel-success">
-                    <!-- Default panel contents -->
-                    <div class="panel-heading">操作日志</div>
-                    <table class="table table-striped" id="table-action-list">
-                        <thead>
-                            <tr>
-                                <th width="80">操作者</th>
-                                <th width="80">操作</th>
-                                <th>备注</th>
-                                <th width="150">时间</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td align="center" valign="middle">eling</td>
-                                <td align="center" valign="middle">缺货</td>
-                                <td></td>
-                                <td align="center" valign="middle">2017-02-21 14:04:02</td>
-                            </tr>
-                            <tr>
-                                <td align="center" valign="middle">yehuiqiong</td>
-                                <td align="center" valign="middle">添加订单</td>
-                                <td>7-26SPW1021 102121G 37.5琼0220：XH琼0220：已录入</td>
-                                <td align="center" valign="middle">2017-02-20 17:23:08</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-                <form class="form-horizontal" role="form" id="note-create-form" method="post" action="http://www.tonyzu.com/order/createNote">
-                    <div class="panel panel-info">
-                        <!-- Default panel contents -->
-                        <div class="panel-heading">添加备注</div>
-                        <div class="panel-body">
-                            <textarea name="content" id="content" class="form-control"></textarea>
-                            <input type="hidden" name="action" value="dosubmit">
-                            <input type="hidden" name="order_id" value="2400">
-                            <p style="padding: 15px 0px; text-align: center;"><input class="btn btn-primary" type="submit" value="提交订单备注"></p>
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-            </div>
-
-        </div>
+    </div>
+    <div class="panel panel-success" style="width:600px; margin-left:10px;">
+        <!-- Default panel contents -->
+        <div class="panel-heading">操作日志</div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th width="70">操作人</th>
+                    <th width="80">操作</th>
+                    <th>备注</th>
+                    <th>操作时间</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in orderLogs)
+                {
+                    <tr align="center">
+                        <td>@item.UserName</td>
+                        <td>@item.Title</td>
+                        <td>@item.Content</td>
+                        <td>@item.CreateDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <!-- /.row -->
     </div>
     <script type="text/javascript">
-    $("#note-create-form").ajaxForm({
-        beforeSubmit : function(formData, jqForm, options){
-            if ($('#content').val() == '')
-            {
-                alert('备注内容不能为空');
-                return false;
+        $.etopConfirm({ selector: '.order-canceled2,.order-cancelReturned,.order-nostock,.order-nostockCancel' });
+        $("[data-toggle='tooltip']").tooltip({ html: true });
+        $('.back-to-list').off('click').on('click', function() {
+            var url = $('#page-content').attr('data-back-url');
+            if (!url) {
+                url = $(this).attr('href');
             }
-            return true;
-        },
-        success : function(response, status){
-            if (response.error == 0)
-            {
-                var data = response.data;
-                var html = '<tr><td align="center" valign="middle">'+data.operator+'</td>';
-                html += '<td align="center" valign="middle">'+data.action+'</td>';
-                html += '<td>'+$('#content').val()+'</td>';
-                html += '<td align="center" valign="middle">'+data.date+'</td></tr>';
-                $('#table-action-list').prepend(html);
-                $('#content').val('');
-            }
-            else
-            {
-                alert(response.msg);
-            }
+            url += url.indexOf("?") > -1 ? "&stype=1" : "?stype=1";
+            $.getPageContent({ url: url });
             return false;
-        },
-        dataType : 'json',
-        timeout : 10000,
-        error : function(){alert('发送请求失败');}
-    });
+        });
+
+        $("#order-pay").click(function() {
+            layer.msg("11");
+        });
     </script>
 </div>
+
+<div class="modal fade" id="pay-qrcode" tabindex="-1" role="dialog" aria-labelledby="etop-modal-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content form-horizontal">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="关闭"><span aria-hidden="true">×</span></button>
+                <h4 class="modal-title" id="myModalLabel">支付订单:tonyzu@126.com</h4>
+            </div>
+            <div class="modal-body">
+                <div style="width: 100%; text-align: center">
+                    <img src="/Content/img/alipay.png" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="confirmPay" class="btn btn-primary">已完成支付</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    $("#confirmPay").click(function () {
+        layer.confirm("是否确定已支付订单款项,共计(@Model.OrderAmount)元,点击确定订单将更改为已支付状态.", function () {
+            $core.ajax.postJSON("/agent/PayOrder", { orderId: "@Model.OrderId" }, function (data) {
+                if (data === 1) {
+                    layer.msg("订单状态修改成功", { success: function () { setTimeout(function () { location.reload(); }, 1000) } });
+                } else if (data === 0) {
+                    layer.msg("操作失败");
+                } else {
+                    layer.msg(this.message);
+                }
+            });
+        });
+    })
+</script>

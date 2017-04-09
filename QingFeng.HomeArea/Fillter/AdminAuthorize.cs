@@ -14,8 +14,8 @@ namespace QingFeng.WebArea.Fillter
 {
     public class AdminAuthorize : FilterAttribute, IAuthorizationFilter, IActionFilter
     {
-        readonly UserRole _allowRole;
-        readonly SubMenuEnum _subMenu;
+        private UserRole _allowRole;
+        private SubMenuEnum _subMenu;
         protected UserInfo CurrentUser;
 
         public AdminAuthorize(SubMenuEnum subMenu = SubMenuEnum.全部, UserRole allowRole = UserRole.AllUser)

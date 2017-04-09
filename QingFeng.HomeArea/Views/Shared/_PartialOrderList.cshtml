@@ -6,7 +6,7 @@
 <td rowspan="@(Model.OrderDetailCount)"><span style="@(Model.OrderStatus.GetOrderStyle())">@Model.OrderStatus.ToString()</span></td>
 <td rowspan="@(Model.OrderDetailCount)" class="last">
     <a href="http://www.tonyzu.com/order/note?orderId=@Model.OrderId" title="查看备注" class="green view-order-notes">备注</a>
-    <a href="http://www.tonyzu.com/order/detail?orderId=@Model.OrderId" data-url="/agent/orderDetail?orderId=@Model.OrderId" class="load-view">查看</a>
+    <a href="http://www.tonyzu.com/order/detail?orderId=@Model.OrderId" data-url="http://www.tonyzu.com/order/detail?orderId=@Model.OrderId" class="load-view">查看</a>
     @switch (Model.OrderStatus)
     {
         case AgentEnums.MasterOrderStatus.待支付:

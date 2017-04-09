@@ -83,7 +83,7 @@ namespace QingFeng.Common
         /// </summary>
         public enum Warehouse
         {
-            E_TOP_XH = 1
+            TOP_XH = 1
         }
 
         /// <summary>

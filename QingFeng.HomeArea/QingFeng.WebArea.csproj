@@ -456,6 +456,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Codes\HttpHelp.cs" />
     <Compile Include="Codes\PayHelper.cs" />
+    <Compile Include="Controllers\AgentController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\GoodsController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -596,6 +597,8 @@
     <Content Include="Views\Home\ResetPassWord.cshtml" />
     <Content Include="Views\Staff\EditAgent.cshtml" />
     <Content Include="Views\Staff\ReSetAgentPwd.cshtml" />
+    <Content Include="Views\Price\Agent.cshtml" />
+    <Content Include="Views\Order\AgentOrderList.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

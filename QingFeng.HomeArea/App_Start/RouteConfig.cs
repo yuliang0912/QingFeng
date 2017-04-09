@@ -32,6 +32,17 @@ namespace QingFeng.WebArea
                 });
             });
 
+            orderRouteList.ForEach(item =>
+            {
+                routes.MapRoute("agentOrderList" + item.Key, "agentOrder/" + item.Value, new
+                {
+                    controller = "Order",
+                    action = "AgentOrderList",
+                    id = UrlParameter.Optional,
+                    orderStatus = item.Key
+                });
+            });
+
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}",

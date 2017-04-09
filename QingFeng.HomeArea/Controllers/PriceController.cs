@@ -19,7 +19,7 @@ namespace QingFeng.WebArea.Controllers
     {
         [AdminAuthorize(AgentEnums.SubMenuEnum.代理商价格)]
         public ActionResult Index(int userId = 0, string keyWord = "", int brandId = 1, int categoryId = 0, int page = 1,
-            int pageSize = 30)
+            int pageSize = 20)
         {
             var totalItem = 0;
             var list = new List<ProductBase>();
@@ -27,7 +27,7 @@ namespace QingFeng.WebArea.Controllers
 
             if (userId > 0)
             {
-                list = ProductService.Instance.SearchBaseProduct(0, 0, categoryId, keyWord, 0, page, pageSize, out totalItem).ToList();
+                list = ProductService.Instance.SearchBaseProduct(brandId, 0, categoryId, keyWord, 0, page, pageSize, out totalItem).ToList();
 
                 userPrice = UserService.Instance.GetUserPrice(userId, brandId, list.Select(t => t.BaseId).ToArray())
                     .ToDictionary(c => c.ProductId, c => c);
@@ -50,6 +50,36 @@ namespace QingFeng.WebArea.Controllers
                 PageList = list
             });
         }
+
+
+        [AdminAuthorize(allowRole: AgentEnums.UserRole.StoreUser)]
+        public ActionResult Agent(UserInfo user, string keyWord = "", int brandId = 1, int categoryId = 0, int page = 1,
+            int pageSize = 20)
+        {
+            int totalItem;
+
+            var list =
+                ProductService.Instance.SearchBaseProduct(brandId, 0, categoryId, keyWord, 0, page, pageSize,
+                    out totalItem)
+                    .ToList();
+
+            var userPrice = UserService.Instance.GetUserPrice(user.UserId, brandId, list.Select(t => t.BaseId).ToArray())
+                .ToDictionary(c => c.ProductId, c => c);            
+
+            ViewBag.brandId = brandId;
+            ViewBag.categoryId = categoryId;
+            ViewBag.keyWord = keyWord;
+            ViewBag.userPrice = userPrice;
+
+            return View(new ApiPageList<ProductBase>
+            {
+                Page = page,
+                PageSize = pageSize,
+                TotalCount = totalItem,
+                PageList = list
+            });
+        }
+
 
         [AdminAuthorize(AgentEnums.SubMenuEnum.设置代理商价格)]
         //设置价格
