@@ -110,7 +110,7 @@
                             <td rowspan="@productCount">@item.BaseNo</td>
                             <td rowspan="@productCount">@item.BrandId.ToString()</td>
                             <td rowspan="@productCount">@item.SexId.ToString()</td>
-                            <td rowspan="@productCount">E-TOP(XH)</td>
+                            <td rowspan="@productCount">TOP(XH)</td>
                         }
                         <td>@product.ProductNo</td>
                         <td>@product.StockNum</td>
@@ -153,7 +153,7 @@
             <tfoot>
                 <tr align="center">
                     <td colspan="15">
-                        @(Html.Raw(Model.GetPagerHtml(string.Format("/stock/search?pagesize=1&brandId={0}&sexId={1}&warehouseId={2}&page={3}", ViewBag.brandId, ViewBag.sexId, ViewBag.warehouseId, "{0}"))))
+                        @(Html.Raw(Model.GetPagerHtml(string.Format("/stock/search?brandId={0}&sexId={1}&warehouseId={2}&page={3}", ViewBag.brandId, ViewBag.sexId, ViewBag.warehouseId, "{0}"))))
                     </td>
                 </tr>
             </tfoot>

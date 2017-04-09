@@ -1,8 +1,9 @@
 ﻿
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "EditAgent";
     Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
 }
+
 
 @model QingFeng.Models.UserInfo
 
@@ -10,9 +11,9 @@
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close return" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-            <h4 class="modal-title" id="edit-model-label">编辑员工</h4>
+            <h4 class="modal-title" id="edit-model-label">编辑代理商</h4>
         </div>
-        <form id="setting-form" class="form-horizontal" role="form" method="post" action="http://www.tonyzu.com/staff/EditStaff?userId=@(Model.UserId)">
+        <form id="setting-form" class="form-horizontal" role="form" method="post" action="http://www.tonyzu.com/staff/EditAgent">
             <div class="modal-body">
                 <input type="hidden" value="@Model.UserId" id="userId" name="userId"/>
                 <div class="form-group">
@@ -21,20 +22,20 @@
                         <input type="text" class="form-control blur" readonly="readonly" value="@Model.UserName">
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">密码</label>
+                @*<div class="form-group">
+                    <label for="passWord" class="col-sm-2 control-label">密码</label>
                     <div class="col-sm-6">
                         <input type="password" class="form-control" id="passWord" name="password" value="" placeholder="如不需重置密码，请不要填写">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">确认密码</label>
+                    <label for="confirmPassWord" class="col-sm-2 control-label">确认密码</label>
                     <div class="col-sm-6">
                         <input type="password" class="form-control" id="confirmPassWord" name="repassword" value="">
                     </div>
-                </div>
+                </div>*@
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">员工姓名</label>
+                    <label for="nickName" class="col-sm-2 control-label">代理商姓名</label>
                     <div class="col-sm-6">
                         <input type="text" class="form-control" required id="nickName" name="nickName" value="@Model.NickName">
                     </div>
@@ -59,5 +60,4 @@
         </form>
     </div>
 </div>
-
 

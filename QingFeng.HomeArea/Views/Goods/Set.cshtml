@@ -16,27 +16,27 @@
                 <!-- Default panel contents -->
                 <div class="panel-heading">基本资料</div>
                 <div class="panel-body">
-                    <label for="goods_name" class="col-sm-2 control-label">商品名称：</label>
+                    <label class="col-sm-2 control-label">商品名称：</label>
                     <div class="col-sm-4">
                         <input type="text" class="form-control ptn" value="@Model.BaseName" disabled="disabled">
                     </div>
-                    <label for="goods_sn" class="col-sm-2 control-label">商品货号：</label>
+                    <label class="col-sm-2 control-label">商品货号：</label>
                     <div class="col-sm-4">
                         <input type="text" class="form-control ptn" value="@Model.BaseNo" disabled="disabled">
                     </div>
-                    <label for="goods_name" class="col-sm-2 control-label">所属分类：</label>
+                    <label class="col-sm-2 control-label">所属分类：</label>
                     <div class="col-sm-4">
                         <input type="text" class="form-control ptn" value="@Model.CategoryId.ToString()" disabled="disabled">
                     </div>
-                    <label for="goods_sn" class="col-sm-2 control-label">所属品牌：</label>
+                    <label class="col-sm-2 control-label">所属品牌：</label>
                     <div class="col-sm-4">
                         <input type="text" class="form-control ptn" value="@Model.BaseId.ToString()" disabled="disabled">
                     </div>
-                    <label for="goods_sn" class="col-sm-2 control-label">性别：</label>
+                    <label class="col-sm-2 control-label">性别：</label>
                     <div class="col-sm-4">
                         <input type="text" class="form-control ptn" value="@Model.SexId.ToString()" disabled="disabled">
                     </div>
-                    <label for="goods_sn" class="col-sm-2 control-label">商品状态：</label>
+                    <label class="col-sm-2 control-label">商品状态：</label>
                     <div class="col-sm-4">
                         <input type="text" class="form-control ptn" value="@(Model.Status == 0 ? "正常" : "已删除")" disabled="disabled">
                     </div>
@@ -62,7 +62,7 @@
                                 <td>@item.OriginalPrice</td>
                                 <td><button type="button" class="btn @(item.Status == 0 ? "btn-success" : "btn-warning" )">@(item.Status == 0 ? "已上架" : "已下架" )</button></td>
                                 <input type="hidden" name="spu[@item.ProductId]" id="spu_@(item.ProductNo)" class="spu" value="@(item.Status)">
-                                <td><button type="button" class="btn @(item.Status == 0 ? "btn-warning" : "btn-success" ) xj xj_@(item.ProductNo)" name="@(item.ProductNo)" value="@(item.Status == 0)">@(item.Status == 0 ? "下架" : "上架" )</button></td>
+                                <td><button type="button" value="@(item.Status)" class="btn @(item.Status == 0 ? "btn-warning" : "btn-success" ) xj xj_@(item.ProductNo)" name="@(item.ProductNo)" value="@(item.Status == 0)">@(item.Status == 0 ? "下架" : "上架" )</button></td>
                             </tr>
                         }
                     </tbody>
@@ -83,12 +83,12 @@
         $('.xj').click(function() {
             var spu = $(this).attr('name');
             var val = $(this).val();
-            if (val == 0) {
-                $('#spu_' + spu).val('1');
-                $(this).val('1').html('下架').removeClass("btn-success").addClass("btn-warning");
-            } else {
+            if (val == 1) {
                 $('#spu_' + spu).val('0');
-                $(this).val('0').html('上架').addClass("btn-success").removeClass("btn-warning");
+                $(this).val('0').html('下架').removeClass("btn-success").addClass("btn-warning");
+            } else {
+                $('#spu_' + spu).val('1');
+                $(this).val('1').html('上架').addClass("btn-success").removeClass("btn-warning");
             }
         });
         $('.all_xj').click(function() {

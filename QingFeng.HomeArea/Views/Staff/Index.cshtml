@@ -104,13 +104,19 @@
             formId: 'setting-form',
             beforeSubmit: function (formData, jqForm, options) {
                 var userId = jqForm.find("#userId").val();
-                if (!userId) {
-                    var pwd1 = jqForm.find("#passWord").val();
-                    var pwd2 = jqForm.find("#confirmPassWord").val();
-                    if (pwd1 !== pwd2) {
-                        layer.msg("两次密码不一致");
-                        return false;
-                    }
+                var pwd1 = jqForm.find("#passWord").val();
+                var pwd2 = jqForm.find("#confirmPassWord").val();
+                if (!userId && pwd1.length < 6) {
+                    layer.msg("请输入最少6位长度的密码");
+                    return false;
+                }
+                if (pwd1.length > 0 && pwd1.length < 6) {
+                    layer.msg("请输入最少6位长度的密码");
+                    return false;
+                }
+                if (pwd1 !== pwd2) {
+                    layer.msg("两次密码不一致");
+                    return false;
                 }
                 return true;
             },
@@ -120,10 +126,8 @@
                     $('#etop-modal').modal('hide');
                     $.pageReload();
                 }
-                else if (response.data === 2) {
-                    layer.msg("登录名已存在");
-                } else {
-                    layer.msg("添加失败");
+                else{
+                    layer.msg("操作失败");
                 }
                 return false;
             }

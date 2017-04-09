@@ -1,54 +1,50 @@
-﻿
-@{
-    ViewBag.Title = "Edit";
+﻿@{
+    ViewBag.Title = "AddAgent";
     Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
 }
-
-@model QingFeng.Models.UserInfo
 
 <div class="modal-dialog modal-lg">
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close return" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-            <h4 class="modal-title" id="edit-model-label">编辑员工</h4>
+            <h4 class="modal-title" id="edit-model-label">添加代理商</h4>
         </div>
-        <form id="setting-form" class="form-horizontal" role="form" method="post" action="http://www.tonyzu.com/staff/EditStaff?userId=@(Model.UserId)">
+        <form id="setting-form" class="form-horizontal" role="form" method="post" action="http://www.tonyzu.com/staff/addAgent">
             <div class="modal-body">
-                <input type="hidden" value="@Model.UserId" id="userId" name="userId"/>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">用户名</label>
+                    <label for="userName" class="col-sm-2 control-label">用户名</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control blur" readonly="readonly" value="@Model.UserName">
+                        <input type="text" class="form-control blur" required id="userName" name="username" value="" title="请输入用户名">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">密码</label>
+                    <label for="passWord" class="col-sm-2 control-label">密码</label>
                     <div class="col-sm-6">
-                        <input type="password" class="form-control" id="passWord" name="password" value="" placeholder="如不需重置密码，请不要填写">
+                        <input type="text" class="form-control" required id="passWord" name="password" value="" title="请输入密码">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">确认密码</label>
+                    <label for="confirmPassWord" class="col-sm-2 control-label">确认密码</label>
                     <div class="col-sm-6">
-                        <input type="password" class="form-control" id="confirmPassWord" name="repassword" value="">
+                        <input type="text" class="form-control" required title="请输入确认密码" id="confirmPassWord" name="confirmPassWord" value="">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-sm-2 control-label">员工姓名</label>
+                    <label for="nickName" class="col-sm-2 control-label">代理商姓名</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control" required id="nickName" name="nickName" value="@Model.NickName">
+                        <input type="text" class="form-control" required id="nickName" name="nickName" value="">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="phone" class="col-sm-2 control-label">手机号码</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control blur" required id="phone" name="phone" value="@Model.Phone">
+                        <input type="text" class="form-control blur" required id="phone" name="phone" value="">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="email" class="col-sm-2 control-label">邮箱</label>
                     <div class="col-sm-6">
-                        <input type="text" class="form-control blur" required id="email" name="email" value="@Model.Email">
+                        <input type="email" class="form-control blur" required id="email" name="email" value="">
                     </div>
                 </div>
             </div>
@@ -59,5 +55,4 @@
         </form>
     </div>
 </div>
-
 
