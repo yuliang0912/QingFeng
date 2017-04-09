@@ -599,6 +599,7 @@
     <Content Include="Views\Staff\ReSetAgentPwd.cshtml" />
     <Content Include="Views\Price\Agent.cshtml" />
     <Content Include="Views\Order\AgentOrderList.cshtml" />
+    <Content Include="Views\Pay\Detail.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

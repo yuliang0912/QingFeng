@@ -6,6 +6,7 @@ using QingFeng.WebArea.Fillter;
 using System;
 using System.Linq;
 using System.Web.Mvc;
+using DocumentFormat.OpenXml.Wordprocessing;
 using QingFeng.Common.ApiCore.Result;
 using QingFeng.Common.Extensions;
 using QingFeng.WebArea.Codes;
@@ -14,7 +15,7 @@ namespace QingFeng.WebArea.Controllers
 {
     public class PayController : Controller
     {
-        [AdminAuthorize]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.支付订单)]
         public ActionResult Index(string keyWords = "", int payStatus = 0, int page = 1, int pageSize = 20)
         {
             int totalItem;
@@ -33,13 +34,34 @@ namespace QingFeng.WebArea.Controllers
             });
         }
 
-        [AdminAuthorize]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.支付详情)]
+        public ActionResult Detail(string payNo)
+        {
+            var model = PayOrderService.Instance.Get(new {payNo});
+            if (model == null)
+            {
+                return Content("参数错误");
+            }
+
+            var orderMaster = OrderService.Instance.Get(new {model.OrderId});
+
+            var products =
+                ProductService.Instance.GetProduct(orderMaster.OrderDetails.Select(t => t.ProductId).ToArray())
+                    .ToDictionary(c => c.ProductId, c => c);
+
+            ViewBag.products = products;
+            ViewBag.orderMaster = orderMaster;
+
+            return View(model);
+        }
+
+        [AdminAuthorize(AgentEnums.SubMenuEnum.导出支付流水)]
         public ActionResult Export()
         {
             return View();
         }
 
-        [AdminAuthorize]
+        [AdminAuthorize(allowRole: AgentEnums.UserRole.StoreUser)]
         public ActionResult PayRedirect(UserInfo user, long orderId)
         {
             var orderInfo = OrderService.Instance.Get(new {orderId});

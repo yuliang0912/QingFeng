@@ -1,0 +1,155 @@
+﻿
+@{
+    ViewBag.Title = "Detail";
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+
+    var orderMasterInfo = ViewBag.orderMaster as OrderMaster;
+    var productDict = ViewBag.products as Dictionary<int, Product>;
+}
+
+@using QingFeng.Common
+@using QingFeng.Common.Extensions
+@using QingFeng.Models
+@model QingFeng.Models.PayOrder
+<style type="text/css">
+    table tbody td {
+        text-align: center;
+        vertical-align: middle !important;
+    }
+
+    .order_title span {
+        height: 32px;
+        line-height: 32px;
+        margin: 10px 20px;
+    }
+</style>
+
+<div class="page-header">
+    <h1 class="form-inline">
+        支付详情
+        <a href="http://www.tonyzu.com/pay/index" class="btn btn-info btn-sm pull-right back-to-list"> <i class="icon-circle-arrow-left"></i> 返回列表</a>
+    </h1>
+</div>
+
+<!-- /.page-header -->
+<!-- PAGE CONTENT BEGINS -->
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover">
+        <tbody>
+            <tr>
+                <th class="center">支付流水号</th>
+                <td>@Model.PayNo</td>
+                <th class="center">支付方式</th>
+                <td>
+                    @Model.PayType.ToString()
+                </td>
+            </tr>
+            <tr>
+                <th class="center">支付金额</th>
+                <td>@Model.ActualPrice</td>
+                <th class="center">交易手续费</th>
+                <td>@Model.CounterFee</td>
+            </tr>
+            <tr>
+                <th class="center">平台业务单号</th>
+                <td>@Model.OutsideId</td>
+                <th class="center">银行业务单号</th>
+                <td>-</td>
+            </tr>
+            <tr>
+                <th class="center">状态</th>
+                <td><span class="label @(Model.PayStatus == AgentEnums.PayStatus.支付成功 ? "label-success":"label-warning")">@Model.PayStatus</span></td>
+                <th class="center">支付时间</th>
+                <td>@Model.PayDate.ToInitialValue()</td>
+            </tr>
+            <tr>
+                <th class="center">审核状态</th>
+                <td>@Model.VerifyStatus</td>
+                <th class="center">审核时间</th>
+                <td>@Model.VerifyDate.ToInitialValue()</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+<!-- /.table-responsive -->
+
+<div class="panel panel-info">
+    <!-- Default panel contents -->
+    <div class="panel-heading">支付订单清单</div>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th class="center">订单流水号</th>
+                <th class="center" width="140">店铺</th>
+                <th class="center">品名</th>
+                <th class="center">货号</th>
+                <th class="center">颜色</th>
+                <th class="center">尺码</th>
+                <th class="center">市场价</th>
+                <th class="center">数量</th>
+                <th class="center">单价</th>
+                <th class="center">应付</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in orderMasterInfo.OrderDetails)
+            {
+                var product = productDict[item.ProductId];
+                <tr>
+                    <td class="center" rowspan="1">@item.FlowId</td>
+                    <td class="center" rowspan="1">@orderMasterInfo.StoreName</td>
+                    <td class="center">@item.BaseName</td>
+                    <td class="center">@item.BaseNo</td>
+                    <td class="center">@item.ProductNo</td>
+                    <td class="center">@item.SkuName</td>
+                    <td class="center">@product.ActualPrice</td>
+                    <td class="center">@item.Quantity</td>
+                    <td class="center">@item.Price</td>
+                    <td class="center">@item.Amount</td>
+                </tr>
+            }
+            <!-- /.table-responsive -->
+            <tr>
+                <th colspan="7" class="center">合计</th>
+                <td>@(orderMasterInfo.OrderDetails.Sum(t=>t.Quantity))</td>
+                <td colspan="@orderMasterInfo.OrderDetailCount"></td>
+                <!-- <td></td> -->
+                <td>@orderMasterInfo.OrderAmount</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- PAGE CONTENT ENDS -->
+<script type="text/javascript">
+    function getTimestamp() {
+        var timestamp = Math.round(new Date().getTime() / 1000);
+        return timestamp;
+    }
+
+
+    $(function () {
+        $('.audit-modal').on('click', function () {
+            var url = $(this).attr('request_url')
+            $.get(url, { 'timestamp': getTimestamp() },
+                    function (result) {
+                        alert(result.msg);
+                        if (result.error == 0) {
+                            $.pageReload();
+                        }
+                    },
+            'json');
+        });
+
+        $('#do-payment-filter').click(function () {
+            var order_sn = $('#order-sn').val();
+
+            var base_url = 'http://www.findshoes.cn/payment/listing';
+            var params = '?order_sn=' + order_sn;
+
+            url = base_url + params;
+            $.getPageContent({ url: url });
+
+        });
+    });
+</script>

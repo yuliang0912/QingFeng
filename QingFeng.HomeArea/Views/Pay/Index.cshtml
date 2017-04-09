@@ -67,7 +67,7 @@
                     <td>@item.PayDate</td>
                     <td><span class="label  @(item.VerifyStatus == AgentEnums.VerifyStatus.已审核 ? "label-success":"label-warning")">@item.VerifyStatus.ToString()</span></td>
                     <td>
-                        <a href="http://www.tonyzu.com/payment/detail/651" title="查看支付详情" class="btn btn-info btn-sm load-content"> 详情</a>
+                        <a href="http://www.tonyzu.com/pay/detail/?payNo=@item.PayNo" title="查看支付详情" class="btn btn-info btn-sm load-content"> 详情</a>
                     </td>
                 </tr>
             }
@@ -98,6 +98,18 @@
 
             url = base_url + params;
             $.getPageContent({ url: url });
+        });
+
+        $('.load-content,.pagination a').off('click').on('click', function (e) {
+            var url = $(this).attr('href');
+            if (e.ctrlKey) {
+                if (e.button == 0) {
+                    window.open(url);
+                    return false;
+                }
+            }
+            $.getPageContent({ url: url });
+            return false;
         });
     });
 </script>
