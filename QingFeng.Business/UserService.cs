@@ -69,22 +69,15 @@ namespace QingFeng.Business
             return _userInfoRepository.Insert(model) > 0 ? 1 : 0;
         }
 
-        public int UpdatePassWord(int userId, string password)
+        public bool UpdatePassWord(UserInfo userInfo, string password)
         {
-            var userInfo = _userInfoRepository.Get(new {userId});
-
-            if (userInfo == null)
-            {
-                return 0;
-            }
-
             userInfo.Salt = StringExtensions.GetRandomString();
 
             var newPassWord =
                 string.Concat(userInfo.UserName, PassWordSplitString, userInfo.UserRole.GetHashCode(), password)
                     .Hmacsha1(userInfo.Salt);
 
-            return _userInfoRepository.Update(new {passWord = newPassWord, userInfo.Salt}, new {userId}) ? 1 : 0;
+            return _userInfoRepository.Update(new {passWord = newPassWord, userInfo.Salt}, new {userInfo.UserId});
         }
 
         public int UpdatePassWord(UserInfo user, string oldPwd, string newPwd)
@@ -115,7 +108,7 @@ namespace QingFeng.Business
             {
                 var newPassWord =
                     string.Concat(model.UserName, PassWordSplitString, model.UserRole.GetHashCode(),
-                            model.PassWord)
+                        model.PassWord)
                         .Hmacsha1(model.Salt);
                 model.PassWord = newPassWord;
             }

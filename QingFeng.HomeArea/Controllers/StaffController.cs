@@ -23,7 +23,7 @@ namespace QingFeng.WebArea.Controllers
             return View(list);
         }
 
-        [AdminAuthorize(AgentEnums.SubMenuEnum.编辑店铺)]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.编辑员工)]
         public ActionResult Edit(int userId)
         {
             var userInfo = UserService.Instance.GetUserInfo(new {userId = userId});
@@ -36,13 +36,13 @@ namespace QingFeng.WebArea.Controllers
             return View(userInfo);
         }
 
-        [AdminAuthorize(AgentEnums.SubMenuEnum.添加店铺)]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.添加员工)]
         public ActionResult Add()
         {
             return View();
         }
 
-        [AdminAuthorize(AgentEnums.SubMenuEnum.代理商列表)]
+        [HttpGet, AdminAuthorize(AgentEnums.SubMenuEnum.代理商列表)]
         public ActionResult Agent()
         {
             var list = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, string.Empty).ToList();
@@ -50,37 +50,48 @@ namespace QingFeng.WebArea.Controllers
             return View(list);
         }
 
-        [AdminAuthorize(AgentEnums.SubMenuEnum.重置代理商密码)]
-        public ActionResult ReSetAgentPwd()
+        [HttpGet, AdminAuthorize(AgentEnums.SubMenuEnum.添加代理商)]
+        public ActionResult AddAgent()
         {
-            var list = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, string.Empty).ToList();
-
-            return View(list);
+            return View();
         }
 
-        [AdminAuthorize(AgentEnums.SubMenuEnum.删除代理商)]
-        public ActionResult SetAgentLogin()
+        [HttpGet, AdminAuthorize(AgentEnums.SubMenuEnum.编辑代理商)]
+        public ActionResult EditAgent(int userId)
         {
-            var list = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, string.Empty).ToList();
+            var userInfo = UserService.Instance.GetUserInfo(new {userId = userId});
 
-            return View(list);
+            if (null == userInfo)
+            {
+                return Content("参数错误");
+            }
+
+            return View(userInfo);
+        }
+
+        [HttpGet, AdminAuthorize(AgentEnums.SubMenuEnum.重置代理商密码)]
+        public ActionResult ReSetAgentPwd(int userId)
+        {
+            var userInfo = UserService.Instance.GetUserInfo(new {userId = userId});
+
+            if (null == userInfo)
+            {
+                return Content("参数错误");
+            }
+
+            return View(userInfo);
         }
 
         #region Ajax
 
-        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.编辑员工)]
-        public JsonResult Edit()
-        {
-            return Json(null);
-        }
-
-        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.编辑员工)]
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.添加员工)]
         public JsonResult AddStaff(UserInfo model)
         {
             model.CreateDate = DateTime.Now;
             model.Status = 0;
             model.UserRole = AgentEnums.UserRole.Staff;
-            model.UserMenus = "210";
+            model.UserMenus =
+                "101,102,103,104,201,202,203,204,205,206,207,208,209,210,301,302,303,304,305,401,402,403,404,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,601,602,603";
 
             var result = UserService.Instance.RegisterUser(model);
             return Json(result);
@@ -91,19 +102,56 @@ namespace QingFeng.WebArea.Controllers
         {
             var userInfo = UserService.Instance.GetUserInfo(new {model.UserId});
 
-            if (userInfo == null || userInfo.UserRole == AgentEnums.UserRole.Administrator)
+            if (userInfo == null || userInfo.UserRole != AgentEnums.UserRole.Staff)
             {
                 return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "参数错误"});
             }
             userInfo.Phone = model.Phone;
             userInfo.Email = model.Email;
             userInfo.NickName = model.NickName;
-
+            if (!string.IsNullOrWhiteSpace(model.PassWord))
+            {
+                userInfo.PassWord = model.PassWord;
+            }
             var result = UserService.Instance.UpdateUserInfo(userInfo);
             return Json(result);
         }
 
-        [HttpGet, MenuAuthorize(AgentEnums.SubMenuEnum.编辑员工, AgentEnums.SubMenuEnum.编辑代理商)]
+
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.添加代理商)]
+        public JsonResult AddAgent(UserInfo model)
+        {
+            model.CreateDate = DateTime.Now;
+            model.Status = 0;
+            model.UserRole = AgentEnums.UserRole.StoreUser;
+            model.UserMenus = string.Empty;
+
+            var result = UserService.Instance.RegisterUser(model);
+            return Json(result);
+        }
+
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.编辑代理商)]
+        public JsonResult EditAgent(UserInfo model)
+        {
+            var userInfo = UserService.Instance.GetUserInfo(new {model.UserId});
+
+            if (userInfo == null || userInfo.UserRole != AgentEnums.UserRole.StoreUser)
+            {
+                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "参数错误"});
+            }
+            userInfo.Phone = model.Phone;
+            userInfo.Email = model.Email;
+            userInfo.NickName = model.NickName;
+            if (!string.IsNullOrWhiteSpace(model.PassWord))
+            {
+                userInfo.PassWord = model.PassWord;
+            }
+            var result = UserService.Instance.UpdateUserInfo(userInfo);
+            return Json(result);
+        }
+
+
+        [HttpGet, MenuAuthorize(AgentEnums.SubMenuEnum.编辑员工, AgentEnums.SubMenuEnum.删除代理商)]
         public JsonResult ProhibitLogin(UserInfo user, int userId)
         {
             if (user.UserId == userId)
@@ -116,7 +164,7 @@ namespace QingFeng.WebArea.Controllers
             return Json(new ApiResult<bool>(result));
         }
 
-        [HttpGet, MenuAuthorize(AgentEnums.SubMenuEnum.编辑员工, AgentEnums.SubMenuEnum.编辑代理商)]
+        [HttpGet, MenuAuthorize(AgentEnums.SubMenuEnum.编辑员工, AgentEnums.SubMenuEnum.删除代理商)]
         public JsonResult AllowLogin(UserInfo user, int userId)
         {
             if (user.UserId == userId)
@@ -124,9 +172,24 @@ namespace QingFeng.WebArea.Controllers
                 return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "不能更新自己的状态"});
             }
 
-            var result = UserService.Instance.Update(new { Status = 0 }, new { userId });
+            var result = UserService.Instance.Update(new {Status = 0}, new {userId});
 
             return Json(new ApiResult<bool>(result));
+        }
+
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.重置代理商密码)]
+        public ActionResult ReSetAgentPwd(int userId, string passWord)
+        {
+            var userInfo = UserService.Instance.GetUserInfo(new {userId = userId});
+
+            if (null == userInfo)
+            {
+                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "参数错误"});
+            }
+
+            var result = UserService.Instance.UpdatePassWord(userInfo, passWord);
+
+            return Json(result);
         }
 
         #endregion

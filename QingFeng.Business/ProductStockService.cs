@@ -82,7 +82,8 @@ namespace QingFeng.Business
 
         public IEnumerable<ProductStock> GetProductStockListByBaseIds(params int[] baseId)
         {
-            return _productStockRepository.GetProductStockListByBaseIds(baseId);
+            var list = _productStockRepository.GetProductStockListByBaseIds(baseId);
+            return list;
         }
 
 

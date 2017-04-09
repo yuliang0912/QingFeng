@@ -158,20 +158,25 @@ namespace QingFeng.WebArea.Controllers
 
             var list = ProductService.Instance.SearchBaseProduct(brandId, 0, 0, string.Empty, 0, 1, int.MaxValue, out totalItem);
 
-            var productStocks = ProductStockService.Instance.GetProductStockListByBaseIds(list.Select(t => t.BaseId).ToArray())
+            var productStocks = ProductStockService.Instance.GetProductStockListByBaseIds(
+                list.Select(t => t.BaseId).ToArray())
                 .GroupBy(t => t.ProductId)
-                .ToDictionary(c => c.Key, c => c.GroupBy(t => t.SkuId).ToDictionary(a => a.Key, a => a.First()));
+                .ToDictionary(c => c.Key, c => c.ToList().OrderBy(t => t.SkuId).ToDictionary(a => a.SkuId, a => a));
 
-            var productSkus = ProductService.Instance.GetProductSkuListByBaseIds(list.Select(t => t.BaseId).ToArray())
-               .GroupBy(c => c.ProductId).ToDictionary(c => c.Key, c => c.ToList());
+            //var productSkus = ProductService.Instance.GetProductSkuListByBaseIds(list.Select(t => t.BaseId).ToArray())
+            //   .GroupBy(c => c.ProductId).ToDictionary(c => c.Key, c => c.ToList());
+
+            var allSkus = SkuItemService.Instance.GetList(AgentEnums.SkuType.Size)
+                .ToDictionary(c => c.SkuId, c => c.SkuName);
 
             foreach (var item in list.SelectMany(x => x.SubProduct))
             {
-                if (!productSkus.ContainsKey(item.ProductId))
+                if (!productStocks.ContainsKey(item.ProductId))
                 {
                     continue;
                 }
-                foreach (var sku in productSkus[item.ProductId])
+                var productStock = productStocks[item.ProductId];
+                foreach (var stock in productStock)
                 {
                     var model = new ProductStockExcelDTO()
                     {
@@ -179,16 +184,10 @@ namespace QingFeng.WebArea.Controllers
                         BaseNo = item.BaseNo,
                         ProductId = item.ProductId,
                         ProductNo = item.ProductNo,
-                        SkuId = sku.SkuId,
-                        SkuName = sku.SkuName,
+                        SkuId = stock.Key,
+                        StockNum = stock.Value.StockNum,
+                        SkuName = allSkus[stock.Key],
                     };
-                    if (productStocks.ContainsKey(item.ProductId))
-                    {
-                        if (productStocks[item.ProductId].ContainsKey(sku.SkuId))
-                        {
-                            model.StockNum = productStocks[item.ProductId][sku.SkuId].StockNum;
-                        }
-                    }
                     excelDataList.Add(model);
                 }
             }

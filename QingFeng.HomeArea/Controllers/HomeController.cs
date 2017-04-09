@@ -33,6 +33,12 @@ namespace QingFeng.WebArea.Controllers
             return Redirect("/home/login");
         }
 
+        [AdminAuthorize]
+        public ActionResult ResetPassWord()
+        {
+            return View();
+        }
+
         [CaptchaValidation("login", "captcha")]
         public ActionResult CheckLogin(bool captchaValid)
         {

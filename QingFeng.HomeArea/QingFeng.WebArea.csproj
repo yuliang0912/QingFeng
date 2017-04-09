@@ -592,6 +592,10 @@
     <Content Include="Views\Menu\SetRole.cshtml" />
     <Content Include="Views\Shop\Add.cshtml" />
     <Content Include="Views\Shop\Edit.cshtml" />
+    <Content Include="Views\Staff\AddAgent.cshtml" />
+    <Content Include="Views\Home\ResetPassWord.cshtml" />
+    <Content Include="Views\Staff\EditAgent.cshtml" />
+    <Content Include="Views\Staff\ReSetAgentPwd.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
