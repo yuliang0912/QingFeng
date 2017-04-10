@@ -6,7 +6,6 @@ using QingFeng.WebArea.Fillter;
 using System;
 using System.Linq;
 using System.Web.Mvc;
-using DocumentFormat.OpenXml.Wordprocessing;
 using QingFeng.Common.ApiCore.Result;
 using QingFeng.Common.Extensions;
 using QingFeng.WebArea.Codes;
@@ -79,6 +78,15 @@ namespace QingFeng.WebArea.Controllers
             if (orderInfo.UserId != user.UserId)
             {
                 return Content("只能支付自己的订单");
+            }
+
+            foreach (var item in orderInfo.OrderDetails)
+            {
+                var stock = ProductStockService.Instance.Get(new {item.ProductId, item.SkuId});
+                if (stock == null || stock.StockNum < 1 || item.Quantity > stock.StockNum)
+                {
+                    return Content("商品" + item.ProductNo + "库存不足,无法购买");
+                }
             }
 
             var model = PayOrderService.Instance.CreatePayOrder(orderInfo);

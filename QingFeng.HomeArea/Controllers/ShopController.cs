@@ -17,7 +17,7 @@ namespace QingFeng.WebArea.Controllers
         {
             var stopList = StoreService.Instance.GetList(null).OrderBy(t => t.CreateDate).ToList();
 
-            ViewBag.list = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, string.Empty).ToList();
+            ViewBag.agentList = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, string.Empty).ToList();
 
             return View(stopList);
         }

@@ -2,6 +2,8 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+
+    var agentList = ViewBag.agentList as List<QingFeng.Models.UserInfo>;
 }
 @model List<QingFeng.Models.StoreInfo>
 
@@ -37,7 +39,14 @@
                     <td>
                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
                             <a href="http://www.tonyzu.com/shop/edit?storeId=@item.StoreId" title="编辑店铺" class="green edit-modal"> <i class="icon-pencil bigger-130"></i> </a>
-                            <a href="http://www.tonyzu.com/shop/delete/off/35" title="" class="red delete-modal" data-goods-id="35" data-name="F99-shiyun" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="关闭" data-original-title="关闭店铺"> <i class="icon-trash bigger-130"></i> </a>
+                            @if (item.Status == 0)
+                            {
+                                <a href="http://www.tonyzu.com/shop/updateStatus?storeId=@item.StoreId&status=1" title="" class="red delete-modal" data-goods-id="35" data-name="@(item.StoreName + item.MasterUserName)" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="关闭" data-original-title="关闭店铺"> <i class="icon-trash bigger-130"></i> </a>
+                            }
+                            else
+                            {
+                                <a href="http://www.tonyzu.com/shop/updateStatus?storeId=@item.StoreId&status=0" title="" class="red delete-modal" data-goods-id="35" data-name="@(item.StoreName + item.MasterUserName)" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="打开" data-original-title="打开店铺"> <i class="icon-trash bigger-130"></i></a>
+                            }
                         </div>
                     </td>
                 </tr>
@@ -53,95 +62,13 @@
             height: 250px;
         }
     </style>
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title" id="edit-model-label">编辑店铺</h4>
-            </div>
-            <form class="form-horizontal" role="form" id="shop-form" method="post" action="http://www.tonyzu.com/shop/edit/35">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="shop_name" class="col-sm-2 control-label">店铺名称</label>
-                        <div class="col-sm-6">
-                            <input type="text" value="F99-shiyun" class="form-control" id="shop_name" name="shop_name" placeholder="请输入店铺名称">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="shop_code" class="col-sm-2 control-label">店铺代号</label>
-                        <div class="col-sm-6">
-                            <input type="text" value="F99" name="shop_code" class="form-control" id="shop_code" placeholder="请输入店铺代号">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="shop_nick" class="col-sm-2 control-label">登录账号</label>
-                        <div class="col-sm-6">
-                            <input type="text" value="F99" name="shop_nick" class="form-control" id="shop_nick" placeholder="请输入登录账号">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="shop_url" class="col-sm-2 control-label">店铺地址</label>
-                        <div class="col-sm-6">
-                            <input type="text" value="http://" name="shop_url" class="form-control" id="shop_url" placeholder="请输入店铺地址">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="shop_type" class="col-sm-2 control-label">店铺类型</label>
-                        <div class="col-sm-3">
-                            <select name="shop_type" id="shop_type" class="form-control">
-                                <option value="0">请选择</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="type" class="col-sm-2 control-label">所属分销商</label>
-                        <div class="col-sm-5">
-                            <input type="text" value="shiyun/F99-张滔滔" class="form-control" name="ipt" id="ipt">
-                            <input type="hidden" value="82" class="form-control" name="distributor_id" id="ipt_id">
-                            <select id="distributor_id" class="form-control">
-                                <option value="0">自营</option>
-                                <option value="82" selected="selected">shiyun/F99-张滔滔</option>
-                                <option value="81">galen/F25</option>
-                                <option value="80">F20/ F20-小燕</option>
-                                <option value="79">F11/F11-M仔</option>
-                                <option value="78">A89/F23-资偲</option>
-                                <option value="77">F09/F09-曾健</option>
-                                <option value="76">F08/F08-茹梦</option>
-                                <option value="75">F07/F07-蛇仔</option>
-                                <option value="74">F06/F06-藤管</option>
-                                <option value="73">L02/L02-自营</option>
-                                <option value="72">L01/L01-自营</option>
-                                <option value="71">F22/F22-李强</option>
-                                <option value="70">取消123/取消123</option>
-                                <option value="69">HKJMK/K01-K02-K03</option>
-                                <option value="68">zhuhai/F18-庄培鑫</option>
-                                <option value="67">xingzai/F08-星仔</option>
-                                <option value="66">dongdong/F21-蔡仪东</option>
-                                <option value="56">F10/F10-林进标</option>
-                                <option value="45">jie/F02-黄进杰</option>
-                                <option value="44">F01/F01-国庆</option>
-                                <option value="42">ajie/F05-邓志杰</option>
-                                <option value="40">axia/F04-啊虾</option>
-                                <option value="33">qiong/F14-少琼</option>
-                                <option value="30">ftest/ftest</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="modal-footer" style="text-align:center;">
-                        <input type="hidden" name="action" value="dosubmit">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                        <button type="submit" class="btn btn-primary">保存</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
 <script type="text/javascript">
     $(function () {
         $.etopConfirm();
         $.showModal({
             formId: 'shop-form',
+            selector: '.edit-modal',
             beforeSubmit: function (formData, jqForm, options) {
                 var l = formData.length;
                 for (var i = 0; i < l; i++) {
@@ -151,9 +78,10 @@
                     }
                 }
                 return true;
-            },
+            }
         });
-        $('.pagination a').click(function () {
+
+        $('.add-modal').click(function () {
             var url = $(this).attr('href');
             $.getPageContent({ url: url });
             return false;

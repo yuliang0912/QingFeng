@@ -40,19 +40,19 @@
       <publishTime>06/13/2016 23:06:14</publishTime>
     </File>
     <File Include="bin/QingFeng.Business.dll">
-      <publishTime>04/01/2017 14:54:28</publishTime>
+      <publishTime>04/10/2017 11:19:39</publishTime>
     </File>
     <File Include="bin/QingFeng.Common.dll">
-      <publishTime>04/01/2017 14:54:26</publishTime>
+      <publishTime>04/10/2017 11:19:38</publishTime>
     </File>
     <File Include="bin/QingFeng.DataAccessLayer.dll">
-      <publishTime>04/01/2017 14:54:27</publishTime>
+      <publishTime>04/10/2017 11:19:38</publishTime>
     </File>
     <File Include="bin/QingFeng.Models.dll">
-      <publishTime>04/01/2017 14:54:27</publishTime>
+      <publishTime>04/10/2017 11:19:38</publishTime>
     </File>
     <File Include="bin/QingFeng.WebArea.dll">
-      <publishTime>04/01/2017 15:03:43</publishTime>
+      <publishTime>04/10/2017 11:19:42</publishTime>
     </File>
     <File Include="bin/Remotion.Data.Linq.dll">
       <publishTime>02/19/2017 13:03:52</publishTime>
@@ -196,7 +196,7 @@
       <publishTime>10/25/2016 18:10:31</publishTime>
     </File>
     <File Include="Config/ConnectionStrings.config">
-      <publishTime>04/01/2017 09:06:51</publishTime>
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Content/404.html">
       <publishTime>11/16/2016 09:22:42</publishTime>
@@ -1612,7 +1612,7 @@
       <publishTime>04/01/2017 15:02:57</publishTime>
     </File>
     <File Include="Views/Goods/Set.cshtml">
-      <publishTime>04/01/2017 15:03:39</publishTime>
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Views/Goods/View.cshtml">
       <publishTime>04/01/2017 15:02:57</publishTime>
@@ -1625,6 +1625,9 @@
     </File>
     <File Include="Views/Home/Register.cshtml">
       <publishTime>11/25/2016 11:36:57</publishTime>
+    </File>
+    <File Include="Views/Home/ResetPassWord.cshtml">
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Views/Home/WelCome.cshtml">
       <publishTime>04/01/2017 14:48:33</publishTime>
@@ -1639,10 +1642,13 @@
       <publishTime>04/01/2017 15:03:39</publishTime>
     </File>
     <File Include="Views/Order/Address.cshtml">
-      <publishTime>03/13/2017 16:08:54</publishTime>
+      <publishTime>04/01/2017 15:07:19</publishTime>
+    </File>
+    <File Include="Views/Order/AgentOrderList.cshtml">
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Views/Order/Detail.cshtml">
-      <publishTime>04/01/2017 15:02:57</publishTime>
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Views/Order/Export.cshtml">
       <publishTime>04/01/2017 15:02:57</publishTime>
@@ -1656,14 +1662,20 @@
     <File Include="Views/Order/SendGood.cshtml">
       <publishTime>04/01/2017 15:02:57</publishTime>
     </File>
+    <File Include="Views/Pay/Detail.cshtml">
+      <publishTime>04/10/2017 11:11:37</publishTime>
+    </File>
     <File Include="Views/Pay/Export.cshtml">
       <publishTime>04/01/2017 15:03:39</publishTime>
     </File>
     <File Include="Views/Pay/Index.cshtml">
-      <publishTime>04/01/2017 15:03:39</publishTime>
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Views/Pay/PayRedirect.cshtml">
       <publishTime>03/28/2017 15:56:58</publishTime>
+    </File>
+    <File Include="Views/Price/Agent.cshtml">
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Views/Price/DistributorImport.cshtml">
       <publishTime>04/01/2017 15:02:57</publishTime>
@@ -1693,16 +1705,16 @@
       <publishTime>03/14/2017 15:02:33</publishTime>
     </File>
     <File Include="Views/Shared/_LayoutAgent.cshtml">
-      <publishTime>02/28/2017 17:12:10</publishTime>
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Views/Shared/_LayoutAgentV2.cshtml">
-      <publishTime>04/01/2017 15:02:57</publishTime>
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Views/Shared/_PartialOrderDetail.cshtml">
       <publishTime>04/01/2017 15:02:58</publishTime>
     </File>
     <File Include="Views/Shared/_PartialOrderList.cshtml">
-      <publishTime>04/01/2017 15:03:39</publishTime>
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Views/Shop/Add.cshtml">
       <publishTime>04/01/2017 15:03:39</publishTime>
@@ -1711,25 +1723,34 @@
       <publishTime>04/01/2017 14:49:47</publishTime>
     </File>
     <File Include="Views/Shop/Index.cshtml">
-      <publishTime>04/01/2017 15:03:02</publishTime>
+      <publishTime>04/01/2017 15:07:23</publishTime>
     </File>
     <File Include="Views/Staff/Add.cshtml">
       <publishTime>04/01/2017 15:02:58</publishTime>
     </File>
+    <File Include="Views/Staff/AddAgent.cshtml">
+      <publishTime>04/10/2017 11:11:37</publishTime>
+    </File>
     <File Include="Views/Staff/Agent.cshtml">
-      <publishTime>04/01/2017 15:02:58</publishTime>
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Views/Staff/Edit.cshtml">
-      <publishTime>04/01/2017 15:03:39</publishTime>
+      <publishTime>04/10/2017 11:11:37</publishTime>
+    </File>
+    <File Include="Views/Staff/EditAgent.cshtml">
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Views/Staff/Index.cshtml">
-      <publishTime>04/01/2017 15:03:39</publishTime>
+      <publishTime>04/10/2017 11:11:37</publishTime>
+    </File>
+    <File Include="Views/Staff/ReSetAgentPwd.cshtml">
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Views/Stock/Import.cshtml">
       <publishTime>04/01/2017 15:02:58</publishTime>
     </File>
     <File Include="Views/Stock/Search.cshtml">
-      <publishTime>04/01/2017 15:02:58</publishTime>
+      <publishTime>04/10/2017 11:11:37</publishTime>
     </File>
     <File Include="Views/web.config">
       <publishTime>10/25/2016 18:10:32</publishTime>
