@@ -2,7 +2,75 @@
 @{
     ViewBag.Title = "Edit";
     Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+
+    var agentList = ViewBag.agentList as List<QingFeng.Models.UserInfo>;
 }
 
-<h2>Edit</h2>
+@using QingFeng.Common
+@model QingFeng.Models.StoreInfo
 
+<style type="text/css">
+    #distributor_id {
+        display: none;
+        height: 250px;
+    }
+</style>
+<div class="modal-dialog modal-lg">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="edit-model-label">编辑店铺</h4>
+        </div>
+        <form class="form-horizontal" role="form" id="shop-form" method="post" action="http://www.tonyzu.com/shop/editShop">
+            <div class="modal-body">
+                <input type="hidden" name="storeId" value="@Model.StoreId"/>
+                <div class="form-group">
+                    <label for="shop_name" class="col-sm-2 control-label">店铺名称</label>
+                    <div class="col-sm-6">
+                        <input type="text" value="@Model.StoreName" required class="form-control" id="shop_name" name="storeName" placeholder="请输入店铺名称">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="shop_code" class="col-sm-2 control-label">店铺代号</label>
+                    <div class="col-sm-6">
+                        <input type="text" value="@Model.StoreCode" required name="storeCode" class="form-control" id="shop_code" placeholder="请输入店铺代号">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="shop_url" class="col-sm-2 control-label">店铺地址</label>
+                    <div class="col-sm-6">
+                        <input type="text" value="@Model.HomeUrl" name="homeUrl" class="form-control" id="shop_url" placeholder="请输入店铺地址">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="shop_type" class="col-sm-2 control-label">店铺类型</label>
+                    <div class="col-sm-3">
+                        <select name="storeType" id="shop_type" class="form-control">
+                            <option value="0">请选择</option>
+                            @foreach (var item in Enum.GetValues(typeof (AgentEnums.ShopTypeEnum)))
+                            {
+                                <option value="@item.GetHashCode()" @(Model.StoreType.GetHashCode() == item.GetHashCode() ? "selected" : "" )>@item.ToString()</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="shop_type" class="col-sm-2 control-label">所属分销商</label>
+                    <div class="col-sm-3">
+                        <select name="masterUserId" id="masterUserId" class="form-control">
+                            <option value="0">自营</option>
+                            @foreach (var item in agentList)
+                            {
+                                <option value="@item.UserId" @(item.UserId == Model.MasterUserId ? "selected" : "" )>@item.UserName/@item.NickName</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer" style="text-align: center;">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

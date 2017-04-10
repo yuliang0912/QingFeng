@@ -24,13 +24,13 @@
                 <div class="form-group">
                     <label for="shop_name" class="col-sm-2 control-label">店铺名称</label>
                     <div class="col-sm-6">
-                        <input type="text" value="F99-shiyun" required class="form-control" id="shop_name" name="storeName" placeholder="请输入店铺名称">
+                        <input type="text" value="" required class="form-control" id="shop_name" name="storeName" placeholder="请输入店铺名称">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="shop_code" class="col-sm-2 control-label">店铺代号</label>
                     <div class="col-sm-6">
-                        <input type="text" value="F99" required name="storeCode" class="form-control" id="shop_code" placeholder="请输入店铺代号">
+                        <input type="text" value="" required name="storeCode" class="form-control" id="shop_code" placeholder="请输入店铺代号">
                     </div>
                 </div>
                 <div class="form-group">
@@ -44,7 +44,7 @@
                     <div class="col-sm-3">
                         <select name="storeType" id="shop_type" class="form-control">
                             <option value="0">请选择</option>
-                            @foreach (var item in Enum.GetValues(typeof(AgentEnums.ShopTypeEnum)))
+                            @foreach (var item in Enum.GetValues(typeof (AgentEnums.ShopTypeEnum)))
                             {
                                 <option value="@item.GetHashCode()">@item.ToString()</option>
                             }
@@ -52,9 +52,9 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="distributor_id" class="col-sm-2 control-label">所属分销商</label>
-                    <div class="col-sm-5">
-                        <select id="distributor_id" name="masterUserId" class="form-control">
+                    <label for="shop_type" class="col-sm-2 control-label">所属分销商</label>
+                    <div class="col-sm-3">
+                        <select name="masterUserId" id="masterUserId" class="form-control">
                             <option value="0">自营</option>
                             @foreach (var item in Model)
                             {

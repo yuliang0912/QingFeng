@@ -17,13 +17,12 @@ namespace QingFeng.WebArea.Controllers
         {
             var stopList = StoreService.Instance.GetList(null).OrderBy(t => t.CreateDate).ToList();
 
-            ViewBag.agentList = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, string.Empty).ToList();
 
             return View(stopList);
         }
 
 
-        [HttpPost, MenuAuthorize(AgentEnums.SubMenuEnum.添加店铺)]
+        [HttpGet, MenuAuthorize(AgentEnums.SubMenuEnum.添加店铺)]
         public ActionResult Add()
         {
             var list = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, string.Empty).ToList();
@@ -32,11 +31,18 @@ namespace QingFeng.WebArea.Controllers
         }
 
         [MenuAuthorize(AgentEnums.SubMenuEnum.编辑店铺)]
-        public ActionResult Edit()
+        public ActionResult Edit(int storeId)
         {
-            var list = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, string.Empty).ToList();
+            var storeInfo = StoreService.Instance.GetStoreInfo(new {storeId});
 
-            return View(list);
+            if (storeInfo == null)
+            {
+                return Content("参数错误");
+            }
+
+            ViewBag.agentList = UserService.Instance.Search(AgentEnums.UserRole.StoreUser, string.Empty).ToList();
+
+            return View(storeInfo);
         }
 
 
@@ -59,7 +65,34 @@ namespace QingFeng.WebArea.Controllers
             {
                 return Json(new ApiResult<int>(2) {ErrorCode = 1, Message = "参数错误"});
             }
-            return Json(null);
+
+            model.StoreName = model.StoreName ?? string.Empty;
+            model.StoreCode = model.StoreCode ?? string.Empty;
+            model.HomeUrl = model.HomeUrl ?? string.Empty;
+            model.IsSelfSupport = model.MasterUserId == 0 ? 1 : 0;
+
+            if (model.IsSelfSupport == 1)
+            {
+                model.MasterUserName = "自营";
+            }
+            else
+            {
+                var userInfo = UserService.Instance.GetUserInfo(new {userId = model.MasterUserId});
+                model.MasterUserName = userInfo.UserName ?? string.Empty;
+            }
+
+            var result = StoreService.Instance.UpdateStoreInfo(new
+            {
+                model.StoreName,
+                model.StoreCode,
+                model.HomeUrl,
+                model.StoreType,
+                model.IsSelfSupport,
+                model.MasterUserId,
+                model.MasterUserName,
+            }, new {model.StoreId});
+
+            return Json(result);
         }
 
 
@@ -71,6 +104,18 @@ namespace QingFeng.WebArea.Controllers
             model.IsSelfSupport = model.MasterUserId == 0 ? 1 : 0;
             model.StoreCode = model.StoreCode ?? string.Empty;
             model.StoreName = model.StoreName ?? string.Empty;
+
+            if (model.IsSelfSupport == 1)
+            {
+                model.MasterUserName = "自营";
+            }
+            else
+            {
+                var userInfo = UserService.Instance.GetUserInfo(new {userId = model.MasterUserId});
+                model.MasterUserName = userInfo.UserName ?? string.Empty; ;
+            }
+
+            model.HomeUrl = model.HomeUrl ?? string.Empty;
 
             var result = StoreService.Instance.CreateStore(model);
 

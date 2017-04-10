@@ -3,7 +3,6 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
 
-    var agentList = ViewBag.agentList as List<QingFeng.Models.UserInfo>;
 }
 @model List<QingFeng.Models.StoreInfo>
 
@@ -41,11 +40,11 @@
                             <a href="http://www.tonyzu.com/shop/edit?storeId=@item.StoreId" title="编辑店铺" class="green edit-modal"> <i class="icon-pencil bigger-130"></i> </a>
                             @if (item.Status == 0)
                             {
-                                <a href="http://www.tonyzu.com/shop/updateStatus?storeId=@item.StoreId&status=1" title="" class="red delete-modal" data-goods-id="35" data-name="@(item.StoreName + item.MasterUserName)" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="关闭" data-original-title="关闭店铺"> <i class="icon-trash bigger-130"></i> </a>
+                                <a href="http://www.tonyzu.com/shop/updateStatus?storeId=@item.StoreId&status=1" title="" class="red delete-modal" data-goods-id="35" data-name="@(item.StoreName +"-"+ item.MasterUserName)" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="关闭" data-original-title="关闭店铺"> <i class="icon-trash bigger-130"></i> </a>
                             }
                             else
                             {
-                                <a href="http://www.tonyzu.com/shop/updateStatus?storeId=@item.StoreId&status=0" title="" class="red delete-modal" data-goods-id="35" data-name="@(item.StoreName + item.MasterUserName)" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="打开" data-original-title="打开店铺"> <i class="icon-trash bigger-130"></i></a>
+                                <a href="http://www.tonyzu.com/shop/updateStatus?storeId=@item.StoreId&status=0" title="" class="green delete-modal" data-goods-id="18" data-name="@(item.StoreName +"-"+ item.MasterUserName)" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="开启店铺" data-original-title="开启店铺"> <i class="glyphicon glyphicon-ok bigger-130"></i> </a>
                             }
                         </div>
                     </td>
@@ -55,36 +54,31 @@
     </table>
 </div>
 
-<div class="modal fade" id="etop-modal" tabindex="-1" role="dialog" aria-labelledby="etop-modal-label" style="display: none;">
-    <style type="text/css">
-        #distributor_id {
-            display: none;
-            height: 250px;
-        }
-    </style>
-</div>
 <script type="text/javascript">
     $(function () {
         $.etopConfirm();
         $.showModal({
             formId: 'shop-form',
-            selector: '.edit-modal',
+            selector: '.edit-modal,.add-modal',
             beforeSubmit: function (formData, jqForm, options) {
-                var l = formData.length;
-                for (var i = 0; i < l; i++) {
-                    if (!formData[i].value) {
-                        alert('店铺所有资料都不能为空的哦!亲');
-                        return false;
-                    }
+                var shopType = jqForm.find("#shop_type").val();
+                if (shopType === "0") {
+                    layer.msg("请选择店铺类型");
+                    return false;
                 }
                 return true;
+            },
+            success: function (response, status) {
+                if (response.data === 1) {
+                    layer.msg("操作成功");
+                    $('#etop-modal').modal('hide');
+                    $.pageReload();
+                }
+                else {
+                    layer.msg("操作失败");
+                }
+                return false;
             }
-        });
-
-        $('.add-modal').click(function () {
-            var url = $(this).attr('href');
-            $.getPageContent({ url: url });
-            return false;
         });
     });
 </script>
