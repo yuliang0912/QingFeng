@@ -1,9 +1,10 @@
-﻿
+﻿@using QingFeng.Common
+
 @{
     ViewBag.Title = "Add";
-    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
-
     var user = ViewBag.User as QingFeng.Models.UserInfo;
+
+    Layout = user.UserRole == AgentEnums.UserRole.StoreUser ? "~/Views/Shared/_LayoutAgent.cshtml" : "~/Views/Shared/_LayoutAgentV2.cshtml";
 }
 
 <style type="text/css">
@@ -35,7 +36,7 @@
 <div class="page-header">
     <h1 class="form-inline">
         添加订单
-        <a href="/order/orderList" class="btn btn-info btn-sm pull-right back-to-list"> <i class="icon-circle-arrow-left"></i> 返回列表</a>
+        <a href="@(user.UserRole == AgentEnums.UserRole.StoreUser ? "/order/agentOrderList" : "/order/index")" class="btn btn-info btn-sm pull-right back-to-list"> <i class="icon-circle-arrow-left"></i> 返回列表</a>
     </h1>
 </div>
 <form class="form-inline" role="form" id="order-form" method="post">
@@ -415,5 +416,13 @@
             GetProductStock(product.productId, randId);
         }
     }
+
+    $(function () {
+        $('.back-to-list').click(function () {
+            var url = $(this).attr('href');
+            $.getPageContent({ url: url });
+            return false;
+        });
+    });
 </script>
 

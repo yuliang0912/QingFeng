@@ -80,8 +80,9 @@
                 <th class="center" rowspan="2">性别</th>
                 <th class="center" rowspan="2">仓库</th>
                 <th class="center" rowspan="2">颜色</th>
-                <th class="center" rowspan="2"> 小计</th>
+                <th class="center" rowspan="2">小计</th>
                 <th class="center" colspan="@allSkus.Count">尺码</th>
+                <th class="center" rowspan="2">操作</th>
             </tr>
             <tr>
                 @foreach (var item in allSkus)
@@ -123,12 +124,18 @@
                             }
                             else
                             {
-                                <th class="center">0</th>
+                                <td class="center">0</td>
                             }
                         }
                         @if (!allSkus.Any())
                         {
-                            <th class="center">-</th>
+                            <td class="center">-</td>
+                        }
+                        @if (index == 0)
+                        {
+                            <td rowspan="@productCount">
+                                <a href="http://www.tonyzu.com/stock/setStock?baseId=@item.BaseId" class="edit-modal">设置库存</a>
+                            </td>
                         }
                     </tr>
                     index++;
@@ -152,7 +159,7 @@
         {
             <tfoot>
                 <tr align="center">
-                    <td colspan="15">
+                    <td colspan="@(allSkus.Count+8)">
                         @(Html.Raw(Model.GetPagerHtml(string.Format("/stock/search?brandId={0}&sexId={1}&warehouseId={2}&page={3}", ViewBag.brandId, ViewBag.sexId, ViewBag.warehouseId, "{0}"))))
                     </td>
                 </tr>
@@ -170,39 +177,18 @@
         $.showModal({
             formId: 'stock-form',
             success: function (response, status) {
-                if (response.error == 0) {
-                    $('#etop-modal').modal('hide');
-                    $('#etop-modal').on('hidden.bs.modal', function (e) {
-                        $.pageReload();
-                    });
-                }
-                else if (response.error == 9) {
-                    var data = response.data;
-                    var msg = '';
-                    for (key in data) {
-                        msg += data[key] + '\r\n';
-                    }
-                    alert(msg);
+                if (response.data === 1) {
+                    layer.msg("操作成功");
                     $('#etop-modal').modal('hide');
                     $('#etop-modal').on('hidden.bs.modal', function (e) {
                         $.pageReload();
                     });
                 }
                 else {
-                    alert(response.msg);
+                    layer.msg(response.message);
                 }
             },
-            beforeSubmit: function (formData, jqForm, options) {
-                /*var l = formData.length;
-                for (var i=0; i < l; i++) {
-                   if (!formData[i].value) {
-                        alert('所有资料都不能为空的哦!亲');
-                        return false;
-                    }
-                }  */
-                return true;
-            },
-            selector: '.edit-modal, .add-modal',
+            selector: '.edit-modal'
         });
 
         $('#do-goods-filter').click(function () {
@@ -230,7 +216,7 @@
             return false;
         });
 
-        $('#goods_ipt').bind('input propertychange', function() {
+        $('#goods_ipt').bind('input propertychange', function () {
             var categoryId = $("#gender_id").val();
             var val = $(this).val().trim();
             if (val === '') {
@@ -239,20 +225,20 @@
                 $('#good_ids').hide();
                 return;
             }
-            $.getJSON('/stock/SearchGoods?keyWords=' + val, function(response) {
+            $.getJSON('/stock/SearchGoods?keyWords=' + val, function (response) {
                 if (response.ret !== 0) {
                     layer.msg('请求失败');
                     return;
                 }
                 var list = response.data;
                 var options = '';
-                $.each(list, function(i, item) {
+                $.each(list, function (i, item) {
                     options += '<option value=' + item.baseId + '>' + item.baseNo + '</option>';
                 });
                 $('#good_ids').html(options);
                 $('#good_ids').show();
                 good_ids.size = 25;
-                $('#good_ids option').click(function() {
+                $('#good_ids option').click(function () {
                     $('.filter_goods').attr('disabled', 'disabled');
                     val = $(this).html();
                     var id = $(this).val();

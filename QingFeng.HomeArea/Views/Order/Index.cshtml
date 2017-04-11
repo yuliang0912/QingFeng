@@ -114,8 +114,8 @@
         {
             <tfoot>
                 <tr align="center">
-                    <td colspan="11">
-                        @(Html.Raw(Model.GetPagerHtml(string.Format("/orer/index?brandId={0}&storeId={1}&orderStatus={2}&beginDateStr={3}&endDateStr={4}&keyWords={5}&page={6}", ViewBag.brandId, ViewBag.storeId, ViewBag.orderStatus, ViewBag.beginDateStr, ViewBag.endDateStr, ViewBag.keyWords, "{0}"))))
+                    <td colspan="13">
+                        @(Html.Raw(Model.GetPagerHtml(string.Format("/order/index?brandId={0}&storeId={1}&orderStatus={2}&beginDateStr={3}&endDateStr={4}&keyWords={5}&page={6}", ViewBag.brandId, ViewBag.storeId, ViewBag.orderStatus, ViewBag.beginDateStr, ViewBag.endDateStr, ViewBag.keyWords, "{0}"))))
                     </td>
                 </tr>
             </tfoot>
@@ -146,13 +146,13 @@
             var end_time = $('#end_time').val();
             var keyword = $('#order_keyword').val();
 
-            var url = location.pathname;
-            url += '?beginDateStr=' + start_time;
+            var url = "/order/index?orderStatus=@(ViewBag.orderStatus)";
+            url += '&beginDateStr=' + start_time;
             url += '&endDateStr=' + end_time;
             url += '&keyWords=' + encodeURI(keyword);
             url += '&storeId=' + $('#storeId').val();
 
-            location.href = url;
+            $.getPageContent({ url: url });
         });
 
         $("[data-toggle='tooltip']").tooltip({ html: true });

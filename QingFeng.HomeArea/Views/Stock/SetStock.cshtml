@@ -14,7 +14,7 @@
             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
             <h4 class="modal-title" id="edit-model-label">设置库存 - @(Model.BaseNo)</h4>
         </div>
-        <form class="form-horizontal" role="form" id="price-set-form" method="post" action="http://www.tonyzu.com/stock/setStock">
+        <form class="form-horizontal" role="form" id="stock-form" method="post" action="http://www.tonyzu.com/stock/setStock">
             <div class="panel panel-info">
                 <div class="panel-heading">基本资料</div>
                 <div class="panel-body">
@@ -52,7 +52,7 @@
                             <th class="center">颜色/尺码</th>
                             @foreach (var item in allSkus)
                             {
-                                <th>@item.Value</th>
+                                <th class="center">@(item.Value)</th>
                             }
                         </tr>
                     </thead>
@@ -64,14 +64,7 @@
                                 @foreach (var sku in allSkus)
                                 {
                                     var stock = item.ProductStocks.GroupBy(t => t.SkuId).ToDictionary(c => c.Key, c => c.Sum(a => a.StockNum));
-                                    if (stock.ContainsKey(sku.Key))
-                                    {
-                                        <td><input type="text" class="cost_input" style="width: 90px;" pattern="^[0-9]{1,8}$" maxlength="8" title="请填写整数" name="stock_@(item.ProductId)_@(sku.Key)" value="@stock[sku.Key])" placeholder="请填写库存"/></td>
-                                    }
-                                    else
-                                    {
-                                        <td><span>-</span></td>   
-                                    }
+                                    <td class="center"><input type="text" class="cost_input" style="width: 90px;" pattern="^[0-9]{1,8}$" maxlength="8" title="请填写整数" name="stock_@(item.ProductId)_@(sku.Key)" value="@(stock.ContainsKey(sku.Key)?stock[sku.Key]:0)" placeholder="请填写库存" /></td>
                                 }
                             </tr>
                         }
