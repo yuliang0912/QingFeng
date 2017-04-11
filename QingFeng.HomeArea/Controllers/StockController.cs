@@ -47,9 +47,12 @@ namespace QingFeng.WebArea.Controllers
                 .GroupBy(t => t.ProductId)
                 .ToDictionary(c => c.Key, c => c.ToList());
 
-            var productSkus = ProductService.Instance.GetProductSkuListByBaseIds(list.Select(t => t.BaseId).ToArray())
-                .GroupBy(c => c.ProductId)
-                .ToDictionary(c => c.Key, c => c.ToList());
+
+
+
+            var productSkus = ProductService.Instance.GetProductSkuListByBaseIds(list.Select(t => t.BaseId).ToArray());
+
+            var productSkusDict = productSkus.GroupBy(c => c.ProductId).ToDictionary(c => c.Key, c => c.ToList());
 
             foreach (var item in list.SelectMany(x => x.SubProduct))
             {
@@ -58,15 +61,16 @@ namespace QingFeng.WebArea.Controllers
                     item.ProductStocks = productStocks[item.ProductId];
                     item.StockNum = productStocks[item.ProductId].Sum(t => t.StockNum);
                 }
-                if (productSkus.ContainsKey(item.ProductId) && item.ProductStocks.Any())
+                if (productSkusDict.ContainsKey(item.ProductId) && item.ProductStocks.Any())
                 {
-                    var currSkus = productSkus[item.ProductId].Select(t => t.SkuId).ToList();
+                    var currSkus = productSkusDict[item.ProductId].Select(t => t.SkuId).ToList();
                     item.ProductStocks = item.ProductStocks.Where(t => currSkus.Contains(t.SkuId)).ToList();
                 }
             }
 
-            ViewBag.allSkus = ProductService.Instance.GetProductSkuListByBaseIds(list.Select(t => t.BaseId).ToArray())
-                .OrderBy(t => t.SkuId).GroupBy(c => c.SkuId).ToDictionary(c => c.Key, c => c.First().SkuName);
+            ViewBag.allSkus = productSkus.OrderBy(t => t.SkuId)
+                .GroupBy(c => c.SkuId)
+                .ToDictionary(c => c.Key, c => c.First().SkuName);
 
             ViewBag.brandId = brandId;
             ViewBag.sexId = sexId;
@@ -102,22 +106,27 @@ namespace QingFeng.WebArea.Controllers
                 .GroupBy(t => t.ProductId)
                 .ToDictionary(c => c.Key, c => c.ToList());
 
-            var productSkus = ProductService.Instance.GetProductSkuListByBaseId(baseId)
-                .GroupBy(c => c.ProductId)
-                .ToDictionary(c => c.Key, c => c.ToList());
+            var productSkus = ProductService.Instance.GetProductSkuListByBaseIds(baseId);
+
+            var productSkusDict = productSkus.GroupBy(c => c.ProductId).ToDictionary(c => c.Key, c => c.ToList());
 
             foreach (var item in baseInfo.SubProduct)
             {
-                if (productSkus.ContainsKey(item.ProductId))
-                {
-                    item.ProductSkus = productSkus[item.ProductId];
-                }
                 if (productStocks.ContainsKey(item.ProductId))
                 {
                     item.ProductStocks = productStocks[item.ProductId];
                     item.StockNum = productStocks[item.ProductId].Sum(t => t.StockNum);
                 }
+                if (productSkusDict.ContainsKey(item.ProductId) && item.ProductStocks.Any())
+                {
+                    var currSkus = productSkusDict[item.ProductId].Select(t => t.SkuId).ToList();
+                    item.ProductStocks = item.ProductStocks.Where(t => currSkus.Contains(t.SkuId)).ToList();
+                }
             }
+
+            ViewBag.allSkus = productSkus.OrderBy(t => t.SkuId)
+                .GroupBy(c => c.SkuId)
+                .ToDictionary(c => c.Key, c => c.First().SkuName);
 
             return View(baseInfo);
         }

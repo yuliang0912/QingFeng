@@ -600,6 +600,7 @@
     <Content Include="Views\Price\Agent.cshtml" />
     <Content Include="Views\Order\AgentOrderList.cshtml" />
     <Content Include="Views\Pay\Detail.cshtml" />
+    <Content Include="Views\Stock\SetStock.cshtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
