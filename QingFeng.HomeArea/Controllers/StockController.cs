@@ -43,8 +43,12 @@ namespace QingFeng.WebArea.Controllers
 
 
             var productStocks = ProductStockService.Instance.GetProductStockListByBaseIds(
-                list.Select(t => t.BaseId).ToArray())
+                    list.Select(t => t.BaseId).ToArray())
                 .GroupBy(t => t.ProductId)
+                .ToDictionary(c => c.Key, c => c.ToList());
+
+            var productSkus = ProductService.Instance.GetProductSkuListByBaseIds(list.Select(t => t.BaseId).ToArray())
+                .GroupBy(c => c.ProductId)
                 .ToDictionary(c => c.Key, c => c.ToList());
 
             foreach (var item in list.SelectMany(x => x.SubProduct))
@@ -53,6 +57,11 @@ namespace QingFeng.WebArea.Controllers
                 {
                     item.ProductStocks = productStocks[item.ProductId];
                     item.StockNum = productStocks[item.ProductId].Sum(t => t.StockNum);
+                }
+                if (productSkus.ContainsKey(item.ProductId) && item.ProductStocks.Any())
+                {
+                    var currSkus = productSkus[item.ProductId].Select(t => t.SkuId).ToList();
+                    item.ProductStocks = item.ProductStocks.Where(t => currSkus.Contains(t.SkuId)).ToList();
                 }
             }
 
