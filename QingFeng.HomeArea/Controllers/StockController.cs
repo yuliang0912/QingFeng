@@ -55,10 +55,8 @@ namespace QingFeng.WebArea.Controllers
                 }
             }
 
-            ViewBag.allSkus = productStocks.SelectMany(t => t.Value).OrderBy(t => t.SkuId)
-                .GroupBy(t => t.SkuId)
-                .ToDictionary(t => t.Key, t => t.First().SkuName);
-
+            ViewBag.allSkus = ProductService.Instance.GetProductSkuListByBaseIds(list.Select(t => t.BaseId).ToArray())
+                .OrderBy(t => t.SkuId).GroupBy(c => c.SkuId).ToDictionary(c => c.Key, c => c.First().SkuName);
 
             ViewBag.brandId = brandId;
             ViewBag.sexId = sexId;
@@ -156,27 +154,25 @@ namespace QingFeng.WebArea.Controllers
             int totalItem;
             var excelDataList = new List<ProductStockExcelDTO>();
 
-            var list = ProductService.Instance.SearchBaseProduct(brandId, 0, 0, string.Empty, 0, 1, int.MaxValue, out totalItem);
+            var list = ProductService.Instance.SearchBaseProduct(brandId, 0, 0, string.Empty, 0, 1, int.MaxValue,
+                out totalItem);
 
             var productStocks = ProductStockService.Instance.GetProductStockListByBaseIds(
-                list.Select(t => t.BaseId).ToArray())
+                    list.Select(t => t.BaseId).ToArray())
                 .GroupBy(t => t.ProductId)
-                .ToDictionary(c => c.Key, c => c.ToList().OrderBy(t => t.SkuId).ToDictionary(a => a.SkuId, a => a));
+                .ToDictionary(c => c.Key, c => c.ToList().ToDictionary(a => a.SkuId, a => a));
 
-            //var productSkus = ProductService.Instance.GetProductSkuListByBaseIds(list.Select(t => t.BaseId).ToArray())
-            //   .GroupBy(c => c.ProductId).ToDictionary(c => c.Key, c => c.ToList());
-
-            var allSkus = SkuItemService.Instance.GetList(AgentEnums.SkuType.Size)
-                .ToDictionary(c => c.SkuId, c => c.SkuName);
+            var productSkus = ProductService.Instance.GetProductSkuListByBaseIds(list.Select(t => t.BaseId).ToArray())
+                .GroupBy(c => c.ProductId).ToDictionary(c => c.Key, c => c.OrderBy(a => a.SkuId).ToList());
 
             foreach (var item in list.SelectMany(x => x.SubProduct))
             {
-                if (!productStocks.ContainsKey(item.ProductId))
+                if (!productSkus.ContainsKey(item.ProductId))
                 {
                     continue;
                 }
-                var productStock = productStocks[item.ProductId];
-                foreach (var stock in productStock)
+                var productHasStock = productStocks.ContainsKey(item.ProductId);
+                foreach (var sku in productSkus[item.ProductId])
                 {
                     var model = new ProductStockExcelDTO()
                     {
@@ -184,10 +180,15 @@ namespace QingFeng.WebArea.Controllers
                         BaseNo = item.BaseNo,
                         ProductId = item.ProductId,
                         ProductNo = item.ProductNo,
-                        SkuId = stock.Key,
-                        StockNum = stock.Value.StockNum,
-                        SkuName = allSkus[stock.Key],
+                        SkuId = sku.SkuId,
+                        SkuName = sku.SkuName,
+                        StockNum = 0,
                     };
+
+                    if (productHasStock && productStocks[item.ProductId].ContainsKey(sku.SkuId))
+                    {
+                        model.StockNum = productStocks[item.ProductId][sku.SkuId].StockNum;
+                    }
                     excelDataList.Add(model);
                 }
             }
@@ -244,3 +245,4 @@ namespace QingFeng.WebArea.Controllers
         #endregion
     }
 }
+

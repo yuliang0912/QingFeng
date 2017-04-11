@@ -34,7 +34,8 @@ namespace QingFeng.DataAccessLayer.Repository
             }
         }
 
-        public IEnumerable<ProductBase> SearchProductBase(int brandId, int sexId, int categoryId, string keyWords, int status, int page, int pageSize,
+        public IEnumerable<ProductBase> SearchProductBase(int brandId, int sexId, int categoryId, string keyWords,
+            int status, int page, int pageSize,
             out int totalItem)
         {
             var additional = string.IsNullOrWhiteSpace(keyWords)
@@ -65,7 +66,7 @@ namespace QingFeng.DataAccessLayer.Repository
 
             if (!string.IsNullOrWhiteSpace(keyWords))
             {
-                condition = new { keyWords = keyWords.FormatSqlLikeString() };
+                condition = new {keyWords = keyWords.FormatSqlLikeString()};
             }
 
             using (var connection = GetReadConnection)
@@ -119,7 +120,8 @@ namespace QingFeng.DataAccessLayer.Repository
                 var trans = connection.BeginTransaction();
                 try
                 {
-                    connection.Update(productBase, new { productBase.BaseId }, TableName, transaction: trans);
+                    connection.Update(productBase, new {productBase.BaseId}, TableName, transaction: trans);
+                    connection.Delete(new {productBase.BaseId}, "productskus", transaction: trans);
                     foreach (var item in productBase.SubProduct)
                     {
                         if (item.ProductId > 0)
@@ -130,7 +132,6 @@ namespace QingFeng.DataAccessLayer.Repository
                         {
                             item.ProductId = connection.Insert(item, "product", trans, isReturnIncrementId: true);
                         }
-                        connection.Delete(new {productBase.BaseId}, "productskus", transaction: trans);
                         foreach (var sku in item.ProductSkus)
                         {
                             sku.ProductId = item.ProductId;
