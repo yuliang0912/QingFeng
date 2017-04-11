@@ -94,5 +94,34 @@ namespace QingFeng.DataAccessLayer.Repository
             }
             return true;
         }
+
+
+        public bool BatchReplace(int baseId, List<ProductStock> list)
+        {
+            if (list == null || !list.Any())
+            {
+                return false;
+            }
+            using (var connection = GetWriteConnection)
+            {
+                connection.Open();
+                var trans = connection.BeginTransaction();
+                try
+                {
+                    connection.Delete(new {baseId}, TableName, transaction: trans);
+                    foreach (var item in list)
+                    {
+                        connection.Insert(item, TableName, trans);
+                    }
+                    trans.Commit();
+                }
+                catch (Exception)
+                {
+                    trans.Rollback();
+                    throw;
+                }
+            }
+            return true;
+        }
     }
 }

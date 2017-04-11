@@ -13,6 +13,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using DocumentFormat.OpenXml.Math;
+using QingFeng.Common.ApiCore;
 
 namespace QingFeng.WebArea.Controllers
 {
@@ -92,7 +93,7 @@ namespace QingFeng.WebArea.Controllers
         }
 
 
-        [AdminAuthorize(AgentEnums.SubMenuEnum.导入库存)]
+        [HttpGet, AdminAuthorize(AgentEnums.SubMenuEnum.导入库存)]
         public ActionResult SetStock(int baseId)
         {
             var baseInfo = ProductService.Instance.GetProductBase(baseId);
@@ -196,7 +197,7 @@ namespace QingFeng.WebArea.Controllers
             }
             finally
             {
-                System.IO.File.Delete(savePath);//每次上传完毕删除文件
+                System.IO.File.Delete(savePath); //每次上传完毕删除文件
             }
         }
 
@@ -269,12 +270,13 @@ namespace QingFeng.WebArea.Controllers
 
 
         #region Ajax
+
         [AdminAuthorize]
         public JsonResult GetProductStock(int productId)
         {
-            var list = ProductStockService.Instance.GetList(new { productId })
-                    .OrderBy(t => t.SkuId)
-                    .Where(t => t.StockNum > 0);
+            var list = ProductStockService.Instance.GetList(new {productId})
+                .OrderBy(t => t.SkuId)
+                .Where(t => t.StockNum > 0);
 
             return Json(list);
         }
@@ -295,6 +297,48 @@ namespace QingFeng.WebArea.Controllers
             });
             return Json(list, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.导入库存)]
+        public JsonResult SetStock()
+        {
+            var baseId = Convert.ToInt32(Request.Form["baseId"] ?? string.Empty);
+            var baseInfo = ProductService.Instance.GetProductBase(baseId);
+
+            if (baseInfo == null)
+            {
+                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "参数错误"});
+            }
+
+            var productSkusDict =
+                ProductService.Instance.GetProductSkuListByBaseIds(baseId)
+                    .GroupBy(c => c.ProductId)
+                    .ToDictionary(c => c.Key, c => c.ToList());
+
+            var list = new List<ProductStock>();
+            foreach (var item in baseInfo.SubProduct)
+            {
+                if (!productSkusDict.ContainsKey(item.ProductId))
+                {
+                    continue;
+                }
+                foreach (var sku in productSkusDict[item.ProductId])
+                {
+                    var stockNum = Convert.ToInt32(Request.Form[$"stock_{item.ProductId}_{sku.SkuId}"] ?? string.Empty);
+                    list.Add(new ProductStock()
+                    {
+                        BaseId = item.BaseId,
+                        ProductId = item.ProductId,
+                        SkuId = sku.SkuId,
+                        SkuName = sku.SkuName,
+                        StockNum = stockNum < 0 ? 0 : stockNum,
+                        UpdateDate = DateTime.Now
+                    });
+                }
+            }
+            var result = ProductStockService.Instance.ResetProductStock(baseId, list);
+            return Json(result);
+        }
+
         #endregion
     }
 }

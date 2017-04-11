@@ -12,7 +12,9 @@ namespace QingFeng.Business
     public class ProductStockService : Singleton<ProductStockService>
     {
 
-        private ProductStockService() { }
+        private ProductStockService()
+        {
+        }
 
         private readonly ProductRepository _productRepository = new ProductRepository();
         private readonly SkuItemRepository _skuItemRepository = new SkuItemRepository();
@@ -28,12 +30,12 @@ namespace QingFeng.Business
                 return 0;
             }
 
-            var product = _productRepository.Get(new { productId });
+            var product = _productRepository.Get(new {productId});
             if (product == null)
             {
                 return 0;
             }
-            var productStockList = _productStockRepository.GetList(new { productId }).ToList();
+            var productStockList = _productStockRepository.GetList(new {productId}).ToList();
 
 
             var addCount = 0;
@@ -99,7 +101,9 @@ namespace QingFeng.Business
                 return 0;
             }
 
-            var productList = _productRepository.GetProductListByIds(list.Select(t => t.ProductId).ToArray()).ToDictionary(c => c.ProductId, c => c);
+            var productList =
+                _productRepository.GetProductListByIds(list.Select(t => t.ProductId).ToArray())
+                    .ToDictionary(c => c.ProductId, c => c);
 
             if (!productList.Any())
             {
@@ -117,7 +121,8 @@ namespace QingFeng.Business
                     continue;
                 }
                 var product = productList[item.ProductId];
-                if (product.BaseId != item.BaseId || product.BaseNo != item.BaseNo.Trim() || product.ProductNo != item.ProductNo.Trim())
+                if (product.BaseId != item.BaseId || product.BaseNo != item.BaseNo.Trim() ||
+                    product.ProductNo != item.ProductNo.Trim())
                 {
                     continue;
                 }
@@ -135,12 +140,17 @@ namespace QingFeng.Business
                     ProductId = item.ProductId,
                     SkuId = item.SkuId,
                     SkuName = item.SkuName,
-                    StockNum = item.StockNum,
+                    StockNum = item.StockNum < 0 ? 0 : item.StockNum,
                     UpdateDate = DateTime.Now
                 });
             }
             var isSuccess = _productStockRepository.BatchInsert(addList);
             return isSuccess ? addList.Count : 0;
+        }
+
+        public bool ResetProductStock(int baseId, List<ProductStock> list)
+        {
+            return _productStockRepository.BatchReplace(baseId, list);
         }
     }
 }
