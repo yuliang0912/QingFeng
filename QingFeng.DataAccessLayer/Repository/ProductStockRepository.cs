@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Dapper;
 using QingFeng.Common.Dapper;
 
 namespace QingFeng.DataAccessLayer.Repository
@@ -45,6 +46,25 @@ namespace QingFeng.DataAccessLayer.Repository
                                 TableName));
             }
             return count > 0;
+        }
+
+        /// <summary>
+        /// 原库存基础上做新增或者减少
+        /// </summary>
+        /// <param name="orderSkuNumbers"></param>
+        /// <returns></returns>
+        public bool UpdateProductStock(List<Tuple<int, int, int>> orderSkuNumbers)
+        {
+            using (var connection = GetReadConnection)
+            {
+                foreach (var item in orderSkuNumbers)
+                {
+                    var sql =
+                        "Update productstock SET stockNum = stockNum + @addValue WHERE productId = @productId AND skuId = @skuId";
+                    connection.Execute(sql, new {productId = item.Item1, skuId = item.Item2, addValue = item.Item3});
+                }
+            }
+            return true;
         }
 
         public bool BatchInsert(List<ProductStock> list)

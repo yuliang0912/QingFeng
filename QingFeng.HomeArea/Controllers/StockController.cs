@@ -12,6 +12,7 @@ using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using DocumentFormat.OpenXml.Math;
 
 namespace QingFeng.WebArea.Controllers
 {
@@ -77,6 +78,40 @@ namespace QingFeng.WebArea.Controllers
             return View();
         }
 
+
+        [AdminAuthorize(AgentEnums.SubMenuEnum.导入库存)]
+        public ActionResult SetStock(int baseId)
+        {
+            var baseInfo = ProductService.Instance.GetProductBase(baseId);
+
+            if (baseInfo == null)
+            {
+                return Content("参数错误");
+            }
+
+            var productStocks = ProductStockService.Instance.GetProductStockListByBaseIds(baseId)
+                .GroupBy(t => t.ProductId)
+                .ToDictionary(c => c.Key, c => c.ToList());
+
+            var productSkus = ProductService.Instance.GetProductSkuListByBaseId(baseId)
+                .GroupBy(c => c.ProductId)
+                .ToDictionary(c => c.Key, c => c.ToList());
+
+            foreach (var item in baseInfo.SubProduct)
+            {
+                if (productSkus.ContainsKey(item.ProductId))
+                {
+                    item.ProductSkus = productSkus[item.ProductId];
+                }
+                if (productStocks.ContainsKey(item.ProductId))
+                {
+                    item.ProductStocks = productStocks[item.ProductId];
+                    item.StockNum = productStocks[item.ProductId].Sum(t => t.StockNum);
+                }
+            }
+
+            return View(baseInfo);
+        }
 
         //导入EXCEL数据(IIS-32位运行)
         [HttpPost]

@@ -6,6 +6,7 @@ using QingFeng.Common.ApiCore.Result;
 using QingFeng.Models;
 using QingFeng.WebArea.Fillter;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 
@@ -98,11 +99,11 @@ namespace QingFeng.WebArea.Controllers
                 pageSize, out totalItem);
 
             ViewBag.ProductBase = ProductService.Instance.GetProductBaseList(
-                list.SelectMany(t => t.OrderDetails).Select(t => t.BaseId).ToArray())
+                    list.SelectMany(t => t.OrderDetails).Select(t => t.BaseId).ToArray())
                 .ToDictionary(c => c.BaseId, c => c);
 
             ViewBag.PorductList = ProductService.Instance.GetProduct(
-                list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
+                    list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
                 .ToDictionary(c => c.ProductId, c => c);
 
             ViewBag.brandId = brandId;
@@ -457,9 +458,11 @@ namespace QingFeng.WebArea.Controllers
                     return Json(new ApiResult<int>(4) {ErrorCode = 1, Message = "只有待支付状态的订单才能取消"});
                 }
             }
-            if (order.OrderStatus == AgentEnums.MasterOrderStatus.已完成)
+
+            if (order.OrderStatus != AgentEnums.MasterOrderStatus.待支付 &&
+                order.OrderStatus != AgentEnums.MasterOrderStatus.待发货)
             {
-                return Json(new ApiResult<int>(5) {ErrorCode = 1, Message = "已完成订单不能取消"});
+                return Json(new ApiResult<int>(5) {ErrorCode = 1, Message = "只有待支付和待发货的订单才能取消"});
             }
 
             var result = OrderService.Instance.UpdateOrder(new {orderStatus = AgentEnums.MasterOrderStatus.已取消},
@@ -468,6 +471,13 @@ namespace QingFeng.WebArea.Controllers
             {
                 OrderService.Instance.UpdateOrderDetail(new {orderStatus = AgentEnums.OrderDetailStatus.已取消},
                     new {orderId});
+                if (order.IsSelfSupport == 1)
+                {
+                    ProductStockService.Instance.UpdateProductStock(
+                        order.OrderDetails.Where(t => t.OrderStatus == AgentEnums.OrderDetailStatus.待发货)
+                            .Select(t => new Tuple<int, int, int>(t.ProductId, t.SkuId, t.Quantity))
+                            .ToList());
+                }
                 OrderLogsService.Instance.CreateLog(new OrderLogs
                 {
                     OrderId = orderId,
@@ -539,6 +549,7 @@ namespace QingFeng.WebArea.Controllers
         /// <summary>
         /// 缺货标记
         /// </summary>
+        /// <param name="user"></param>
         /// <param name="orderId"></param>
         /// <param name="flowId"></param>
         /// <returns></returns>
@@ -581,6 +592,11 @@ namespace QingFeng.WebArea.Controllers
                 new {flowId});
             if (result)
             {
+                //库存加回去
+                ProductStockService.Instance.UpdateProductStock(new List<Tuple<int, int, int>>()
+                {
+                    new Tuple<int, int, int>(flowInfo.ProductId, flowInfo.SkuId, flowInfo.Quantity)
+                });
                 OrderLogsService.Instance.CreateLog(new OrderLogs
                 {
                     OrderId = orderId,

@@ -65,6 +65,11 @@ namespace QingFeng.Business
             return _productStockRepository.Update(model, condition);
         }
 
+        public bool UpdateProductStock(List<Tuple<int, int, int>> orderSkuNumbers)
+        {
+            return _productStockRepository.UpdateProductStock(orderSkuNumbers);
+        }
+
         public IEnumerable<ProductStock> GetList(object condition)
         {
             return _productStockRepository.GetList(condition);

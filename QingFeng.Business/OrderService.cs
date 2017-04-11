@@ -35,8 +35,9 @@ namespace QingFeng.Business
             var baseProductList = _productBase.GetListByIds(productList.Select(t => t.Value.BaseId).ToArray())
                 .ToDictionary(c => c.BaseId, c => c);
 
-            var userPrice = UserService.Instance.GetUserPrice(user.UserId, 0, productList.Select(t => t.Value.BaseId).ToArray())
-                    .ToDictionary(c => c.ProductId, c => c);
+            var userPrice = UserService.Instance.GetUserPrice(user.UserId, 0,
+                    productList.Select(t => t.Value.BaseId).ToArray())
+                .ToDictionary(c => c.ProductId, c => c);
 
             var skuList = SkuItemService.Instance.GetList(AgentEnums.SkuType.Size)
                 .ToDictionary(c => c.SkuId, c => c.SkuName);
@@ -54,7 +55,9 @@ namespace QingFeng.Business
                 t.BaseName = baseProductList[product.BaseId].BaseName;
                 t.ProductNo = product.ProductNo;
                 t.ProductName = product.ProductName;
-                t.Price = userPrice.ContainsKey(product.ProductId) ? userPrice[product.ProductId].ActualPrice : product.ActualPrice;
+                t.Price = userPrice.ContainsKey(product.ProductId)
+                    ? userPrice[product.ProductId].ActualPrice
+                    : product.ActualPrice;
                 t.OrderId = orderId;
                 t.OrderNo = orderMaster.OrderNo;
                 t.Remark = (t.Remark ?? string.Empty).CutString(120);
@@ -84,6 +87,11 @@ namespace QingFeng.Business
 
             if (result)
             {
+                if (orderMaster.IsSelfSupport == 1)
+                {
+                    ProductStockService.Instance.UpdateProductStock(
+                        orderDetails.Select(t => new Tuple<int, int, int>(t.ProductId, t.SkuId, t.Quantity * -1)).ToList());
+                }
                 _orderLogs.Insert(new OrderLogs()
                 {
                     UserId = user.UserId,
@@ -95,8 +103,7 @@ namespace QingFeng.Business
                 });
             }
 
-            //return result;
-            return true;
+            return result;
         }
 
         /// <summary>
