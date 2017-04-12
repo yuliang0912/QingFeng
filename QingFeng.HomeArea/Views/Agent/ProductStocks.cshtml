@@ -7,6 +7,7 @@
 }
 @model QingFeng.Models.ProductBase
 @using System.Linq
+@using QingFeng.Common
 <style type="text/css">
     table tbody td {
         text-align: center;
@@ -25,10 +26,14 @@
         &nbsp;查询库存 <small>
             <i class="icon-search"></i> 筛选:
             <div class="form-group">
-                <select id="gender_id" class="form-control input-sm filter_goods">
+                <select name="gender_id" id="category_id" class="form-control input-sm">
                     <option value="0">分类</option>
-                    <option value="1" @(ViewBag.categoryId == 1 ? "selected" : "")>男鞋</option>
-                    <option value="2" @(ViewBag.categoryId == 2 ? "selected" : "")>女鞋</option>
+                    <optgroup label="鞋">
+                        @foreach (var item in Enum.GetValues(typeof(AgentEnums.Category)))
+                        {
+                            <option value="@item.GetHashCode()" @(ViewBag.categoryId == item.GetHashCode() ? "selected" : "")>@item.ToString()</option>
+                        }
+                    </optgroup>
                 </select>
             </div>
             <div class="form-group">

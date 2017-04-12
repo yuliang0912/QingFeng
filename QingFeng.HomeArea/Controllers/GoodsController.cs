@@ -108,7 +108,7 @@ namespace QingFeng.WebArea.Controllers
             return View(baseInfo);
         }
 
-        [HttpPost]
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
         public JsonResult Set()
         {
             var baseId = Convert.ToInt32(Request.Form["baseId"] ?? string.Empty);
@@ -133,7 +133,7 @@ namespace QingFeng.WebArea.Controllers
             return Json(result);
         }
 
-        [HttpPost]
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
         public JsonResult Edit(CreateProductDto model)
         {
             var baseInfo = ProductService.Instance.GetProductBase(model.baseId);
@@ -200,6 +200,7 @@ namespace QingFeng.WebArea.Controllers
         /// </summary>
         /// <param name="baseId"></param>
         /// <returns></returns>
+        [AdminAuthorize(AgentEnums.SubMenuEnum.查看商品)]
         public ActionResult View(int baseId)
         {
             var baseInfo = ProductService.Instance.GetProductBase(baseId);
