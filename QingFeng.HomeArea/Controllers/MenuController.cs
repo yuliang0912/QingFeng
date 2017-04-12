@@ -3,6 +3,8 @@ using System.Linq;
 using System.Web.Mvc;
 using QingFeng.Business;
 using QingFeng.Common;
+using QingFeng.Common.ApiCore;
+using QingFeng.Common.ApiCore.Result;
 using QingFeng.WebArea.Fillter;
 
 namespace QingFeng.WebArea.Controllers
@@ -39,7 +41,19 @@ namespace QingFeng.WebArea.Controllers
         {
             var userId = Convert.ToInt32(Request.Form["userId"] ?? string.Empty);
             var userRoles = Request.Form["userRoles"] ?? string.Empty;
-            return Json(true);
+
+            var userInfo = UserService.Instance.GetUserInfo(new {userId});
+            if (userInfo == null || userInfo.UserRole != AgentEnums.UserRole.Staff)
+            {
+                return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "参数错误"});
+            }
+
+            var result = UserService.Instance.Update(new
+            {
+                userMenus = userRoles
+            }, new {userId});
+
+            return Json(result);
         }
     }
 }

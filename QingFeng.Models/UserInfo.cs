@@ -29,7 +29,7 @@ namespace QingFeng.Models
 
         public string LastLoginIp { get; set; }
 
-        public AgentEnums.UserRole UserRole { get; set; }
+        public UserRole UserRole { get; set; }
 
         public string Avatar { get; set; }
 
