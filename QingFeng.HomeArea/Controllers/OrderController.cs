@@ -276,7 +276,7 @@ namespace QingFeng.WebArea.Controllers
             workSheet.Cell(1, 6).Value = "订单金额";
             workSheet.Cell(1, 7).Value = "订单状态";
             workSheet.Cell(1, 8).Value = "订单日期";
-            workSheet.Cell(1, 10).Value = "品牌";
+            workSheet.Cell(1, 9).Value = "品牌";
             workSheet.Cell(1, 10).Value = "货号";
             workSheet.Cell(1, 11).Value = "颜色";
             workSheet.Cell(1, 12).Value = "尺码";
