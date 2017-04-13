@@ -256,6 +256,7 @@
     });
 </script>
 <script>
+    var isSubmit = false;
     function addOrder() {
         var order = {};
         order.orderNo = $("#orderNo").val().trim();
@@ -334,13 +335,19 @@
             layer.msg("订单中不存在任何有效商品,请检查是否添加商品,并且选择尺码");
             return;
         }
+        if (isSubmit) {
+            return;
+        }
+        isSubmit = true;
         $core.ajax.postJSON("/order/CreateOrder", order, function (data) {
             if (data === 1) {
                 var url = "http://www.tonyzu.com/order/index";
                 $.getPageContent({ url: url });
                 return false;
+            } else {
+                layer.msg(this.message);
+                isSubmit = false;
             }
-            layer.msg(this.message);
         });
     }
 

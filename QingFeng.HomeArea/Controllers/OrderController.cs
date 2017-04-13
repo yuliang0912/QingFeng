@@ -365,6 +365,7 @@ namespace QingFeng.WebArea.Controllers
             {
                 return Json(new ApiResult<int>(2) {Ret = RetEum.ApplicationError, Message = "数据错误"});
             }
+            order.OrderNo = order.OrderNo.Trim();
             if (OrderService.Instance.IsExists(order.OrderNo))
             {
                 return Json(new ApiResult<int>(3) {Ret = RetEum.ApplicationError, Message = "订单号已经存在,不能重复添加"});
