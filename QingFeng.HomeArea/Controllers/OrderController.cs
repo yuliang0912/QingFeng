@@ -276,13 +276,14 @@ namespace QingFeng.WebArea.Controllers
             workSheet.Cell(1, 6).Value = "订单金额";
             workSheet.Cell(1, 7).Value = "订单状态";
             workSheet.Cell(1, 8).Value = "订单日期";
-            workSheet.Cell(1, 9).Value = "品牌";
-            workSheet.Cell(1, 10).Value = "货号";
-            workSheet.Cell(1, 11).Value = "颜色";
-            workSheet.Cell(1, 12).Value = "尺码";
-            workSheet.Cell(1, 13).Value = "数量";
-            workSheet.Cell(1, 14).Value = "单价";
-            workSheet.Cell(1, 15).Value = "子订单状态";
+            workSheet.Cell(1, 9).Value = "收货地址";
+            workSheet.Cell(1, 10).Value = "品牌";
+            workSheet.Cell(1, 11).Value = "货号";
+            workSheet.Cell(1, 12).Value = "颜色";
+            workSheet.Cell(1, 13).Value = "尺码";
+            workSheet.Cell(1, 14).Value = "数量";
+            workSheet.Cell(1, 15).Value = "单价";
+            workSheet.Cell(1, 16).Value = "子订单状态";
 
             var rows = 2;
             foreach (var order in list)
@@ -295,6 +296,7 @@ namespace QingFeng.WebArea.Controllers
                 workSheet.Cell(rows, 6).Value = order.OrderAmount;
                 workSheet.Cell(rows, 7).Value = order.OrderStatus;
                 workSheet.Cell(rows, 8).Value = order.CreateDate;
+                workSheet.Cell(rows, 9).Value = order.AreaName + order.Address;
 
                 workSheet.Range(rows, 1, rows - 1 + order.OrderDetails.Count(), 1).Merge();
                 workSheet.Range(rows, 2, rows - 1 + order.OrderDetails.Count(), 2).Merge();
@@ -304,35 +306,19 @@ namespace QingFeng.WebArea.Controllers
                 workSheet.Range(rows, 6, rows - 1 + order.OrderDetails.Count(), 6).Merge();
                 workSheet.Range(rows, 7, rows - 1 + order.OrderDetails.Count(), 7).Merge();
                 workSheet.Range(rows, 8, rows - 1 + order.OrderDetails.Count(), 8).Merge();
-
-                workSheet.Cell(rows, 2).Value = order.OrderNo;
-                workSheet.Cell(rows, 3).Value = order.StoreName;
-                workSheet.Cell(rows, 4).Value = order.ContactName;
-                workSheet.Cell(rows, 5).Value = order.ContactPhone;
-                workSheet.Cell(rows, 6).Value = order.OrderAmount;
-                workSheet.Cell(rows, 7).Value = order.OrderStatus;
-                workSheet.Cell(rows, 8).Value = order.CreateDate;
-
-                workSheet.Range(rows, 1, rows - 1 + order.OrderDetails.Count(), 1).Merge();
-                workSheet.Range(rows, 2, rows - 1 + order.OrderDetails.Count(), 2).Merge();
-                workSheet.Range(rows, 3, rows - 1 + order.OrderDetails.Count(), 3).Merge();
-                workSheet.Range(rows, 4, rows - 1 + order.OrderDetails.Count(), 4).Merge();
-                workSheet.Range(rows, 5, rows - 1 + order.OrderDetails.Count(), 5).Merge();
-                workSheet.Range(rows, 6, rows - 1 + order.OrderDetails.Count(), 6).Merge();
-                workSheet.Range(rows, 7, rows - 1 + order.OrderDetails.Count(), 7).Merge();
-                workSheet.Range(rows, 8, rows - 1 + order.OrderDetails.Count(), 8).Merge();
-
+                workSheet.Range(rows, 9, rows - 1 + order.OrderDetails.Count(), 9).Merge();
+                
                 for (var j = 0; j < order.OrderDetails.Count(); j++)
                 {
                     var orderDetail = order.OrderDetails.ToList()[j];
 
-                    workSheet.Cell(j + rows, 9).Value = orderDetail.BrandId.ToString();
-                    workSheet.Cell(j + rows, 10).Value = orderDetail.BaseNo;
-                    workSheet.Cell(j + rows, 11).Value = orderDetail.ProductNo;
-                    workSheet.Cell(j + rows, 12).Value = orderDetail.SkuName;
-                    workSheet.Cell(j + rows, 13).Value = orderDetail.Quantity;
-                    workSheet.Cell(j + rows, 14).Value = orderDetail.Price;
-                    workSheet.Cell(j + rows, 15).Value = orderDetail.OrderStatus;
+                    workSheet.Cell(j + rows, 10).Value = orderDetail.BrandId.ToString();
+                    workSheet.Cell(j + rows, 11).Value = orderDetail.BaseNo;
+                    workSheet.Cell(j + rows, 12).Value = orderDetail.ProductNo;
+                    workSheet.Cell(j + rows, 13).Value = orderDetail.SkuName;
+                    workSheet.Cell(j + rows, 14).Value = orderDetail.Quantity;
+                    workSheet.Cell(j + rows, 15).Value = orderDetail.Price;
+                    workSheet.Cell(j + rows, 16).Value = orderDetail.OrderStatus;
                 }
 
                 rows += order.OrderDetails.Count();
@@ -340,11 +326,11 @@ namespace QingFeng.WebArea.Controllers
 
             workSheet.Rows(1, 1000).Height = 20;
             workSheet.Columns(1, 100).Width = 25;
-            workSheet.Range("A1:O1").Style.Fill.BackgroundColor = XLColor.Green;
-            workSheet.Range("A1:O1").Style.Font.SetFontColor(XLColor.Yellow);
-            workSheet.Range("A1:O1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            workSheet.Range("A2:H100").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            workSheet.Range("A2:O100").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            workSheet.Range("A1:P1").Style.Fill.BackgroundColor = XLColor.Green;
+            workSheet.Range("A1:P1").Style.Font.SetFontColor(XLColor.Yellow);
+            workSheet.Range("A1:P1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            workSheet.Range("A2:I100").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            workSheet.Range("A2:P100").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
 
             return new Common.ActionResultExtensions.ExportExcelResult
             {
@@ -486,6 +472,61 @@ namespace QingFeng.WebArea.Controllers
                     UserName = user.UserName,
                     Title = "取消订单",
                     Content = user.UserName + "取消了订单",
+                    CreateDate = DateTime.Now
+                });
+            }
+            return Json(new ApiResult<bool>(result));
+        }
+
+
+        [HttpGet]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.确认收款)]
+        public ActionResult ConfirmReceivables(UserInfo user, long orderId)
+        {
+            var order = OrderService.Instance.Get(new {orderId});
+            if (order == null)
+            {
+                return Json(new ApiResult<int>(2) {ErrorCode = 2, Message = "未找到订单"});
+            }
+            if (user.UserRole == AgentEnums.UserRole.StoreUser)
+            {
+                return Json(new ApiResult<int>(3) {ErrorCode = 1, Message = "没有操作权限"});
+            }
+
+            if (order.OrderStatus != AgentEnums.MasterOrderStatus.待支付)
+            {
+                return Json(new ApiResult<int>(4) {ErrorCode = 1, Message = "只有待支付的订单才能取消"});
+            }
+
+            foreach (var item in order.OrderDetails)
+            {
+                var stock = ProductStockService.Instance.Get(new {item.ProductId, item.SkuId});
+                if (stock == null || stock.StockNum < 1 || item.Quantity > stock.StockNum)
+                {
+                    return Json(new ApiResult<int>(5) {Ret = RetEum.ApplicationError, Message = "库存不足"});
+                }
+            }
+
+            var result = OrderService.Instance.UpdateOrder(new {orderStatus = AgentEnums.MasterOrderStatus.待发货},
+                new {orderId});
+
+            if (result)
+            {
+                OrderService.Instance.UpdateOrderDetail(new {orderStatus = AgentEnums.OrderDetailStatus.待发货},
+                    new {orderId});
+
+                ProductStockService.Instance.UpdateProductStock(
+                    order.OrderDetails.Where(t => t.OrderStatus == AgentEnums.OrderDetailStatus.待发货)
+                        .Select(t => new Tuple<int, int, int>(t.ProductId, t.SkuId, t.Quantity*-1))
+                        .ToList());
+
+                OrderLogsService.Instance.CreateLog(new OrderLogs
+                {
+                    OrderId = orderId,
+                    UserId = user.UserId,
+                    UserName = user.UserName,
+                    Title = "确认收款",
+                    Content = user.UserName + "确认了收款",
                     CreateDate = DateTime.Now
                 });
             }

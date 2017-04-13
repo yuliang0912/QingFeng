@@ -11,7 +11,8 @@
     {
         case AgentEnums.MasterOrderStatus.待支付:
             <a href="http://www.tonyzu.com/order/address?orderId=@Model.OrderId" title="修改收货信息" class="green order-address-update">修改地址</a>
-            <a href="http://www.tonyzu.com/order/cancelOrder?orderId=@Model.OrderId" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单" data-original-title="取消订单">取消</a>
+            <a href="http://www.tonyzu.com/order/ConfirmReceivables?orderId=@Model.OrderId" title="" class="red order-canceled" data-id="@Model.OrderId" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="已收款待发货" data-original-title="确认收款">确认收款</a>
+            <a href="http://www.tonyzu.com/order/cancelOrder?orderId=@Model.OrderId" title="" class="red order-canceled" data-id="@Model.OrderId" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单" data-original-title="取消订单">取消</a>
             break;
         case AgentEnums.MasterOrderStatus.待发货:
             <a href="http://www.tonyzu.com/order/address?orderId=@Model.OrderId" title="修改收货信息" class="green order-address-update">修改地址</a>

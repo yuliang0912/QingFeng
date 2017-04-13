@@ -2,18 +2,21 @@
 @using QingFeng.Common
 @using QingFeng.Common.Extensions
 @model QingFeng.Models.OrderDetail
-
+@{
+    var userInfo = ViewBag.User as QingFeng.Models.UserInfo ?? new QingFeng.Models.UserInfo();
+}
 <td>
-    @switch (Model.OrderStatus)
+    @if (userInfo.UserRole == AgentEnums.UserRole.Administrator || userInfo.UserRole == AgentEnums.UserRole.Staff)
     {
-        case AgentEnums.OrderDetailStatus.待发货:
-            <a href="http://www.tonyzu.com/order/setDefect?orderId=@(Model.OrderId)&flowId=@(Model.FlowId)" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="无货标记" data-original-title="无货标记">无货标记</a>
-            break;
-        case AgentEnums.OrderDetailStatus.无货异常:
-            <a href="http://www.tonyzu.com/order/SetCancel?orderId=@(Model.OrderId)&flowId=@(Model.FlowId)" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单" data-original-title="取消订单">取消</a>
-            break;
-        default:
-            break;
+        switch (Model.OrderStatus)
+        {
+            case AgentEnums.OrderDetailStatus.待发货:
+                <a href="http://www.tonyzu.com/order/setDefect?orderId=@(Model.OrderId)&flowId=@(Model.FlowId)" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="无货标记" data-original-title="无货标记">无货标记</a>
+                break;
+            case AgentEnums.OrderDetailStatus.无货异常:
+                <a href="http://www.tonyzu.com/order/SetCancel?orderId=@(Model.OrderId)&flowId=@(Model.FlowId)" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单" data-original-title="取消订单">取消</a>
+                break;
+        }
+        <span style="@Model.OrderStatus.GetOrderStyle()">@Model.OrderStatus</span>
     }
-    <span style="@Model.OrderStatus.GetOrderStyle()">@Model.OrderStatus</span>
 </td>

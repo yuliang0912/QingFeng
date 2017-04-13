@@ -6,7 +6,6 @@ namespace QingFeng.Business
 {
     public class MenuService : Singleton<MenuService>
     {
-
         private MenuService() { }
 
         private Dictionary<MenuEnum, List<SubMenuEnum>> _allMenus;

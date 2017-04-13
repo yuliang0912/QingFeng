@@ -93,12 +93,12 @@
                 var that = $(this);
                 var url = that.attr('href');
                 $('.popover-footer button.btn-primary').off('click').on('click', function () {
-                    $.getJSON(that.attr('href') + '?action=submit', function (response) {
-                        if (response.error == 0) {
+                    $.getJSON(that.attr('href'), function (response) {
+                        if (response.errcode == 0) {
                             $.pageReload();
                         }
                         else {
-                            layer.alert(response.msg, { icon: 5 });
+                            layer.alert(response.message);
                         }
                     });
                 });
@@ -125,7 +125,7 @@
                         });
                     }
                     else {
-                        layer.alert(response.msg, { icon: 5 });
+                        layer.alert(response.message);
                     }
                 },
                 //formId : 'form',
@@ -301,7 +301,7 @@
         $('.supplier-login').off('click').on('click', function () {
             var url = $(this).attr('href');
             $.ajax({
-                url: url + '?action=dosubmit',
+                url: url,
                 dataType: 'json',
                 success: function (response) {
                     if (response.error == 0) {
