@@ -277,13 +277,15 @@ namespace QingFeng.WebArea.Controllers
             workSheet.Cell(1, 7).Value = "订单状态";
             workSheet.Cell(1, 8).Value = "订单日期";
             workSheet.Cell(1, 9).Value = "收货地址";
-            workSheet.Cell(1, 10).Value = "品牌";
-            workSheet.Cell(1, 11).Value = "货号";
-            workSheet.Cell(1, 12).Value = "颜色";
-            workSheet.Cell(1, 13).Value = "尺码";
-            workSheet.Cell(1, 14).Value = "数量";
-            workSheet.Cell(1, 15).Value = "单价";
-            workSheet.Cell(1, 16).Value = "子订单状态";
+            workSheet.Cell(1, 10).Value = "邮政编码";
+            workSheet.Cell(1, 11).Value = "备注";
+            workSheet.Cell(1, 12).Value = "品牌";
+            workSheet.Cell(1, 13).Value = "货号";
+            workSheet.Cell(1, 14).Value = "颜色";
+            workSheet.Cell(1, 15).Value = "尺码";
+            workSheet.Cell(1, 16).Value = "数量";
+            workSheet.Cell(1, 17).Value = "单价";
+            workSheet.Cell(1, 18).Value = "子订单状态";
 
             var rows = 2;
             foreach (var order in list)
@@ -297,28 +299,26 @@ namespace QingFeng.WebArea.Controllers
                 workSheet.Cell(rows, 7).Value = order.OrderStatus;
                 workSheet.Cell(rows, 8).Value = order.CreateDate;
                 workSheet.Cell(rows, 9).Value = order.AreaName + order.Address;
+                workSheet.Cell(rows, 10).Value = order.PostCode;
+                workSheet.Cell(rows, 11).Value = order.Remark;
 
-                workSheet.Range(rows, 1, rows - 1 + order.OrderDetails.Count(), 1).Merge();
-                workSheet.Range(rows, 2, rows - 1 + order.OrderDetails.Count(), 2).Merge();
-                workSheet.Range(rows, 3, rows - 1 + order.OrderDetails.Count(), 3).Merge();
-                workSheet.Range(rows, 4, rows - 1 + order.OrderDetails.Count(), 4).Merge();
-                workSheet.Range(rows, 5, rows - 1 + order.OrderDetails.Count(), 5).Merge();
-                workSheet.Range(rows, 6, rows - 1 + order.OrderDetails.Count(), 6).Merge();
-                workSheet.Range(rows, 7, rows - 1 + order.OrderDetails.Count(), 7).Merge();
-                workSheet.Range(rows, 8, rows - 1 + order.OrderDetails.Count(), 8).Merge();
-                workSheet.Range(rows, 9, rows - 1 + order.OrderDetails.Count(), 9).Merge();
-                
+                var mergeCount = 1;
+                while (mergeCount <= 11)
+                {
+                    workSheet.Range(rows, mergeCount, rows - 1 + order.OrderDetails.Count(), mergeCount++).Merge();
+                }
+
                 for (var j = 0; j < order.OrderDetails.Count(); j++)
                 {
                     var orderDetail = order.OrderDetails.ToList()[j];
 
-                    workSheet.Cell(j + rows, 10).Value = orderDetail.BrandId.ToString();
-                    workSheet.Cell(j + rows, 11).Value = orderDetail.BaseNo;
-                    workSheet.Cell(j + rows, 12).Value = orderDetail.ProductNo;
-                    workSheet.Cell(j + rows, 13).Value = orderDetail.SkuName;
-                    workSheet.Cell(j + rows, 14).Value = orderDetail.Quantity;
-                    workSheet.Cell(j + rows, 15).Value = orderDetail.Price;
-                    workSheet.Cell(j + rows, 16).Value = orderDetail.OrderStatus;
+                    workSheet.Cell(j + rows, 12).Value = orderDetail.BrandId.ToString();
+                    workSheet.Cell(j + rows, 13).Value = orderDetail.BaseNo;
+                    workSheet.Cell(j + rows, 14).Value = orderDetail.ProductNo;
+                    workSheet.Cell(j + rows, 15).Value = orderDetail.SkuName;
+                    workSheet.Cell(j + rows, 16).Value = orderDetail.Quantity;
+                    workSheet.Cell(j + rows, 17).Value = orderDetail.Price;
+                    workSheet.Cell(j + rows, 18).Value = orderDetail.OrderStatus;
                 }
 
                 rows += order.OrderDetails.Count();
