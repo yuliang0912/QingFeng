@@ -24,26 +24,26 @@
                 <div class="form-group">
                     <label for="consignee" class="col-sm-2 control-label">联系人</label>
                     <div class="col-sm-4">
-                        <input type="text" name="consignee" value="@Model.ContactName" class="td_input">
+                        <input type="text" name="contactName" value="@Model.ContactName" class="td_input">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="phone" class="col-sm-2 control-label">联系电话</label>
                     <div class="col-sm-4">
-                        <input type="text" name="phone" value="@Model.ContactPhone" class="td_input">
+                        <input type="text" name="ContactPhone" value="@Model.ContactPhone" class="td_input">
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label for="zipcode" class="col-sm-2 control-label">邮编</label>
                     <div class="col-sm-4">
-                        <input type="text" name="zipcode" value="@Model.PostCode" class="td_input">
+                        <input type="text" name="postCode" value="@Model.PostCode" class="td_input">
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">收货地址(省市区)</label>
                     <div class="col-sm-10">
-                        <select id="province" name="province">
+                        <select id="provinceId" name="provinceId">
                             <option value="0">请选择省份</option>
                             <option value="3722">澳门特别行政区</option>
                             <option value="3700">香港特别行政区</option>
@@ -80,7 +80,7 @@
                             <option value="24">天津市</option>
                             <option value="2">北京</option>
                         </select>
-                        <select id="city" name="city"><option value="0">请选择</option></select>
+                        <select id="cityId" name="cityId"><option value="0">请选择</option></select>
                     </div>
                 </div>
                 <div class="form-group">
@@ -89,7 +89,6 @@
                         <input type="text" name="address" value="@(Model.AreaName + Model.Address)" style="width:500px;" id="address">
                     </div>
                 </div>
-
             </div>
             <div class="modal-footer" style="text-align:center;">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -100,7 +99,7 @@
 </div>
 <script src="~/Content/agent/js/postcode.js"></script>
 <script>
-    $('#province').change(function () {
+    $('#provinceId').change(function () {
         var province_id = $(this).val();
         $('#district').remove();
         if (province_id <= 0) {
@@ -120,7 +119,7 @@
         }
     });
 
-    $('#city').change(function () {
+    $('#cityId').change(function () {
         var province_id = $('#province').val();
         var city_id = $(this).val();
         $('#district').remove();

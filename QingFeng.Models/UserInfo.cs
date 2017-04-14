@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using QingFeng.Common;
 using QingFeng.Common.Dapper;
 using static QingFeng.Common.AgentEnums;
 using System.Linq;
