@@ -29,7 +29,7 @@ namespace QingFeng.WebArea.Fillter
 
             CurrentUser = string.IsNullOrEmpty(userId) ? null : UserService.Instance.GetUserInfo(new {userId});
 
-            if (CurrentUser != null && CurrentUser.UserRole == UserRole.Administrator)
+            if (CurrentUser != null) //&& CurrentUser.UserRole == UserRole.Administrator
             {
                 var menuList = new List<int>();
                 foreach (var item in Enum.GetValues(typeof(SubMenuEnum)))
@@ -38,9 +38,6 @@ namespace QingFeng.WebArea.Fillter
                 }
                 CurrentUser.UserMenus = string.Join(",", menuList);
             }
-
-            CurrentUser.UserMenus =
-                    "0,101,102,103,104,201,202,203,204,205,206,207,208,209,210,301,302,303,304,305,401,402,403,404,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,601,602,603";
 
             if (CurrentUser == null || !CurrentUser.AllUserMenus.Any(t => _subMenus.Contains(t)))
             {

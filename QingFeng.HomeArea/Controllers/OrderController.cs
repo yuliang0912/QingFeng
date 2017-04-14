@@ -480,7 +480,7 @@ namespace QingFeng.WebArea.Controllers
 
 
         [HttpGet]
-        [AdminAuthorize(AgentEnums.SubMenuEnum.确认收款)]
+        [AdminAuthorize()]
         public ActionResult ConfirmReceivables(UserInfo user, long orderId)
         {
             var order = OrderService.Instance.Get(new {orderId});

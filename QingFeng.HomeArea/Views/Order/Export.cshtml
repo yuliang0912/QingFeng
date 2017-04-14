@@ -3,6 +3,7 @@
     ViewBag.Title = "订单导出";
     Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
 }
+@using QingFeng.Common
 @model List<QingFeng.Models.StoreInfo>
 
 <style type="text/css">
@@ -43,6 +44,17 @@
                 </select>
             </div>
             <div class="form-group">
+                <select name="orderStatus" id="orderStatus" class="form-control input-sm">
+                    <option value="0">订单状态</option>
+                    <option value="1">已取消</option>
+                    <option value="2">异常</option>
+                    <option value="3">待支付</option>
+                    <option value="4">待发货</option>
+                    <option value="5">已发货</option>
+                    <option value="6">已完成</option>
+                </select>
+            </div>
+            <div class="form-group">
                 从&nbsp;<input type="text" class="form-control input-sm" placeholder="请选择开始时间" value="@(DateTime.Now.AddMonths(-1).ToString("yyyy-MM-dd"))" readonly="" style="width:100px;" name="start_time" id="start_time">
                 到&nbsp;<input type="text" class="form-control input-sm" placeholder="请选择结束时间" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" readonly="" name="end_time" id="end_time">
             </div>
@@ -71,14 +83,14 @@
         $("#start_time").datetimepicker({ format: 'yyyy-mm-dd', language: 'zh-CN', 'endDate': '@DateTime.Now.ToString("yyyy-MM-dd")', minView: "month", autoclose: 1 }).on('changeDate', function (ev) {
             $('#end_time').datetimepicker('setStartDate', $('#start_time').val());
         });
-
         $("#end_time").datetimepicker({ format: 'yyyy-mm-dd', language: 'zh-CN', 'endDate': '@DateTime.Now.ToString("yyyy-MM-dd")', minView: "month", autoclose: 1 });
         $('#exportFile').click(function () {
             var start_time = $('#start_time').val();
             var end_time = $('#end_time').val();
             var storeId = $("#storeId").val();
+            var orderStatus = $("#orderStatus").val();
 
-            location.href = "http://www.tonyzu.com/order/ExportFile?storeId=" + storeId + '&beginDateStr=' + start_time + "&endDateStr=" + end_time;
+            location.href = "http://www.tonyzu.com/order/ExportFile?storeId=" + storeId + '&orderStatus=' + orderStatus + '&beginDateStr=' + start_time + "&endDateStr=" + end_time;
         });
     });
 </script>
