@@ -57,8 +57,28 @@ namespace QingFeng.Models
                     return new List<SubMenuEnum>();
                 }
                 return (from menu in UserMenus.Split(',').Select(int.Parse)
-                    where Enum.IsDefined(typeof (SubMenuEnum), menu)
-                    select (SubMenuEnum) menu).ToList();
+                        where Enum.IsDefined(typeof(SubMenuEnum), menu)
+                        select (SubMenuEnum)menu).ToList();
+            }
+        }
+
+        [IgnoreField]
+        public List<MenuEnum> UserFirstMenus
+        {
+            get
+            {
+                return this.AllUserMenus.Select(t => t.GetHashCode() / 100).OrderBy(t => t).
+                    GroupBy(c => c).ToDictionary(c => c.Key, c => c)
+                    .Select(t => (MenuEnum)t.Key).ToList();
+            }
+        }
+
+        [IgnoreField]
+        public Dictionary<SubMenuEnum, string> UserSubMenus
+        {
+            get
+            {
+                return this.AllUserMenus.ToDictionary(c => c, c => c.ToString());
             }
         }
     }
