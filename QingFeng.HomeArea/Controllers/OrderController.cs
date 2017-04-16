@@ -14,8 +14,9 @@ namespace QingFeng.WebArea.Controllers
 {
     public class OrderController : CustomerController
     {
+        private readonly string _baseDirectory = AppDomain.CurrentDomain.BaseDirectory + "Content\\excelFile\\";
         // GET: Order
-        [AdminAuthorize(AgentEnums.SubMenuEnum.订单列表)]
+        [MenuAuthorize(AgentEnums.SubMenuEnum.订单列表, AgentEnums.SubMenuEnum.已取消订单, AgentEnums.SubMenuEnum.待支付订单, AgentEnums.SubMenuEnum.待发货订单, AgentEnums.SubMenuEnum.已完成订单, AgentEnums.SubMenuEnum.已发货订单, AgentEnums.SubMenuEnum.异常订单)]
         public ActionResult Index(UserInfo user, int storeId = 0, int brandId = 0, int orderStatus = 0,
             string beginDateStr = "",
             string endDateStr = "",
@@ -47,11 +48,11 @@ namespace QingFeng.WebArea.Controllers
                 pageSize, out totalItem);
 
             ViewBag.ProductBase = ProductService.Instance.GetProductBaseList(
-                    list.SelectMany(t => t.OrderDetails).Select(t => t.BaseId).ToArray())
+                list.SelectMany(t => t.OrderDetails).Select(t => t.BaseId).ToArray())
                 .ToDictionary(c => c.BaseId, c => c);
 
             ViewBag.PorductList = ProductService.Instance.GetProduct(
-                    list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
+                list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
                 .ToDictionary(c => c.ProductId, c => c);
 
             ViewBag.brandId = brandId;
@@ -99,11 +100,11 @@ namespace QingFeng.WebArea.Controllers
                 pageSize, out totalItem);
 
             ViewBag.ProductBase = ProductService.Instance.GetProductBaseList(
-                    list.SelectMany(t => t.OrderDetails).Select(t => t.BaseId).ToArray())
+                list.SelectMany(t => t.OrderDetails).Select(t => t.BaseId).ToArray())
                 .ToDictionary(c => c.BaseId, c => c);
 
             ViewBag.PorductList = ProductService.Instance.GetProduct(
-                    list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
+                list.SelectMany(t => t.OrderDetails).Select(t => t.ProductId).ToArray())
                 .ToDictionary(c => c.ProductId, c => c);
 
             ViewBag.brandId = brandId;
@@ -196,11 +197,11 @@ namespace QingFeng.WebArea.Controllers
             }
 
             ViewBag.ProductBase = ProductService.Instance.GetProductBaseList(
-                    order.OrderDetails.Select(t => t.BaseId).ToArray())
+                order.OrderDetails.Select(t => t.BaseId).ToArray())
                 .ToDictionary(c => c.BaseId, c => c);
 
             ViewBag.PorductList = ProductService.Instance.GetProduct(
-                    order.OrderDetails.Select(t => t.ProductId).ToArray())
+                order.OrderDetails.Select(t => t.ProductId).ToArray())
                 .ToDictionary(c => c.ProductId, c => c);
 
             var orderLogistics = LogisticsService.Instance.GetLogistics(orderId);
@@ -239,9 +240,12 @@ namespace QingFeng.WebArea.Controllers
         [AdminAuthorize(AgentEnums.SubMenuEnum.订单导出)]
         public ActionResult Export(UserInfo user)
         {
-            var storeList = StoreService.Instance.GetList(new {status = 0}).ToList();
-
-            return View(storeList);
+            if (user.UserRole != AgentEnums.UserRole.StoreUser)
+            {
+                var storeList = StoreService.Instance.GetList(new {status = 0}).ToList();
+                return View(storeList);
+            }
+            return View(user.StoreList);
         }
 
         [AdminAuthorize(AgentEnums.SubMenuEnum.订单导出)]
@@ -262,8 +266,30 @@ namespace QingFeng.WebArea.Controllers
 
             int totalItem;
             var list =
-                OrderService.Instance.SearchOrderList(0, storeId, orderStatus, beginDate, endDate, string.Empty, 1,
+                OrderService.Instance.SearchOrderList(user.UserRole == AgentEnums.UserRole.StoreUser ? user.UserId : 0,
+                    storeId, orderStatus, beginDate, endDate, string.Empty, 1,
                     int.MaxValue, out totalItem).ToList();
+
+            var orderIdList = list.Where(t =>
+                t.OrderStatus == AgentEnums.MasterOrderStatus.已发货 ||
+                t.OrderStatus == AgentEnums.MasterOrderStatus.已完成).Select(t => t.OrderId);
+
+            var orderLogistics = new Dictionary<long, LogisticsInfo>(); //LogisticsService.Instance.GetLogistics()
+
+            var maxCount = (int)Math.Ceiling(orderIdList.Count()*1.0/200);
+            while (maxCount > 0)
+            {
+                maxCount --;
+                var logistics =
+                    LogisticsService.Instance.GetBatchLogistics(orderIdList.Skip(maxCount*100).Take(100).ToArray());
+                foreach (var item in logistics)
+                {
+                    if (!orderLogistics.ContainsKey(item.OrderId))
+                    {
+                        orderLogistics.Add(item.OrderId, item);
+                    }
+                }
+            }
 
             var workbook = new XLWorkbook();
             workbook.Worksheets.Add("Sheet1");
@@ -278,14 +304,17 @@ namespace QingFeng.WebArea.Controllers
             workSheet.Cell(1, 8).Value = "订单日期";
             workSheet.Cell(1, 9).Value = "收货地址";
             workSheet.Cell(1, 10).Value = "邮政编码";
-            workSheet.Cell(1, 11).Value = "备注";
-            workSheet.Cell(1, 12).Value = "品牌";
-            workSheet.Cell(1, 13).Value = "货号";
-            workSheet.Cell(1, 14).Value = "颜色";
-            workSheet.Cell(1, 15).Value = "尺码";
-            workSheet.Cell(1, 16).Value = "数量";
-            workSheet.Cell(1, 17).Value = "单价";
-            workSheet.Cell(1, 18).Value = "子订单状态";
+            workSheet.Cell(1, 11).Value = "物流公司";
+            workSheet.Cell(1, 12).Value = "物流单号";
+            workSheet.Cell(1, 13).Value = "运费";
+            workSheet.Cell(1, 14).Value = "备注";
+            workSheet.Cell(1, 15).Value = "品牌";
+            workSheet.Cell(1, 16).Value = "货号";
+            workSheet.Cell(1, 17).Value = "颜色";
+            workSheet.Cell(1, 18).Value = "尺码";
+            workSheet.Cell(1, 19).Value = "数量";
+            workSheet.Cell(1, 20).Value = "单价";
+            workSheet.Cell(1, 21).Value = "子订单状态";
 
             var rows = 2;
             foreach (var order in list)
@@ -300,44 +329,63 @@ namespace QingFeng.WebArea.Controllers
                 workSheet.Cell(rows, 8).Value = order.CreateDate;
                 workSheet.Cell(rows, 9).Value = order.AreaName + order.Address;
                 workSheet.Cell(rows, 10).Value = order.PostCode;
-                workSheet.Cell(rows, 11).Value = order.Remark;
+                if (orderLogistics.ContainsKey(order.OrderId))
+                {
+                    var currLogistics = orderLogistics[order.OrderId];
+                    workSheet.Cell(rows, 11).Value = currLogistics.CompanyName;
+                    workSheet.Cell(rows, 12).Value = currLogistics.OddNumber;
+                    workSheet.Cell(rows, 13).Value = currLogistics.Price;
+                }
+                else
+                {
+                    workSheet.Cell(rows, 11).Value = "-";
+                    workSheet.Cell(rows, 12).Value = "-";
+                    workSheet.Cell(rows, 13).Value = "-";
+                }
+                workSheet.Cell(rows, 14).Value = order.Remark;
 
                 var mergeCount = 1;
-                while (mergeCount <= 11)
+                var orderDetailsCount = order.OrderDetails.Count();
+                while (mergeCount <= 14)
                 {
-                    workSheet.Range(rows, mergeCount, rows - 1 + order.OrderDetails.Count(), mergeCount++).Merge();
+                    workSheet.Range(rows, mergeCount, rows - 1 + orderDetailsCount, mergeCount++).Merge();
                 }
 
                 for (var j = 0; j < order.OrderDetails.Count(); j++)
                 {
                     var orderDetail = order.OrderDetails.ToList()[j];
 
-                    workSheet.Cell(j + rows, 12).Value = orderDetail.BrandId.ToString();
-                    workSheet.Cell(j + rows, 13).Value = orderDetail.BaseNo;
-                    workSheet.Cell(j + rows, 14).Value = orderDetail.ProductNo;
-                    workSheet.Cell(j + rows, 15).Value = orderDetail.SkuName;
-                    workSheet.Cell(j + rows, 16).Value = orderDetail.Quantity;
-                    workSheet.Cell(j + rows, 17).Value = orderDetail.Price;
-                    workSheet.Cell(j + rows, 18).Value = orderDetail.OrderStatus;
+                    workSheet.Cell(j + rows, 15).Value = orderDetail.BrandId.ToString();
+                    workSheet.Cell(j + rows, 16).Value = orderDetail.BaseNo;
+                    workSheet.Cell(j + rows, 17).Value = orderDetail.ProductNo;
+                    workSheet.Cell(j + rows, 18).Value = orderDetail.SkuName;
+                    workSheet.Cell(j + rows, 19).Value = orderDetail.Quantity;
+                    workSheet.Cell(j + rows, 20).Value = orderDetail.Price;
+                    workSheet.Cell(j + rows, 21).Value = orderDetail.OrderStatus;
                 }
 
                 rows += order.OrderDetails.Count();
             }
 
-            workSheet.Rows(1, 1000).Height = 20;
-            workSheet.Columns(1, 100).Width = 25;
-            workSheet.Range("A1:P1").Style.Fill.BackgroundColor = XLColor.Green;
-            workSheet.Range("A1:P1").Style.Font.SetFontColor(XLColor.Yellow);
-            workSheet.Range("A1:P1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
-            workSheet.Range("A2:I100").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
-            workSheet.Range("A2:P100").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+            //workSheet.Rows(1, 1000).Height = 20;
+            workSheet.Columns(1, 25).Width = 25;
+            workSheet.Range("A1:U1").Style.Fill.BackgroundColor = XLColor.Green;
+            workSheet.Range("A1:U1").Style.Font.SetFontColor(XLColor.Yellow);
+            workSheet.Range("A1:U1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            //workSheet.Range("A2:K1000").Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
+            //workSheet.Range("A2:K1000").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Left;
+
+            var fileName = string.Concat("order-export-", beginDate.ToString("yyyy-MM-dd"), "-",
+                endDate.ToString("yyyy-MM-dd"),
+                ".xlsx");
+
+            //workbook.SaveAs(_baseDirectory + fileName);
+            //return Redirect("/Content/excelFile/" + fileName);
 
             return new Common.ActionResultExtensions.ExportExcelResult
             {
                 workBook = workbook,
-                FileName =
-                    string.Concat("order-export-", beginDate.ToString("yyyy-MM-dd"), "-", endDate.ToString("yyyy-MM-dd"),
-                        ".xlsx")
+                FileName = fileName
             };
         }
 
@@ -458,7 +506,7 @@ namespace QingFeng.WebArea.Controllers
             {
                 OrderService.Instance.UpdateOrderDetail(new {orderStatus = AgentEnums.OrderDetailStatus.已取消},
                     new {orderId});
-                if (order.IsSelfSupport == 1)
+                if (order.OrderStatus == AgentEnums.MasterOrderStatus.待发货)
                 {
                     ProductStockService.Instance.UpdateProductStock(
                         order.OrderDetails.Where(t => t.OrderStatus == AgentEnums.OrderDetailStatus.待发货)
@@ -480,7 +528,7 @@ namespace QingFeng.WebArea.Controllers
 
 
         [HttpGet]
-        [AdminAuthorize()]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.确认收款)]
         public ActionResult ConfirmReceivables(UserInfo user, long orderId)
         {
             var order = OrderService.Instance.Get(new {orderId});
@@ -545,20 +593,24 @@ namespace QingFeng.WebArea.Controllers
             var orderId = Convert.ToInt64(Request.Form["orderId"] ?? string.Empty);
 
             var orderInfo = OrderService.Instance.Get(new {orderId});
-
+            var logisticsId = Convert.ToInt32(Request.Form["logistics_id"] ?? string.Empty);
             if (orderInfo == null)
             {
                 return Json(new ApiResult<int>(2) {ErrorCode = 2, Message = "未找到订单"});
             }
             if (user.UserRole != AgentEnums.UserRole.Administrator && user.UserRole != AgentEnums.UserRole.Staff)
             {
-                return Json(new ApiResult<int>(2) {ErrorCode = 3, Message = "没有操作权限"});
+                return Json(new ApiResult<int>(3) {ErrorCode = 3, Message = "没有操作权限"});
             }
             if (orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.待发货)
             {
-                return Json(new ApiResult<int>(2) {ErrorCode = 4, Message = "只有待发货状态的订单,才能发货"});
+                return Json(new ApiResult<int>(4) {ErrorCode = 4, Message = "只有待发货状态的订单,才能发货"});
             }
-            var logisticsId = Convert.ToInt32(Request.Form["logistics_id"] ?? string.Empty);
+            if (logisticsId < 1)
+            {
+                return Json(new ApiResult<int>(5) { ErrorCode = 5, Message = "请选择物流公司" });
+            }
+
             var logisticsInfo = LogisticsService.Instance.GetComplanyList().First(t => t.Key == logisticsId);
 
             if (logisticsInfo.Key < 1)
@@ -635,10 +687,13 @@ namespace QingFeng.WebArea.Controllers
             if (result)
             {
                 //库存加回去
-                ProductStockService.Instance.UpdateProductStock(new List<Tuple<int, int, int>>()
-                {
-                    new Tuple<int, int, int>(flowInfo.ProductId, flowInfo.SkuId, flowInfo.Quantity)
-                });
+                //if (orderInfo.OrderStatus == AgentEnums.MasterOrderStatus.待发货)
+                //{
+                //    ProductStockService.Instance.UpdateProductStock(new List<Tuple<int, int, int>>()
+                //    {
+                //        new Tuple<int, int, int>(flowInfo.ProductId, flowInfo.SkuId, flowInfo.Quantity)
+                //    });
+                //}
                 OrderLogsService.Instance.CreateLog(new OrderLogs
                 {
                     OrderId = orderId,
@@ -699,7 +754,7 @@ namespace QingFeng.WebArea.Controllers
         }
 
 
-        [AdminAuthorize()]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.完成订单)]
         public JsonResult CompleteOrder(UserInfo user, long orderId)
         {
             var order = OrderService.Instance.Get(new {orderId});
@@ -731,6 +786,47 @@ namespace QingFeng.WebArea.Controllers
                 });
             }
             return Json(new ApiResult<bool>(result));
+        }
+
+        [AdminAuthorize(AgentEnums.SubMenuEnum.修改地址)]
+        public JsonResult EditAddress(UserInfo user, OrderMaster order)
+        {
+            var orderInfo = OrderService.Instance.Get(new {order.OrderId});
+            if (orderInfo == null)
+            {
+                return Json(new ApiResult<int>(2) {ErrorCode = 2, Message = "未找到订单"});
+            }
+            if (orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.待发货 &&
+                orderInfo.OrderStatus != AgentEnums.MasterOrderStatus.待支付)
+            {
+                return Json(new ApiResult<int>(3) {ErrorCode = 2, Message = "只有待支付和待发货状态的订单才能修改地址"});
+            }
+
+            var result = OrderService.Instance.UpdateOrder(new
+            {
+                order.ContactName,
+                order.ContactPhone,
+                order.PostCode,
+                order.ProvinceId,
+                order.CityId,
+                order.AreaCode,
+                order.AreaName,
+                order.Address
+            }, new {order.OrderId});
+
+            if (result)
+            {
+                OrderLogsService.Instance.CreateLog(new OrderLogs
+                {
+                    OrderId = order.OrderId,
+                    UserId = user.UserId,
+                    UserName = user.UserName,
+                    Title = "修改地址",
+                    Content = user.UserName + "修改了订单地址",
+                    CreateDate = DateTime.Now
+                });
+            }
+            return Json(result);
         }
 
         #endregion

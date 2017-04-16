@@ -5,6 +5,7 @@
     var userPrice = ViewBag.userPrice as Dictionary<int, UserProductPrice>;
     var userList = ViewBag.userList as List<UserInfo>;
     var index = 0;
+    var userInfo = ViewBag.User as UserInfo ?? new UserInfo();
 }
 @using QingFeng.Common
 @using QingFeng.Models
@@ -66,7 +67,10 @@
                 <input type="text" name="order_keyword" id="goods_keyword" value="@ViewBag.keyWord" style="width:160px;" class="form-control input-sm" placeholder="商品名称或货号">
             </div>
             <button type="button" class="btn btn-primary btn-sm " id="order-search">搜索</button>
-            <a href="http://www.tonyzu.com/price/distributorImport" class="btn btn-success btn-sm load-content"> <i class="glyphicon glyphicon-plus"></i> 导入价格</a>
+            @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.代理商导入))
+            {
+                <a href="http://www.tonyzu.com/price/distributorImport" class="btn btn-success btn-sm load-content"> <i class="glyphicon glyphicon-plus"></i> 导入价格</a>
+            }
         </small>
     </h1>
 </div>
@@ -133,8 +137,17 @@ else
                                 <td>0%</td>
                             }
                             @if (index == 0)
-                        {
-                                <td rowspan="@productCount"><a href="http://www.tonyzu.com/price/distributorSet?userId=@(ViewBag.userId)&baseId=@item.BaseId" class="set-modal">设置</a></td>
+                            {
+                                <td rowspan="@productCount">
+                                    @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.设置代理商价格))
+                                    {
+                                        <a href="http://www.tonyzu.com/price/distributorSet?userId=@(ViewBag.userId)&baseId=@item.BaseId" class="set-modal">设置</a>
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </td>
                             }
                         </tr>
                         index++;

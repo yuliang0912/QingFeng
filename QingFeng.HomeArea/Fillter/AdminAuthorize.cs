@@ -30,14 +30,15 @@ namespace QingFeng.WebArea.Fillter
 
             CurrentUser = string.IsNullOrEmpty(userId) ? null : UserService.Instance.GetUserInfo(new {userId});
 
-            if (CurrentUser != null) // && CurrentUser.UserRole == UserRole.Administrator
+            if (CurrentUser != null && CurrentUser.UserRole == UserRole.Administrator)
             {
                 var menuList = new List<int>();
-                foreach (var item in Enum.GetValues(typeof(SubMenuEnum)))
+                foreach (var item in Enum.GetValues(typeof (SubMenuEnum)))
                 {
                     menuList.Add(item.GetHashCode());
                 }
                 CurrentUser.UserMenus = string.Join(",", menuList);
+                return;
             }
 
             if (CurrentUser == null

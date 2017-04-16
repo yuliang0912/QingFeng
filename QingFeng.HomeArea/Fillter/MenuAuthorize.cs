@@ -29,7 +29,7 @@ namespace QingFeng.WebArea.Fillter
 
             CurrentUser = string.IsNullOrEmpty(userId) ? null : UserService.Instance.GetUserInfo(new {userId});
 
-            if (CurrentUser != null) //&& CurrentUser.UserRole == UserRole.Administrator
+            if (CurrentUser != null && CurrentUser.UserRole == UserRole.Administrator)
             {
                 var menuList = new List<int>();
                 foreach (var item in Enum.GetValues(typeof(SubMenuEnum)))
@@ -37,6 +37,7 @@ namespace QingFeng.WebArea.Fillter
                     menuList.Add(item.GetHashCode());
                 }
                 CurrentUser.UserMenus = string.Join(",", menuList);
+                return;
             }
 
             if (CurrentUser == null || !CurrentUser.AllUserMenus.Any(t => _subMenus.Contains(t)))

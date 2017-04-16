@@ -11,7 +11,7 @@
             <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
             <h4 class="modal-title" id="edit-model-label">修改收货信息</h4>
         </div>
-        <form class="form-horizontal" role="form" id="address-form" method="post" action="http://www.tonyzu.com/order/address/2471">
+        <form class="form-horizontal" onsubmit="return beforeSubmit()" role="form" id="address-form" method="post" action="http://www.tonyzu.com/order/editAddress">
             <div class="modal-body">
                 <div class="form-group">
                     <label class="col-sm-2 control-label">订单编号</label>
@@ -22,22 +22,22 @@
                     <div class="col-sm-4">@Model.StoreName</div>
                 </div>
                 <div class="form-group">
-                    <label for="consignee" class="col-sm-2 control-label">联系人</label>
+                    <label class="col-sm-2 control-label">联系人</label>
                     <div class="col-sm-4">
-                        <input type="text" name="contactName" value="@Model.ContactName" class="td_input">
+                        <input type="text" id="contactName" required name="contactName" value="@Model.ContactName" class="td_input">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="phone" class="col-sm-2 control-label">联系电话</label>
                     <div class="col-sm-4">
-                        <input type="text" name="ContactPhone" value="@Model.ContactPhone" class="td_input">
+                        <input type="text" id="contactPhone" required name="ContactPhone" value="@Model.ContactPhone" class="td_input">
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="zipcode" class="col-sm-2 control-label">邮编</label>
+                    <label class="col-sm-2 control-label">邮编</label>
                     <div class="col-sm-4">
-                        <input type="text" name="postCode" value="@Model.PostCode" class="td_input">
+                        <input type="text" id="postCode" required name="postCode" value="@Model.PostCode" class="td_input">
                     </div>
                 </div>
                 <div class="form-group">
@@ -86,11 +86,13 @@
                 <div class="form-group">
                     <label for="address" class="col-sm-2 control-label">详细地址</label>
                     <div class="col-sm-4">
-                        <input type="text" name="address" value="@(Model.AreaName + Model.Address)" style="width:500px;" id="address">
+                        <input type="text" id="address" name="address" required value="@(Model.Address)" style="width:500px;">
                     </div>
                 </div>
             </div>
-            <div class="modal-footer" style="text-align:center;">
+            <div class="modal-footer" style="text-align: center;">
+                <input type="hidden" name="orderId" value="@Model.OrderId"/>
+                <input type="hidden" id="areaName" name="areaName" value="@Model.AreaName" />
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <button type="submit" class="btn btn-primary">保存</button>
             </div>
@@ -99,46 +101,84 @@
 </div>
 <script src="~/Content/agent/js/postcode.js"></script>
 <script>
-    $('#provinceId').change(function () {
+    $('#provinceId').change(function() {
         var province_id = $(this).val();
-        $('#district').remove();
+        $('#areaCode').remove();
         if (province_id <= 0) {
-            $('#city').html('<option value="0">市</option>');
-            $('#full_address').html('');
-        }
-        else {
+            $('#cityId').html('<option value="0">请选择</option>');
+        } else {
             if (typeof _regions[province_id] == 'object') {
                 var html = '<option value="0">请选择</option>';
                 for (key in _regions[province_id]['children']) {
                     html += '<option value="' + key + '">' + _regions[province_id]['children'][key].name + '</option>';
                 }
-
-                $('#city').html(html);
-                get_full_address();
+                $('#cityId').html(html);
             }
         }
     });
 
-    $('#cityId').change(function () {
-        var province_id = $('#province').val();
+    $('#cityId').change(function() {
+        var province_id = $('#provinceId').val();
         var city_id = $(this).val();
-        $('#district').remove();
-        if (province_id > 0) {
+        $('#areaCode').remove();
+        if (city_id > 0) {
             if (typeof _regions[province_id]['children'][city_id]['children'] == 'object') {
-                var html = '<select id="district" name="district"><option value="0">请选择</option>';
+                var html = '<select id="areaCode" name="areaCode"><option value="0">请选择</option>';
                 for (key in _regions[province_id]['children'][city_id]['children']) {
                     html += '<option value="' + key + '">' + _regions[province_id]['children'][city_id]['children'][key].name + '</option>';
                 }
-
                 html += '</select>';
-                $('#city').after(html);
-                get_full_address();
-                $('#district').off('change').on('change', function () {
-                    if ($(this).val() > 0) {
-                        get_full_address();
-                    }
-                });
+                $('#cityId').after(html);
             }
         }
     });
+
+    $(function() {
+        var provinceId = '@Model.ProvinceId';
+        var cityId = '@Model.CityId';
+        var areaCode = '@Model.AreaCode';
+        $("#provinceId option[value=" + provinceId + "]").attr("selected", "selected");
+        if (typeof _regions[provinceId] == 'object') {
+            var html = '<option value="0">请选择</option>';
+            for (key in _regions[provinceId]['children']) {
+                html += '<option value="' + key + '" ' + (key == cityId ? "selected" : "") + '>' + _regions[provinceId]['children'][key].name + '</option>';
+            }
+            $('#cityId').html(html);
+        }
+        if (typeof _regions[provinceId]['children'][cityId]['children'] == 'object') {
+            var html1 = '<select id="areaCode" name="areaCode"><option value="0">请选择</option>';
+            for (key in _regions[provinceId]['children'][cityId]['children']) {
+                html1 += '<option value="' + key + '"  ' + (key == areaCode ? "selected" : "") + '>' + _regions[provinceId]['children'][cityId]['children'][key].name + '</option>';
+            }
+            html1 += '</select>';
+            $('#cityId').after(html1);
+        }
+    });
+
+    function beforeSubmit() {
+        if ($("#provinceId").val() === "0") {
+            layer.msg("请选择省份");
+            return false;
+        }
+        if ($("#city").val() === "0") {
+            layer.msg("请选择城市");
+            return false;
+        }
+        if ($("#areaCode").val() === "0") {
+            layer.msg("请选择区县");
+            return false;
+        }
+        var areaName = "";
+        if ($('#provinceId').val() > 0) {
+            areaName += $('#provinceId').find('option:selected').text() + ' ';
+        }
+        if ($('#cityId').val() > 0) {
+            areaName += $('#cityId').find('option:selected').text() + ' ';
+        }
+        if ($('#areaCode') && $('#areaCode').val() > 0) {
+            areaName += $('#areaCode').find('option:selected').text() + ' ';
+        }
+        $("#areaName").val(areaName);
+        return true;
+    }
 </script>

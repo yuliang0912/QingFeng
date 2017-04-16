@@ -44,7 +44,7 @@ namespace QingFeng.WebArea.Controllers
 
 
             var productStocks = ProductStockService.Instance.GetProductStockListByBaseIds(
-                    list.Select(t => t.BaseId).ToArray())
+                list.Select(t => t.BaseId).ToArray())
                 .GroupBy(t => t.ProductId)
                 .ToDictionary(c => c.Key, c => c.ToList());
 
@@ -93,7 +93,7 @@ namespace QingFeng.WebArea.Controllers
         }
 
 
-        [HttpGet, AdminAuthorize(AgentEnums.SubMenuEnum.导入库存)]
+        [HttpGet, AdminAuthorize(AgentEnums.SubMenuEnum.设置库存)]
         public ActionResult SetStock(int baseId)
         {
             var baseInfo = ProductService.Instance.GetProductBase(baseId);
@@ -212,7 +212,7 @@ namespace QingFeng.WebArea.Controllers
                 out totalItem);
 
             var productStocks = ProductStockService.Instance.GetProductStockListByBaseIds(
-                    list.Select(t => t.BaseId).ToArray())
+                list.Select(t => t.BaseId).ToArray())
                 .GroupBy(t => t.ProductId)
                 .ToDictionary(c => c.Key, c => c.ToList().ToDictionary(a => a.SkuId, a => a));
 
@@ -298,7 +298,7 @@ namespace QingFeng.WebArea.Controllers
             return Json(list, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.导入库存)]
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.设置库存)]
         public JsonResult SetStock()
         {
             var baseId = Convert.ToInt32(Request.Form["baseId"] ?? string.Empty);

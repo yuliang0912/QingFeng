@@ -36,7 +36,7 @@ namespace QingFeng.WebArea.Controllers
             });
         }
 
-        [AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.添加商品)]
         public ActionResult Add()
         {
             var sizeList = SkuItemService.Instance.GetList(AgentEnums.SkuType.Size).ToList();
@@ -45,24 +45,10 @@ namespace QingFeng.WebArea.Controllers
         }
 
         /// <summary>
-        /// 保存创建商品
-        /// </summary>
-        /// <param name="model"></param>
-        /// <returns></returns>
-        [HttpPost]
-        [AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
-        public JsonResult Add(CreateProductDto model)
-        {
-            var result = ProductService.Instance.AddProduct(model, new UserInfo() {UserId = 155014});
-
-            return Json(result);
-        }
-
-        /// <summary>
         /// 编辑商品
         /// </summary>
         /// <returns></returns>
-        [AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.编辑商品)]
         public ActionResult Edit(int baseId)
         {
             var baseInfo = ProductService.Instance.GetProductBase(baseId);
@@ -94,7 +80,7 @@ namespace QingFeng.WebArea.Controllers
         /// </summary>
         /// <param name="baseId"></param>
         /// <returns></returns>
-        [AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.上下架商品)]
         public ActionResult Set(int baseId)
         {
             var baseInfo = ProductService.Instance.GetProductBase(baseId);
@@ -108,7 +94,45 @@ namespace QingFeng.WebArea.Controllers
             return View(baseInfo);
         }
 
-        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
+        /// <summary>
+        /// 商品详情
+        /// </summary>
+        /// <param name="baseId"></param>
+        /// <returns></returns>
+        [AdminAuthorize(AgentEnums.SubMenuEnum.查看商品)]
+        public ActionResult View(int baseId)
+        {
+            var baseInfo = ProductService.Instance.GetProductBase(baseId);
+            if (baseInfo == null)
+            {
+                return Content("参数错误");
+            }
+            baseInfo.SubProduct = ProductService.Instance.GetProductByBaseId(baseId);
+
+            ViewBag.productSkus =
+                ProductService.Instance.GetProductSkuListByBaseId(baseId).ToList()
+                    .GroupBy(t => t.SkuName).Select(t => t.Key).ToList();
+
+            return View(baseInfo);
+        }
+
+        #region Ajax
+
+        /// <summary>
+        /// 保存创建商品
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        [HttpPost]
+        [AdminAuthorize(AgentEnums.SubMenuEnum.添加商品)]
+        public JsonResult Add(CreateProductDto model)
+        {
+            var result = ProductService.Instance.AddProduct(model, new UserInfo() { UserId = 155014 });
+
+            return Json(result);
+        }
+
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.上下架商品)]
         public JsonResult Set()
         {
             var baseId = Convert.ToInt32(Request.Form["baseId"] ?? string.Empty);
@@ -133,7 +157,7 @@ namespace QingFeng.WebArea.Controllers
             return Json(result);
         }
 
-        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.商品列表)]
+        [HttpPost, AdminAuthorize(AgentEnums.SubMenuEnum.编辑商品)]
         public JsonResult Edit(CreateProductDto model)
         {
             var baseInfo = ProductService.Instance.GetProductBase(model.baseId);
@@ -194,31 +218,7 @@ namespace QingFeng.WebArea.Controllers
             return Json(result);
         }
 
-
-        /// <summary>
-        /// 商品详情
-        /// </summary>
-        /// <param name="baseId"></param>
-        /// <returns></returns>
-        [AdminAuthorize(AgentEnums.SubMenuEnum.查看商品)]
-        public ActionResult View(int baseId)
-        {
-            var baseInfo = ProductService.Instance.GetProductBase(baseId);
-            if (baseInfo == null)
-            {
-                return Content("参数错误");
-            }
-            baseInfo.SubProduct = ProductService.Instance.GetProductByBaseId(baseId);
-
-            ViewBag.productSkus =
-                ProductService.Instance.GetProductSkuListByBaseId(baseId).ToList()
-                    .GroupBy(t => t.SkuName).Select(t => t.Key).ToList();
-
-            return View(baseInfo);
-        }
-
-        #region Ajax
-
+        [AdminAuthorize]
         public JsonResult SearchProduct(string keyWords)
         {
             var list = ProductService.Instance.SearchProduct(keyWords);
@@ -239,7 +239,6 @@ namespace QingFeng.WebArea.Controllers
                 categoryName = baseList[x.BaseId].CategoryId.ToString()
             }));
         }
-
         #endregion
     }
 }

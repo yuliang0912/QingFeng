@@ -90,8 +90,8 @@ namespace QingFeng.WebArea.Controllers
             model.CreateDate = DateTime.Now;
             model.Status = 0;
             model.UserRole = AgentEnums.UserRole.Staff;
-            model.UserMenus =
-                "101,102,103,104,201,202,203,204,205,206,207,208,209,210,301,302,303,304,305,401,402,403,404,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,601,602,603";
+            model.UserMenus = string.Empty;
+            //"101,102,103,104,201,202,203,204,205,206,207,208,209,210,301,302,303,304,305,401,402,403,404,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,601,602,603";
 
             var result = UserService.Instance.RegisterUser(model);
             return Json(result);
@@ -124,7 +124,7 @@ namespace QingFeng.WebArea.Controllers
             model.CreateDate = DateTime.Now;
             model.Status = 0;
             model.UserRole = AgentEnums.UserRole.StoreUser;
-            model.UserMenus = "508,518"; //添加订单
+            model.UserMenus = "501,504,508,518"; //查看订单,订单导出,取消订单,添加订单
 
             var result = UserService.Instance.RegisterUser(model);
             return Json(result);

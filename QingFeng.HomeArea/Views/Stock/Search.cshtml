@@ -6,9 +6,11 @@
     var index = 0;
     var allSkus = ViewBag.allSkus as Dictionary<int, string>;
     var skuCounts = allSkus.ToDictionary(c => c.Key, c => 0);
+    var userInfo = ViewBag.User as UserInfo ?? new UserInfo();
 }
 @using QingFeng.Common
-@model QingFeng.Common.ApiCore.Result.ApiPageList<QingFeng.Models.ProductBase>
+@using QingFeng.Models
+@model QingFeng.Common.ApiCore.Result.ApiPageList<ProductBase>
 
 <style type="text/css">
     table tbody td {
@@ -134,7 +136,14 @@
                         @if (index == 0)
                         {
                             <td rowspan="@productCount">
-                                <a href="http://www.tonyzu.com/stock/setStock?baseId=@item.BaseId" class="edit-modal">设置库存</a>
+                                @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.设置库存))
+                                {
+                                    <a href="http://www.tonyzu.com/stock/setStock?baseId=@item.BaseId" class="edit-modal">设置库存</a>
+                                }
+                                else
+                                {
+                                    <span>-</span>    
+                                }
                             </td>
                         }
                     </tr>

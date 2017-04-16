@@ -12,7 +12,7 @@ namespace QingFeng.WebArea.Controllers
     public class ShopController : CustomerController
     {
         // GET: Shop
-        [MenuAuthorize(AgentEnums.SubMenuEnum.店铺管理)]
+        [MenuAuthorize(AgentEnums.SubMenuEnum.店铺列表)]
         public ActionResult Index()
         {
             var stopList = StoreService.Instance.GetList(null).OrderBy(t => t.CreateDate).ToList();

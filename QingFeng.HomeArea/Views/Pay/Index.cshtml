@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+    var userInfo = ViewBag.User as QingFeng.Models.UserInfo ?? new QingFeng.Models.UserInfo();
 }
 @using QingFeng.Common
 @using QingFeng.Common.ApiCore.Result
@@ -67,7 +68,14 @@
                     <td>@item.PayDate</td>
                     <td><span class="label  @(item.VerifyStatus == AgentEnums.VerifyStatus.已审核 ? "label-success":"label-warning")">@item.VerifyStatus.ToString()</span></td>
                     <td>
-                        <a href="http://www.tonyzu.com/pay/detail/?payNo=@item.PayNo" title="查看支付详情" class="btn btn-info btn-sm load-content"> 详情</a>
+                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.支付详情))
+                        {
+                            <a href="http://www.tonyzu.com/pay/detail?payNo=@item.PayNo" title="查看支付详情" class="btn btn-info btn-sm load-content"> 详情</a>
+                        }
+                        else
+                        {
+                            <span>-</span>
+                        }
                     </td>
                 </tr>
             }

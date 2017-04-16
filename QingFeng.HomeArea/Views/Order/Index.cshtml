@@ -216,7 +216,18 @@
         });
 
         $.showModal({
-            'selector': '.order-address-update',
+            formId: 'address-form',
+            selector: '.order-address-update',
+            success: function(response, status) {
+                if (response.data === 1) {
+                    layer.msg("保存成功");
+                    $('#etop-modal').modal('hide');
+                    $.pageReload();
+                } else {
+                    layer.alert(response.message);
+                }
+                return false;
+            }
         });
 
         $.showModal({

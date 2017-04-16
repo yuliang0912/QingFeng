@@ -62,13 +62,12 @@ namespace QingFeng.Models
         }
 
         [IgnoreField]
-        public List<MenuEnum> UserFirstMenus
+        public Dictionary<MenuEnum, int> UserFirstMenus
         {
             get
             {
-                return this.AllUserMenus.Select(t => t.GetHashCode() / 100).OrderBy(t => t).
-                    GroupBy(c => c).ToDictionary(c => c.Key, c => c)
-                    .Select(t => (MenuEnum)t.Key).ToList();
+                return this.AllUserMenus.Select(t => t.GetHashCode()/100).OrderBy(t => t).
+                    GroupBy(c => c).ToDictionary(c => (MenuEnum) c.Key, c => c.Key);
             }
         }
 

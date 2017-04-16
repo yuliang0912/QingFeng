@@ -2,14 +2,18 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
-
+    var userInfo = ViewBag.User as QingFeng.Models.UserInfo ?? new QingFeng.Models.UserInfo();
 }
+@using QingFeng.Common
 @model List<QingFeng.Models.StoreInfo>
 
 <div class="page-header">
     <h1 class="form-inline">
         店铺列表
-        <a href="http://www.tonyzu.com/shop/add" class="btn btn-info btn-sm pull-right add-modal"> <i class="glyphicon glyphicon-plus"></i> 添加店铺</a>
+        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.添加店铺))
+        {
+            <a href="http://www.tonyzu.com/shop/add" class="btn btn-info btn-sm pull-right add-modal"> <i class="glyphicon glyphicon-plus"></i> 添加店铺</a>
+        }
     </h1>
 </div>
 <div class="table-responsive">
@@ -37,14 +41,20 @@
                     <td>@item.CreateDate.ToString("yyyy-MM-dd HH:mm:ss")</td>
                     <td>
                         <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                            <a href="http://www.tonyzu.com/shop/edit?storeId=@item.StoreId" title="编辑店铺" class="green edit-modal"> <i class="icon-pencil bigger-130"></i> </a>
-                            @if (item.Status == 0)
+                            @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.编辑店铺))
                             {
-                                <a href="http://www.tonyzu.com/shop/updateStatus?storeId=@item.StoreId&status=1" title="" class="red delete-modal" data-goods-id="35" data-name="@(item.StoreName +"-"+ item.MasterUserName)" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="关闭" data-original-title="关闭店铺"> <i class="icon-trash bigger-130"></i> </a>
+                                <a href="http://www.tonyzu.com/shop/edit?storeId=@item.StoreId" title="编辑店铺" class="green edit-modal"> <i class="icon-pencil bigger-130"></i> </a>
                             }
-                            else
+                            @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.删除店铺))
                             {
-                                <a href="http://www.tonyzu.com/shop/updateStatus?storeId=@item.StoreId&status=0" title="" class="green delete-modal" data-goods-id="18" data-name="@(item.StoreName +"-"+ item.MasterUserName)" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="开启店铺" data-original-title="开启店铺"> <i class="glyphicon glyphicon-ok bigger-130"></i> </a>
+                                if (item.Status == 0)
+                                {
+                                    <a href="http://www.tonyzu.com/shop/updateStatus?storeId=@item.StoreId&status=1" title="" class="red delete-modal" data-goods-id="35" data-name="@(item.StoreName + "-" + item.MasterUserName)" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="关闭" data-original-title="关闭店铺"> <i class="icon-trash bigger-130"></i> </a>
+                                }
+                                else
+                                {
+                                    <a href="http://www.tonyzu.com/shop/updateStatus?storeId=@item.StoreId&status=0" title="" class="green delete-modal" data-goods-id="18" data-name="@(item.StoreName + "-" + item.MasterUserName)" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="开启店铺" data-original-title="开启店铺"> <i class="glyphicon glyphicon-ok bigger-130"></i> </a>
+                                }
                             }
                         </div>
                     </td>

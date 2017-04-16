@@ -2,7 +2,10 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+    var userInfo = ViewBag.User as QingFeng.Models.UserInfo ?? new QingFeng.Models.UserInfo();
 }
+@using QingFeng.Common
+@using QingFeng.Common.Extensions
 @model List<QingFeng.Models.UserInfo>
 
 <style type="text/css">
@@ -14,7 +17,10 @@
 <div class="page-header">
     <h1 class="form-inline">
         代理商列表
-        <a href="http://www.tonyzu.com/staff/addAgent" class="btn btn-info btn-sm pull-right add-modal addStaff"> <i class="glyphicon glyphicon-plus"></i> 添加代理商</a>
+        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.添加代理商))
+        {
+            <a href="http://www.tonyzu.com/staff/addAgent" class="btn btn-info btn-sm pull-right add-modal addStaff"> <i class="glyphicon glyphicon-plus"></i> 添加代理商</a>
+        }
     </h1>
 </div>
 
@@ -48,15 +54,24 @@
                         <span class="label @(item.Status == 0 ? "label-success" : "label-warning")">@(item.Status == 0 ? "正常" : "禁止登陆")</span>
                     </td>
                     <td>
-                        <a href="http://www.tonyzu.com/staff/editAgent?userId=@(item.UserId)" class="setting">编辑</a>&nbsp;&nbsp;
-                        <a href="http://www.tonyzu.com/staff/reSetAgentPwd?userId=@(item.UserId)" data-toggle="modal" class="change-modal">重置密码</a>&nbsp;&nbsp;
-                        @if (item.Status == 0)
+                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.编辑代理商))
                         {
-                            <a href="http://www.tonyzu.com/staff/ProhibitLogin?userId=@(item.UserId)" title="" class="red delete-modal" data-goods-id="71" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="禁止登录状态" data-original-title="禁止登录">禁止登录</a>
+                            <a href="http://www.tonyzu.com/staff/editAgent?userId=@(item.UserId)" class="setting">编辑</a>
                         }
-                        else
+                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.重置代理商密码))
                         {
-                            <a href="http://www.tonyzu.com/staff/AllowLogin?userId=@(item.UserId)" title="" class="green delete-modal" data-goods-id="70" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="允许登录状态" data-original-title="允许登录">允许登录</a>
+                            <a href="http://www.tonyzu.com/staff/reSetAgentPwd?userId=@(item.UserId)" data-toggle="modal" class="change-modal">重置密码</a>
+                        }
+                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.删除代理商))
+                        {
+                            if (item.Status == 0)
+                            {
+                                <a href="http://www.tonyzu.com/staff/ProhibitLogin?userId=@(item.UserId)" title="" class="red delete-modal" data-goods-id="71" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="禁止登录状态" data-original-title="禁止登录">禁止登录</a>
+                            }
+                            else
+                            {
+                                <a href="http://www.tonyzu.com/staff/AllowLogin?userId=@(item.UserId)" title="" class="green delete-modal" data-goods-id="70" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="允许登录状态" data-original-title="允许登录">允许登录</a>
+                            }
                         }
                     </td>
                 </tr>

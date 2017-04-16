@@ -3,6 +3,7 @@
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
     var index = 0;
+    var userInfo = ViewBag.User as QingFeng.Models.UserInfo ?? new QingFeng.Models.UserInfo();
 }
 @using QingFeng.Common
 @model QingFeng.Common.ApiCore.Result.ApiPageList<QingFeng.Models.ProductBase>
@@ -99,12 +100,18 @@ NTENT BEGINS -->
                             <td rowspan="@productCount"><span class="label @(item.Status == 0 ?"label-success":"label-warning")">@(item.Status == 0 ? "正常" : "已删除")</span></td>
                             <td rowspan="@productCount">
                                 <div class="visible-md visible-lg hidden-sm hidden-xs action-buttons">
-                                    <!-- 查看商品 -->
-                                    <a class="load-view" href="http://www.tonyzu.com/goods/view?baseId=@item.BaseId" data-url="http://www.tonyzu.com/goods/view?baseId=@item.BaseId" title="查看商品详情"> <i class="icon-zoom-in bigger-130"></i> </a>
-                                    <!-- 上下架商品 -->
-                                    <a href="http://www.tonyzu.com/goods/set?baseId=@item.BaseId" title="上下架商品" class="blue load-content set-goods"> <i class="icon-wrench bigger-130"></i> </a>
-                                    <!-- 编辑商品 -->
-                                    <a href="http://www.tonyzu.com/goods/edit?baseId=@item.BaseId" class="load-view" data-url="http://www.tonyzu.com/goods/edit?baseId=@item.BaseId" title="编辑商品"> <i class="icon-pencil bigger-130"></i> </a>
+                                    @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.查看商品))
+                                    {
+                                        <a class="load-view" href="http://www.tonyzu.com/goods/view?baseId=@item.BaseId" data-url="http://www.tonyzu.com/goods/view?baseId=@item.BaseId" title="查看商品详情"> <i class="icon-zoom-in bigger-130"></i> </a>
+                                    }
+                                    @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.上下架商品))
+                                    {
+                                        <a href="http://www.tonyzu.com/goods/set?baseId=@item.BaseId" title="上下架商品" class="blue load-content set-goods"> <i class="icon-wrench bigger-130"></i> </a>
+                                    }
+                                    @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.编辑商品))
+                                    {
+                                        <a href="http://www.tonyzu.com/goods/edit?baseId=@item.BaseId" class="load-view" data-url="http://www.tonyzu.com/goods/edit?baseId=@item.BaseId" title="编辑商品"> <i class="icon-pencil bigger-130"></i> </a>
+                                    }
                                 </div>
                             </td>
                         }

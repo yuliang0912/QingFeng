@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "OrderDetail";
     var user = ViewBag.User as UserInfo;
-    Layout = user.UserRole == AgentEnums.UserRole.StoreUser ? "~/Views/Shared/_LayoutAgent.cshtml" : "~/Views/Shared/_LayoutAgentV2.cshtml";
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
     var productBase = (ViewBag.ProductBase as Dictionary<int, ProductBase>) ?? new Dictionary<int, ProductBase>();
     var porductList = (ViewBag.PorductList as Dictionary<int, Product>) ?? new Dictionary<int, Product>();
     var orderLogs = (ViewBag.OrderLogs as IEnumerable<OrderLogs>) ?? new List<OrderLogs>();

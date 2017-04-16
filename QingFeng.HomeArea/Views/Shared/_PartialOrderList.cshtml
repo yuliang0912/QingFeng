@@ -2,25 +2,54 @@
 @using QingFeng.Common.Extensions
 @using QingFeng.Common
 @model QingFeng.Models.OrderMaster
-
+@{
+    var userInfo = ViewBag.User as QingFeng.Models.UserInfo ?? new QingFeng.Models.UserInfo();
+}
 <td rowspan="@(Model.OrderDetailCount)"><span style="@(Model.OrderStatus.GetOrderStyle())">@Model.OrderStatus.ToString()</span></td>
 <td rowspan="@(Model.OrderDetailCount)" class="last">
-    <a href="http://www.tonyzu.com/order/note?orderId=@Model.OrderId" title="查看备注" class="green view-order-notes">备注</a>
-    <a href="http://www.tonyzu.com/order/detail?orderId=@Model.OrderId" data-url="http://www.tonyzu.com/order/detail?orderId=@Model.OrderId" class="load-view">查看</a>
+    @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.添加备注))
+    {
+        <a href="http://www.tonyzu.com/order/note?orderId=@Model.OrderId" title="查看备注" class="green view-order-notes">备注</a>
+    }
+    @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.查看订单))
+    {
+        <a href="http://www.tonyzu.com/order/detail?orderId=@Model.OrderId" data-url="http://www.tonyzu.com/order/detail?orderId=@Model.OrderId" class="load-view">查看</a>
+    }
     @switch (Model.OrderStatus)
     {
         case AgentEnums.MasterOrderStatus.待支付:
-            <a href="http://www.tonyzu.com/order/address?orderId=@Model.OrderId" title="修改收货信息" class="green order-address-update">修改地址</a>
-            <a href="http://www.tonyzu.com/order/ConfirmReceivables?orderId=@Model.OrderId" title="" class="red order-canceled" data-id="@Model.OrderId" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="已收款待发货" data-original-title="确认收款">确认收款</a>
-            <a href="http://www.tonyzu.com/order/cancelOrder?orderId=@Model.OrderId" title="" class="red order-canceled" data-id="@Model.OrderId" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单" data-original-title="取消订单">取消</a>
+            if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.修改地址))
+            {
+                <a href="http://www.tonyzu.com/order/address?orderId=@Model.OrderId" title="修改收货信息" class="green order-address-update">修改地址</a>
+            }
+            if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.确认收款))
+            {
+                <a href="http://www.tonyzu.com/order/ConfirmReceivables?orderId=@Model.OrderId" title="" class="red order-canceled" data-id="@Model.OrderId" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="已收款待发货" data-original-title="确认收款">确认收款</a>
+            }
+            if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.取消订单))
+            {
+                <a href="http://www.tonyzu.com/order/cancelOrder?orderId=@Model.OrderId" title="" class="red order-canceled" data-id="@Model.OrderId" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单" data-original-title="取消订单">取消</a>
+            }
             break;
         case AgentEnums.MasterOrderStatus.待发货:
-            <a href="http://www.tonyzu.com/order/address?orderId=@Model.OrderId" title="修改收货信息" class="green order-address-update">修改地址</a>
-            <a href="http://www.tonyzu.com/order/cancelOrder?orderId=@Model.OrderId" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单" data-original-title="取消订单">取消</a>
-            <a href="http://www.tonyzu.com/order/sendGood?orderId=@Model.OrderId" class="set-despatched">发货</a>
+            if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.修改地址))
+            {
+                <a href="http://www.tonyzu.com/order/address?orderId=@Model.OrderId" title="修改收货信息" class="green order-address-update">修改地址</a>
+            }
+            if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.取消订单))
+            {
+                <a href="http://www.tonyzu.com/order/cancelOrder?orderId=@Model.OrderId" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="取消订单" data-original-title="取消订单">取消</a>
+            }
+            if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.发货))
+            {
+                <a href="http://www.tonyzu.com/order/sendGood?orderId=@Model.OrderId" class="set-despatched">发货</a>
+            }
             break;
         case AgentEnums.MasterOrderStatus.已发货:
-            <a href="http://www.tonyzu.com/order/completeOrder?orderId=@Model.OrderId" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="完成" data-original-title="完成">完成</a>
+            if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.完成订单))
+            {
+                <a href="http://www.tonyzu.com/order/completeOrder?orderId=@Model.OrderId" title="" class="red order-canceled" data-id="2471" data-name="@Model.OrderId" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="完成" data-original-title="完成">完成</a>
+            }
             break;
     }
 </td>

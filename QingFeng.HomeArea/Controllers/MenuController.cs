@@ -9,7 +9,7 @@ using QingFeng.WebArea.Fillter;
 
 namespace QingFeng.WebArea.Controllers
 {
-    public class MenuController : Controller
+    public class MenuController : CustomerController
     {
         // GET: Menu
         public ActionResult Index()

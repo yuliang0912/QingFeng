@@ -2,7 +2,9 @@
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
+    var userInfo = ViewBag.User as QingFeng.Models.UserInfo ?? new QingFeng.Models.UserInfo();
 }
+@using QingFeng.Common
 @using QingFeng.Common.Extensions
 @model List<QingFeng.Models.UserInfo>
 <style type="text/css">
@@ -25,7 +27,10 @@
             </div>
             <button type="button" class="btn btn-primary btn-sm " id="staff-search">搜索</button>
         </small>
-        <a href="http://www.tonyzu.com/staff/add" class="btn btn-info btn-sm pull-right add-modal addStaff"> <i class="glyphicon glyphicon-plus"></i> 添加员工</a>
+        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.添加员工))
+        {
+            <a href="http://www.tonyzu.com/staff/add" class="btn btn-info btn-sm pull-right add-modal addStaff"> <i class="glyphicon glyphicon-plus"></i> 添加员工</a>
+        }
     </h1>
 </div>
 
@@ -59,15 +64,24 @@
                         <span class="label @(item.Status == 0 ? "label-success" : "label-warning")">@(item.Status == 0 ? "正常" : "关闭")</span>
                     </td>
                     <td>
-                        <a href="http://www.tonyzu.com/menu/setrole?userId=@(item.UserId)" class="setting">设置权限</a>
-                        <a href="http://www.tonyzu.com/staff/edit?userId=@(item.UserId)" class="setting">编辑员工</a>
-                        @if (item.Status == 0)
+                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.设置权限)) 
                         {
-                            <a href="http://www.tonyzu.com/staff/ProhibitLogin?userId=@(item.UserId)" title="" class="red delete-modal" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="禁止员工登录" data-original-title="禁止登录">禁止登录</a>
+                            <a href="http://www.tonyzu.com/menu/setrole?userId=@(item.UserId)" class="set-role">设置权限</a>
                         }
-                        else
+                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.编辑员工))
                         {
-                            <a href="http://www.tonyzu.com/staff/AllowLogin?userId=@(item.UserId)" title="" class="green delete-modal" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="允许员工登录" data-original-title="允许登录">允许登录</a>
+                            <a href="http://www.tonyzu.com/staff/edit?userId=@(item.UserId)" class="setting">编辑员工</a>
+                        }
+                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.删除员工))
+                        {
+                            if (item.Status == 0)
+                            {
+                                <a href="http://www.tonyzu.com/staff/ProhibitLogin?userId=@(item.UserId)" title="" class="red delete-modal" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="禁止员工登录" data-original-title="禁止登录">禁止登录</a>
+                            }
+                            else
+                            {
+                                <a href="http://www.tonyzu.com/staff/AllowLogin?userId=@(item.UserId)" title="" class="green delete-modal" data-name="@item.NickName" data-trigger="focus" data-placement="left" tabindex="0" role="button" data-title="允许员工登录" data-original-title="允许登录">允许登录</a>
+                            }
                         }
                     </td>
                 </tr>
@@ -76,29 +90,11 @@
     </table>
 </div>
 
-<!-- 删除框 -->
-<div class="modal small fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="myModalLabel">删除员工</h3>
-            </div>
-            <div class="modal-body">
-                <p class="error-text"><i class="fa fa-warning modal-icon"></i></p><div id="deltitle"></div><br><p></p>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-default" data-dismiss="modal" aria-hidden="true">取消</button>
-                <button class="btn btn-danger gb" data-dismiss="modal">确认</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script type="text/javascript">
     $(document).ready(function () {
         $.etopConfirm();
-        
+
         $.showModal({
             selector: '.setting',
             formId: 'setting-form',
@@ -126,7 +122,25 @@
                     $('#etop-modal').modal('hide');
                     $.pageReload();
                 }
-                else{
+                else {
+                    layer.msg("操作失败");
+                }
+                return false;
+            }
+        });
+
+        $.showModal({
+            selector: '.set-role',
+            formId: 'setting-form',
+            beforeSubmit: function (formData, jqForm, options) {
+                return true;
+            },
+            success: function(response, status) {
+                if (response.data === 1) {
+                    layer.msg("操作成功");
+                    $('#etop-modal').modal('hide');
+                    $.pageReload();
+                } else {
                     layer.msg("操作失败");
                 }
                 return false;
@@ -172,12 +186,6 @@
         $('#staff-search').click(function () {
             var keyword = $('#staff_keyword').val();
             var url = "http://www.tonyzu.com/staff/index" + '?keywords=' + keyword;
-            $.getPageContent({ url: url });
-            return false;
-        });
-
-        $('.pagination a').click(function () {
-            var url = $(this).attr('href');
             $.getPageContent({ url: url });
             return false;
         });

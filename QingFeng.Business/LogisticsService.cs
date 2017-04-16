@@ -9,10 +9,14 @@ using QingFeng.Common;
 
 namespace QingFeng.Business
 {
-    public class LogisticsService: Singleton<LogisticsService>
+    public class LogisticsService : Singleton<LogisticsService>
     {
-        private LogisticsService() { }
-        private readonly LogisticsRepository _logisticsRepository=new LogisticsRepository();
+        private LogisticsService()
+        {
+        }
+
+        private readonly LogisticsRepository _logisticsRepository = new LogisticsRepository();
+
         public List<KeyValuePair<int, string>> GetComplanyList()
         {
             return new List<KeyValuePair<int, string>>()
@@ -31,6 +35,11 @@ namespace QingFeng.Business
         public IEnumerable<LogisticsInfo> GetLogistics(long orderId)
         {
             return _logisticsRepository.GetList(new {orderId});
+        }
+
+        public IEnumerable<LogisticsInfo> GetBatchLogistics(params long[] orderId)
+        {
+            return _logisticsRepository.GetBatchLogistics(orderId);
         }
     }
 }

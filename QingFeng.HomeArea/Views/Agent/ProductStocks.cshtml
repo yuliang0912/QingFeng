@@ -1,7 +1,7 @@
 ﻿
 @{
     ViewBag.Title = "ProductStocks";
-    Layout = "~/Views/Shared/_LayoutAgent.cshtml";
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
     var allSkus = (ViewBag.allSkus as Dictionary<int, string>) ?? new Dictionary<int, string>();
     var skuCounts = allSkus.ToDictionary(c => c.Key, c => 0);
 }

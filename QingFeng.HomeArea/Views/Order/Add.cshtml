@@ -4,7 +4,7 @@
     ViewBag.Title = "Add";
     var user = ViewBag.User as QingFeng.Models.UserInfo;
 
-    Layout = user.UserRole == AgentEnums.UserRole.StoreUser ? "~/Views/Shared/_LayoutAgent.cshtml" : "~/Views/Shared/_LayoutAgentV2.cshtml";
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
 }
 
 <style type="text/css">
@@ -341,8 +341,7 @@
         isSubmit = true;
         $core.ajax.postJSON("/order/CreateOrder", order, function (data) {
             if (data === 1) {
-                var url = "http://www.tonyzu.com/order/index";
-                $.getPageContent({ url: url });
+                $("a.back-to-list").click();
                 return false;
             } else {
                 layer.msg(this.message);

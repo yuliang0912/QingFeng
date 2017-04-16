@@ -1,6 +1,6 @@
 ﻿
 @{
-    Layout = "~/Views/Shared/_LayoutAgent.cshtml";
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
 
     var storeList = (ViewBag.User as UserInfo).StoreList.ToDictionary(c => c.StoreId, c => c.StoreName);
     var productBase = (ViewBag.ProductBase as Dictionary<int, ProductBase>) ?? new Dictionary<int, ProductBase>();
@@ -126,7 +126,7 @@
             <tfoot>
             <tr align="center">
                 <td colspan="11">
-                    @(Html.Raw(Model.GetPagerHtml(string.Format("/orer/agentOrderList?brandId={0}&storeId={1}&orderStatus={2}&beginDateStr={3}&endDateStr={4}&keyWords={5}&page={6}", ViewBag.brandId, ViewBag.storeId, ViewBag.orderStatus, ViewBag.beginDateStr, ViewBag.endDateStr, ViewBag.keyWords, "{0}"))))
+                    @(Html.Raw(Model.GetPagerHtml(string.Format("/order/agentOrderList?brandId={0}&storeId={1}&orderStatus={2}&beginDateStr={3}&endDateStr={4}&keyWords={5}&page={6}", ViewBag.brandId, ViewBag.storeId, ViewBag.orderStatus, ViewBag.beginDateStr, ViewBag.endDateStr, ViewBag.keyWords, "{0}"))))
                 </td>
             </tr>
             </tfoot>

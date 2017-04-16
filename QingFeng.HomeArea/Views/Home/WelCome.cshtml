@@ -1,13 +1,9 @@
-﻿@using QingFeng.Common
-@using QingFeng.Models
+﻿@using QingFeng.Models
 
 @{
     ViewBag.Title = "WelCome";
-    var userInfo = ViewBag.User as UserInfo ?? new UserInfo();
 
-    Layout = userInfo.UserRole == AgentEnums.UserRole.StoreUser
-        ? "~/Views/Shared/_LayoutAgent.cshtml"
-        : "~/Views/Shared/_LayoutAgentV2.cshtml";
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
 }
 
 <h2>WelCome</h2>

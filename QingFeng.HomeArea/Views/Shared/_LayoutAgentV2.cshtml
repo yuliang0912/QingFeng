@@ -1,4 +1,5 @@
-﻿@{
+﻿@using QingFeng.Common
+@{
     var userInfo = ViewBag.User as QingFeng.Models.UserInfo ?? new QingFeng.Models.UserInfo();
 }
 @if (Request.IsAjaxRequest())
@@ -130,14 +131,14 @@
                     return true;
                 },
                 success: function (response, status) {
-                    if (response.error == 0) {
+                    if (response.errcode == 0) {
                         $('#etop-modal').modal('hide');
                         $('#etop-modal').off('hidden.bs.modal').on('hidden.bs.modal', function (e) {
                             $.pageReload();
                         });
                     }
                     else {
-                        layer.alert(response.msg, { icon: 5 });
+                        layer.alert(response.message);
                     }
                 },
                 //formId : 'form',
@@ -201,7 +202,7 @@
             <a class="menu-toggler" id="menu-toggler" href="http://www.tonyzu.com/"> <span class="menu-text"></span> </a>
             <div class="sidebar sidebar-fixed" id="sidebar">
                 <ul class="nav nav-list">
-                    @if (userInfo.UserRole == QingFeng.Common.AgentEnums.UserRole.StoreUser)
+                    @if (userInfo.UserRole == AgentEnums.UserRole.StoreUser)
                     {
                         <li class="active"><a href="/agent/products"><i class="icon icon-home"></i> 商品列表</a></li>
                         <li><a href="/price/agent"><i class="icon icon-info-sign"></i> 代理商价格</a></li>
@@ -211,86 +212,158 @@
                         <li><a href="/agentOrder/done"><i class="icon icon-reorder"></i> 已完成订单</a></li>
                         <li><a href="/agentOrder/exceptional"><i class="icon icon-reorder"></i> 异常订单</a></li>
                         <li><a href="/agentOrder/canceled"><i class="icon icon-reorder"></i> 已取消订单</a></li>
+                        <li><a href="/order/export"><i class="icon icon-plus-sign"></i> 订单导出</a></li>
                         <li><a href="/order/add"><i class="icon icon-plus-sign"></i> 添加订单</a></li>
                         <li><a href="/agent/productStocks"><i class="icon icon-hdd"></i> 库存查询</a></li>
                     }
                     else
                     {
                         <li class="active"> <a href="http://www.tonyzu.com/"> <i class="icon-dashboard"></i> <span class="menu-text"> 控制台 </span> </a> </li>
-                        <li>
-                            <a hrfe="#" class="dropdown-toggle">
-                                <!-- 图标 -->
-                                <i class="icon-reorder"></i>
-                                <span class="menu-text">商品中心</span> <b class="arrow icon-angle-down"></b>
-                            </a>
-                            <ul class="submenu">
-                                <li class="menu">
-                                    <a href="http://www.tonyzu.com/goods/index">商品列表<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/goods/add">添加商品<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/price/index">代理商价格<i class="icon-double-angle-right"></i></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a hrfe="#" class="dropdown-toggle">
-                                <!-- 图标 -->
-                                <i class="icon-hdd"></i>
-                                <span class="menu-text">库存中心</span> <b class="arrow icon-angle-down"></b>
-                            </a>
-                            <ul class="submenu">
-                                <li class="menu">
-                                    <a href="http://www.tonyzu.com/stock/search">库存查询<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/stock/import">导入库存<i class="icon-double-angle-right"></i></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a hrfe="#" class="dropdown-toggle">
-                                <!-- 图标 -->
-                                <i class="icon-coffee"></i>
-                                <span class="menu-text">订单中心</span> <b class="arrow icon-angle-down"></b>
-                            </a>
-                            <ul class="submenu">
-                                <li class="menu">
-                                    <a href="http://www.tonyzu.com/order/add">添加订单<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/order/index">订单列表<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/order/exceptional">异常订单<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/order/done">已完成订单<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/order/send">已发货订单<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/order/confirmed">待发货订单<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/order/unpay">待支付订单<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/order/canceled">已取消订单<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/order/export">订单导出<i class="icon-double-angle-right"></i></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a hrfe="#" class="dropdown-toggle">
-                                <!-- 图标 -->
-                                <i class="icon-cogs"></i>
-                                <span class="menu-text">人员管理</span> <b class="arrow icon-angle-down"></b>
-                            </a>
-                            <ul class="submenu">
-                                <li class="menu">
-                                    <a href="http://www.tonyzu.com/staff/index">员工列表<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/staff/agent">代理商列表<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/shop/index">店铺管理<i class="icon-double-angle-right"></i></a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a hrfe="#" class="dropdown-toggle">
-                                <!-- 图标 -->
-                                <i class="icon-credit-card"></i>
-                                <span class="menu-text">财务中心</span> <b class="arrow icon-angle-down"></b>
-                            </a>
-                            <ul class="submenu">
-                                <li class="menu">
-                                    <a href="http://www.tonyzu.com/pay/Index">支付订单<i class="icon-double-angle-right"></i></a>
-                                    <a href="http://www.tonyzu.com/pay/export">导出支付流水<i class="icon-double-angle-right"></i></a>
-                                </li>
-                            </ul>
-                        </li>
+                        if (userInfo.UserFirstMenus.ContainsKey(AgentEnums.MenuEnum.商品中心))
+                        {
+                            <li>
+                                <a hrfe="#" class="dropdown-toggle">
+                                    <!-- 图标 -->
+                                    <i class="icon-reorder"></i>
+                                    <span class="menu-text">商品中心</span> <b class="arrow icon-angle-down"></b>
+                                </a>
+                                <ul class="submenu">
+                                    <li class="menu">
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.商品列表))
+                                        {
+                                            <a href="http://www.tonyzu.com/goods/index">商品列表<i class="icon-double-angle-right"></i></a>
+                                        }
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.添加商品))
+                                        {
+                                            <a href="http://www.tonyzu.com/goods/add">添加商品<i class="icon-double-angle-right"></i></a>
+                                        } @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.代理商价格))
+                                        {
+                                            <a href="http://www.tonyzu.com/price/index">代理商价格<i class="icon-double-angle-right"></i></a>
+                                        }
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        if (userInfo.UserFirstMenus.ContainsKey(AgentEnums.MenuEnum.库存中心))
+                        {
+                            <li>
+                                <a hrfe="#" class="dropdown-toggle">
+                                    <!-- 图标 -->
+                                    <i class="icon-hdd"></i>
+                                    <span class="menu-text">库存中心</span> <b class="arrow icon-angle-down"></b>
+                                </a>
+                                <ul class="submenu">
+                                    <li class="menu">
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.库存查询))
+                                        {
+                                            <a href="http://www.tonyzu.com/stock/search">库存查询<i class="icon-double-angle-right"></i></a>
+                                        }
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.导入库存))
+                                        {
+                                            <a href="http://www.tonyzu.com/stock/import">导入库存<i class="icon-double-angle-right"></i></a>
+                                        }
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        if (userInfo.UserFirstMenus.ContainsKey(AgentEnums.MenuEnum.订单中心))
+                        {
+                            <li>
+                                <a hrfe="#" class="dropdown-toggle">
+                                    <!-- 图标 -->
+                                    <i class="icon-coffee"></i>
+                                    <span class="menu-text">订单中心</span> <b class="arrow icon-angle-down"></b>
+                                </a>
+                                <ul class="submenu">
+                                    <li class="menu">
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.添加订单))
+                                        {
+                                            <a href="http://www.tonyzu.com/order/add">添加订单<i class="icon-double-angle-right"></i></a>
+                                        }
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.订单列表))
+                                        {
+                                            <a href="http://www.tonyzu.com/order/index">订单列表<i class="icon-double-angle-right"></i></a>
+                                        }
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.异常订单))
+                                        {
+                                            <a href="http://www.tonyzu.com/order/exceptional">异常订单<i class="icon-double-angle-right"></i></a>
+                                        }
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.已完成订单))
+                                        {
+                                            <a href="http://www.tonyzu.com/order/done">已完成订单<i class="icon-double-angle-right"></i></a>
+                                        }
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.已发货订单))
+                                        {
+                                            <a href="http://www.tonyzu.com/order/send">已发货订单<i class="icon-double-angle-right"></i></a>
+                                        }
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.待发货订单))
+                                        {
+                                            <a href="http://www.tonyzu.com/order/confirmed">待发货订单<i class="icon-double-angle-right"></i></a>
+                                        }
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.待支付订单))
+                                        {
+                                            <a href="http://www.tonyzu.com/order/unpay">待支付订单<i class="icon-double-angle-right"></i></a>
+                                        }
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.已取消订单))
+                                        {
+                                            <a href="http://www.tonyzu.com/order/canceled">已取消订单<i class="icon-double-angle-right"></i></a>
+                                        }
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.订单导出))
+                                        {
+                                            <a href="http://www.tonyzu.com/order/export">订单导出<i class="icon-double-angle-right"></i></a>
+                                        }
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        if (userInfo.UserFirstMenus.ContainsKey(AgentEnums.MenuEnum.人员管理) || userInfo.UserFirstMenus.ContainsKey(AgentEnums.MenuEnum.店铺管理))
+                        {
+                            <li>
+                                <a hrfe="#" class="dropdown-toggle">
+                                    <!-- 图标 -->
+                                    <i class="icon-cogs"></i>
+                                    <span class="menu-text">人员管理</span> <b class="arrow icon-angle-down"></b>
+                                </a>
+                                <ul class="submenu">
+                                    <li class="menu">
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.员工列表))
+                                        {
+                                            <a href="http://www.tonyzu.com/staff/index">员工列表<i class="icon-double-angle-right"></i></a>
+                                        }
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.代理商列表))
+                                        {
+                                            <a href="http://www.tonyzu.com/staff/agent">代理商列表<i class="icon-double-angle-right"></i></a>
+                                        }
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.店铺列表))
+                                        {
+                                            <a href="http://www.tonyzu.com/shop/index">店铺管理<i class="icon-double-angle-right"></i></a>
+                                        }
+                                    </li>
+                                </ul>
+                            </li>
+                        }
+                        if (userInfo.UserFirstMenus.ContainsKey(AgentEnums.MenuEnum.财务中心))
+                        {
+                            <li>
+                                <a hrfe="#" class="dropdown-toggle">
+                                    <!-- 图标 -->
+                                    <i class="icon-credit-card"></i>
+                                    <span class="menu-text">财务中心</span> <b class="arrow icon-angle-down"></b>
+                                </a>
+                                <ul class="submenu">
+                                    <li class="menu">
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.支付订单))
+                                        {
+                                            <a href="http://www.tonyzu.com/pay/Index">支付订单<i class="icon-double-angle-right"></i></a>
+                                        }
+                                        @if (userInfo.UserSubMenus.ContainsKey(AgentEnums.SubMenuEnum.导出支付流水))
+                                        {
+                                            <a href="http://www.tonyzu.com/pay/export">导出支付流水<i class="icon-double-angle-right"></i></a>
+                                        }
+                                    </li>
+                                </ul>
+                            </li>
+                        }
                     }
                 </ul>
                 <div class="sidebar-collapse" id="sidebar-collapse">
@@ -370,7 +443,7 @@
     });
 
     $(function () {
-        $('.menu a,.mylog,.pagination a').click(function () {
+        $('.menu a,.mylog').click(function () {
             var url = $(this).attr('href');
             $.getPageContent({ url: url });
             return false;

@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "OrderDetail";
 
-    Layout = "~/Views/Shared/_LayoutAgent.cshtml";
+    Layout = "~/Views/Shared/_LayoutAgentV2.cshtml";
     var user = ViewBag.User as UserInfo;
     var productBase = (ViewBag.ProductBase as Dictionary<int, ProductBase>) ?? new Dictionary<int, ProductBase>();
     var porductList = (ViewBag.PorductList as Dictionary<int, Product>) ?? new Dictionary<int, Product>();
