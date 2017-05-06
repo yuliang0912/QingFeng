@@ -5,7 +5,7 @@ namespace QingFeng.WebArea.Codes
 {
     public static class PayHelper
     {
-        private const int MerchantCode = 1118015066;
+        private const string MerchantCode = "Z800009003014";
         private const string NotifyUrl = "http://www.tonyzu.com/pay/notify";
         private const string ReturnUrl = "http://www.tonyzu.com/pay/return";
 

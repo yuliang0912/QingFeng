@@ -35,7 +35,7 @@ namespace QingFeng.DataAccessLayer.Repository
             }
         }
 
-        public bool BatchInsert(int userId, int baseId, List<UserProductPrice> list)
+        public bool BatchInsert(int userId, int brandId, List<UserProductPrice> list)
         {
             using (var connection = GetWriteConnection)
             {
@@ -43,7 +43,7 @@ namespace QingFeng.DataAccessLayer.Repository
                 var trans = connection.BeginTransaction();
                 try
                 {
-                    connection.Delete(new {userId, baseId}, TableName, transaction: trans);
+                    connection.Delete(new {userId, brandId}, TableName, transaction: trans);
                     foreach (var item in list)
                     {
                         connection.Insert(item, TableName, trans);

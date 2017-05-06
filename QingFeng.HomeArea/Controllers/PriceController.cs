@@ -253,6 +253,7 @@ namespace QingFeng.WebArea.Controllers
                 ProductId = t.ProductId,
                 ProductNo = t.ProductNo,
                 OriginalPrice = t.OriginalPrice,
+                ProductMinPrice = t.ActualPrice,
                 ActualPrice = userPrice.ContainsKey(t.ProductId) ? userPrice[t.ProductId].ActualPrice : t.ActualPrice
             }).ToList();
 
@@ -266,9 +267,9 @@ namespace QingFeng.WebArea.Controllers
             var workSheet = workbook.Worksheet(1);
             workSheet.Rows(1, 1000).Height = 20;
             workSheet.Columns(1, 100).Width = 25;
-            workSheet.Range("A1:F1").Style.Fill.BackgroundColor = XLColor.Green;
-            workSheet.Range("A1:F1").Style.Font.SetFontColor(XLColor.Yellow);
-            workSheet.Range("A1:F1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+            workSheet.Range("A1:G1").Style.Fill.BackgroundColor = XLColor.Green;
+            workSheet.Range("A1:G1").Style.Font.SetFontColor(XLColor.Yellow);
+            workSheet.Range("A1:G1").Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
 
             return new Common.ActionResultExtensions.ExportExcelResult
             {

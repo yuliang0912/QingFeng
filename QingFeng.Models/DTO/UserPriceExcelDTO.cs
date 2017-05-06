@@ -19,6 +19,9 @@ namespace QingFeng.Models.DTO
         [JsonProperty(PropertyName = "市场价")]
         public decimal OriginalPrice { get; set; }
 
+        [JsonProperty(PropertyName = "最低价")]
+        public decimal ProductMinPrice { get; set; }
+
         [JsonProperty(PropertyName = "供货价")]
         public decimal ActualPrice { get; set; }
     }
